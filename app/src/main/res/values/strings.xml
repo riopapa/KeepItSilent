@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Keep It Down</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="action_add">추가</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_edit">Editing</string>
+    <string name="action_delete">Deleting</string>
+
+    <string name="subject">제목</string>
+    <string name="content">내용</string>
+
+    <string name="date">일자</string>
+    <string name="time">시각</string>
+
+    <string name="edit">수정</string>
+    <string name="delete">삭제</string>
+
+    <string name="setTime">시간 설정</string>
+
+    <string name="cancel">취소</string>
+    <string name="set">설정</string>
+    <string name="todo">TODO</string>
+
+    <string name="week_0">주</string>
+    <string name="week_1">월</string>
+    <string name="week_2">화</string>
+    <string name="week_3">수</string>
+    <string name="week_4">목</string>
+    <string name="week_5">금</string>
+    <string name="week_6">토</string>
+    <string name="hh_mm">HH:MM</string>
+    <string name="hh_mm">HH:MM</string>
+    <string name="apply">적용</string>
+    <string name="start_time">시작 시각</string>
+    <string name="finish_time">종료 시각</string>
+    <string name="todo">TODO</string>
+    <string name="todo">TODO</string>
+    <string name="todo">TODO</string>
+
+</resources>
