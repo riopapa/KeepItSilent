@@ -1,7 +1,6 @@
 package com.urrecliner.andriod.keepitdown;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,18 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.urrecliner.andriod.keepitdown.Vars.colorActive;
+import static com.urrecliner.andriod.keepitdown.Vars.colorActiveBack;
+import static com.urrecliner.andriod.keepitdown.Vars.colorInactiveBack;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
+import static com.urrecliner.andriod.keepitdown.Vars.listViewWeek;
+
 public class ListViewAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private ArrayList<Reminder> myReminder;
-    private Context mContext;
     public ListViewAdapter(Context context, ArrayList<Reminder> myReminder) {
-        mContext = context;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.myReminder = myReminder;
     }
@@ -39,15 +43,13 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        boolean active, vibrate;
+
         View listItem = convertView;
         if (listItem == null) {
-            listItem = layoutInflater.inflate(R.layout.list_reminder_layout, parent);
+            listItem = layoutInflater.inflate(R.layout.list_reminder_layout, null);
         }
-        active = myReminder.get(position).getActive();
-        vibrate = myReminder.get(position).getVibrate();
-        int colorOn = ContextCompat.getColor(mContext,R.color.black);
-        int colorOff = ContextCompat.getColor(mContext,R.color.gray);
+        boolean active = myReminder.get(position).getActive();
+        boolean vibrate = myReminder.get(position).getVibrate();
 
         ImageView iv_icon = listItem.findViewById(R.id.iv_icon);
         int resource;
@@ -59,24 +61,24 @@ public class ListViewAdapter extends BaseAdapter {
 
         TextView tv = listItem.findViewById(R.id.tv_subject);
         tv.setText(myReminder.get(position).getSubject());
-        tv.setTextColor((active) ? colorOn:colorOff);
+        tv.setTextColor((active) ? colorActive:colorOff);
 
         boolean week[] = myReminder.get(position).getWeek();
-
-        tv = listItem.findViewById(R.id.lt_week0); tv.setTextColor(week[0] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week1); tv.setTextColor(week[1] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week2); tv.setTextColor(week[2] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week3); tv.setTextColor(week[3] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week4); tv.setTextColor(week[4] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week5); tv.setTextColor(week[5] ? colorOn:colorOff);
-        tv = listItem.findViewById(R.id.lt_week6); tv.setTextColor(week[6] ? colorOn:colorOff);
+        for (int i=0;i<7;i++) {
+            TextView tV = listItem.findViewById(listViewWeek[i]);
+            tV.setTextColor(week[i] ? colorActive:colorOff);
+            if (active)
+                tV.setBackgroundColor(week[i] ? colorActiveBack:colorOffBack);
+            else
+                tV.setBackgroundColor(week[i] ? colorInactiveBack:colorOffBack);
+        }
 
         String txt = (""+(myReminder.get(position).getStartHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getStartMin()+100)).substring(1);
         tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
-        tv.setTextColor((active) ? colorOn:colorOff);
+        tv.setTextColor((active) ? colorActive:colorOff);
         txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
         tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
-        tv.setTextColor((active) ? colorOn:colorOff);
+        tv.setTextColor((active) ? colorActive:colorOff);
         return listItem;
     }
 }

@@ -1,59 +1,84 @@
 package com.urrecliner.andriod.keepitdown;
 
 import android.content.Context;
-import android.media.AudioManager;
-import android.os.Vibrator;
+import android.os.Environment;
+import android.util.Log;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
-    public void Utils() {
-    }
-    public String getFullDateTimeFormat(long t) {
-        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.US);
-        return sdf.format(t);
-    }
-    public String getDateFormat(long t) {
-        String strDateFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.US);
-        return sdf.format(t);
-    }
-    public String getTimeFormat(long t) {
-        String strDateFormat = "HH:mm:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.US);
-        return sdf.format(t);
-    }
-    public String geMinuteFormat(long t) {
-        String strDateFormat = "HH:mm";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat, Locale.US);
-        return sdf.format(t);
+    Context context;
+    public void Utils(Context context) {
+        this.context = context;
     }
 
-    public void letPhoneVibrate(Context context) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(400);
+    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+    final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
+
+    public void append2file(String textLine) {
+
+        File directory = getDirectory();
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        String fullName = directory.toString() + "/" + "KeepItDown_" + dateFormat.format(new Date())+".txt";
+        if (textLine.length() > 100) {
+            textLine = textLine.substring(0,100);
+        }
+        try {
+            File file = new File(fullName);
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                if (!file.createNewFile()) {
+                    logE("createFile", " Error");
+                }
+            }
+            String outText = "\n"+textLine;
+            fw = new FileWriter(file.getAbsoluteFile(), true);
+            bw = new BufferedWriter(fw);
+            bw.write(outText);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bw != null) bw.close();
+                if (fw != null) fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private File getDirectory() {
+        File directory = new File(Environment.getExternalStorageDirectory(), "KeepItDown");
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+        } catch (Exception e) {
+            Log.e("creating Directory error", directory.toString() + "_" + e.toString());
+        }
+        return directory;
     }
 
-    public void setMannerOn (Context context, boolean vibrate) {
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-        am.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
-        am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
-        am.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
-        if (vibrate)
-            am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-        else
-            am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+    public void log(String tag, String text) {
+        StackTraceElement[] traces;
+        traces = Thread.currentThread().getStackTrace();
+        String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " "+text;
+        Log.w(tag , log);
+        append2file(timeFormat.format(new Date())+" : " +log);
     }
 
-    public void setMannerOff (Context context) {
-        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        am.setStreamVolume(AudioManager.STREAM_MUSIC, am.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
-        am.setStreamVolume(AudioManager.STREAM_RING, am.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
-        am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, am.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION), 0);
-        am.setStreamVolume(AudioManager.STREAM_SYSTEM, am.getStreamMaxVolume(AudioManager.STREAM_SYSTEM), 0);
+    public void logE(String tag, String text) {
+        StackTraceElement[] traces;
+        traces = Thread.currentThread().getStackTrace();
+        String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
+        Log.e("<" + tag + ">" , where + " " + text);
     }
+
 }

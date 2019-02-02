@@ -1,169 +1,252 @@
 package com.urrecliner.andriod.keepitdown;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
-import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import static com.urrecliner.andriod.keepitdown.Vars.addActivity;
+import static com.urrecliner.andriod.keepitdown.Vars.addViewWeek;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
+import static com.urrecliner.andriod.keepitdown.Vars.colorOnBack;
+import static com.urrecliner.andriod.keepitdown.Vars.utils;
+import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 
 public class AddActivity extends AppCompatActivity {
 
-    private EditText et_subject;
-    private TextView tv_set_time;
-    private Button btn_set_time;
-
-    private String subject, content;
-    private Calendar calendar;
-    private long id;
-    private long timeStart, timeFinish;
-    private boolean [] week;
-
-    private boolean isNew = true;
     private Reminder reminder;
-    Utils utils;
+    private long id, uniq;
+    private String subject;
+    private int startHour, startMin, finishHour, finishMin;
+    private boolean active;
+    private boolean[] week = new boolean[7];
+    private TextView [] weekView = new TextView[7];
+    private boolean vibrate;
+    private boolean isNew = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         ActionBar actionBar;
         actionBar = getSupportActionBar();
-//        actionBar.setTitle(getResources().getString(R.string.action_add));
-        actionBar.setTitle("추가/수정");
-        utils = new Utils();
-        prevtime = timeStart;
-        initUI();
+        addActivity = this;
 
-        getDefaultInfo();
+        for (int i=0; i < 7; i++)
+            weekView[i] = findViewById(addViewWeek[i]);
 
+        Bundle data = getIntent().getExtras();
         try {
-            Bundle data = getIntent().getExtras();
             reminder = (Reminder) data.getSerializable("reminder");
-            if (reminder != null) {
-                isNew = false;
-                et_subject.setText(reminder.getSubject());
-                et_content.setText(reminder.getContent());
-                tv_set_time.setText(reminder.getDateTime());
-            }
-        } catch (Exception e) {
-            Log.d("huyhungdinh", "Error" + e.toString());
         }
-    }
-
-    private void initUI() {
-        et_subject = (EditText) findViewById(R.id.et_subject);
-        et_content = (EditText) findViewById(R.id.et_content);
-
-        tv_set_time = (TextView) findViewById(R.id.tv_set_time);
-
-        btn_set_time = (Button) findViewById(R.id.btn_set_time);
-        btn_set_time.setOnClickListener(buttonClick);
-    }
-
-    public void getDefaultInfo() {
-        timeStart = System.currentTimeMillis();
-        tv_set_time.setText(utils.getTimeFormat(timeStart));
-    }
-
-    View.OnClickListener buttonClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btn_set_time:
-                    dateTimeDialog();
-                    break;
-            }
+        catch (Exception e) {
+            Log.w("reminder","is null");
         }
-    };
+        if (reminder != null) {
+            isNew = false;
+            actionBar.setTitle("수정");
+        }
+        else {
+            isNew = true;
+            reminder = new Reminder();
+            reminder = reminder.getDefaultReminder();
+            actionBar.setTitle("추가");
+        }
+        id = reminder.getId();
+        uniq = reminder.getUniq();
+        subject = reminder.getSubject();
+        startHour = reminder.getStartHour();
+        startMin = reminder.getStartMin();
+        finishHour = reminder.getFinishHour();
+        finishMin = reminder.getFinishMin();
+        active = reminder.getActive();
+        week = reminder.getWeek();
+        vibrate = reminder.getVibrate();
+        build_addActivity();
+    }
 
-    private void dateTimeDialog() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        final LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_datetimepicker_layout, null);
-        final DatePicker dp = (DatePicker) dialogView.findViewById(R.id.date_picker);
-        final TimePicker tp = (TimePicker) dialogView.findViewById(R.id.time_picker);
+    void build_addActivity() {
+
+        Log.w("building ","AddActivity");
+        TimePicker tp = findViewById(R.id.timePickerStart);
         tp.setIs24HourView(true);
+        tp.setHour(startHour); tp.setMinute(startMin);
+        tp = findViewById(R.id.timePickerFinish);
+        tp.setIs24HourView(true);
+        tp.setHour(finishHour); tp.setMinute(finishMin);
 
-        dialog.setView(dialogView);
-        dialog.setTitle(R.string.setTime);
-        dialog.setPositiveButton(R.string.set, new DialogInterface.OnClickListener() {
+        EditText et = findViewById(R.id.et_subject);
+        if (subject == null)
+            subject = "제목 없음";
+        et.setText(subject);
+        for (int i=0; i < 7; i++) {
+            weekView[i].setId(i);
+            weekView[i].setWidth(Vars.Xsize);
+            weekView[i].setGravity(Gravity.CENTER);
+            weekView[i].setTextColor((week[i]) ? colorOn:colorOff);
+            weekView[i].setBackgroundColor((week[i]) ? colorOnBack:colorOffBack);
+            weekView[i].setTypeface(null, (week[i]) ? Typeface.BOLD:Typeface.NORMAL);
+            weekView[i].setText(weekName[i]);
+        }
+
+        final ImageView ib = findViewById(R.id.av_vibrate);
+        ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+        ib.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, dp.getYear());
-                calendar.set(Calendar.MONTH, dp.getMonth());
-                calendar.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
-                calendar.set(Calendar.HOUR_OF_DAY, tp.getHour());
-                calendar.set(Calendar.MINUTE, tp.getMinute());
-                timeStart = calendar.getTimeInMillis();
-
-                String strTime = (utils.getFullDateTimeFormat(timeStart));
-                tv_set_time.setText(strTime);
+            public void onClick(View v) {
+                Log.w("onclick","vibrate toggle");
+                vibrate ^= true;
+                ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+                v.invalidate();
             }
         });
-        dialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+        final CheckBox cb = findViewById(R.id.cb_active);
+        cb.setChecked(active);
+        cb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+            public void onClick(View v) {
+                Log.w("onclick","Checkbox toggle");
+                active ^= true;
+                cb.setChecked(active);
+                v.invalidate();
             }
         });
-        dialog.create();
-        dialog.show();
     }
 
-        private void onSave() {
-        subject = et_subject.getText().toString();
-        content = et_content.getText().toString();
-        Reminder Re_minder = new Reminder(id, subject, content, timeStart, timeFinish, 0, week);
+   public void toggleWeek(View v) {
+        int i = v.getId();
+        week[i] ^= true;
+        weekView[i].setTextColor((week[i]) ? colorOn:colorOff);
+        weekView[i].setBackgroundColor((week[i]) ? colorOnBack:colorOffBack);
+        weekView[i].setTypeface(null, (week[i]) ? Typeface.BOLD:Typeface.NORMAL);
+        v.invalidate();
+    }
+
+    private void onSave() {
+
+        boolean any = false;
+        for (int i = 0; i < 7; i++) { any |= week[i]; }
+        if (!any) {
+            Toast.makeText(getBaseContext(), "적어도 하루는 선택해야 하지 않을까요?",Toast.LENGTH_LONG).show();
+            return;
+        }
+        EditText et = findViewById(R.id.et_subject);
+        subject = et.getText().toString();
+        if (subject.length() == 0)
+            subject = "제목 없음";
+        TimePicker tp = findViewById(R.id.timePickerStart);
+        startHour = tp.getHour(); startMin = tp.getMinute();
+        tp = findViewById(R.id.timePickerFinish);
+        finishHour = tp.getHour(); finishMin = tp.getMinute();
+
+        Reminder reminder = new Reminder(id, uniq, subject, startHour, startMin, finishHour, finishMin,
+            week, active, vibrate);
+
         DatabaseIO databaseIO = new DatabaseIO(this);
         if (isNew) {
-            id = databaseIO.insert(Re_minder);
-            Re_minder.setId(id);
+            id = databaseIO.insert(reminder);
+            reminder.setId(id);
         } else {
-            databaseIO.update(reminder.getId(), Re_minder);
+            databaseIO.update(reminder.getId(), reminder);
         }
         databaseIO.close();
-//        Log.w("onsave reminder", Re_minder.toString());
-        Intent intent = new Intent(getApplicationContext(), Reminder.class);
-        PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(sender);
 
-        Intent myIntent = new Intent(AddActivity.this, AlarmReceiver.class);
-//
-//        boolean alarmExists =
-//                (PendingIntent.getBroadcast(this, 0,
-//                        myIntent,
-//                        PendingIntent.FLAG_NO_CREATE) != null);
-//
-//        if (alarmExists) {
-//            Log.e("alarm","Cancel Old");
-//            alarmManager.cancel((AlarmManager.OnAlarmListener) myIntent);
-//        }
-        Bundle args = new Bundle();
-        args.putSerializable("reminder",(Serializable)Re_minder);
-        myIntent.putExtra("DATA",args);
-        final int _id = (int) System.currentTimeMillis();
-        PendingIntent appIntent = PendingIntent.getBroadcast(AddActivity.this, _id, myIntent, PendingIntent.FLAG_ONE_SHOT);
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), appIntent);
+        requestBroadCasting(reminder);
 
         finish();
+    }
+
+    public void requestBroadCasting(Reminder reminder) {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intentS = new Intent(this, AlarmReceiver.class);
+        Bundle args = new Bundle();
+        args.putSerializable("reminder", reminder);
+        intentS.putExtra("DATA",args);
+        intentS.putExtra("start",true);
+        intentS.putExtra("uniq",reminder.getUniq());
+        long nextStart= calcNextEvent(startHour, startMin,week);
+
+        PendingIntent pendingIntentS = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
+        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+
+        if (!reminder.getActive()) {
+            alarmManager.cancel(pendingIntentS);
+            utils.log("reminder","CANCELED");
+        }
+        else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
+            utils.log("reminder","Activated START : " + sdf.format(nextStart));
+        }
+
+        long timeDiff = (finishHour * 60 + finishMin - startHour * 60 - startMin) * 60 * 1000;
+        if (timeDiff < 0)
+            timeDiff += 24 * 60 * 60 * 1000;
+        nextStart += timeDiff;
+        Intent intentF = new Intent(this, AlarmReceiver.class);
+        Bundle argsF = new Bundle();
+        argsF.putSerializable("reminder", reminder);
+        intentF.putExtra("DATA",argsF);
+        intentF.putExtra("start",false);
+        intentF.putExtra("uniq",reminder.getUniq());
+
+        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getId() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (!reminder.getActive()) {
+            alarmManager.cancel(pendingIntentF);
+        }
+        else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
+            utils.log("reminder","Activated FINISH : " + sdf.format(nextStart));
+        }
+    }
+
+    private long calcNextEvent(int nextHour, int nextMin, boolean week[]) {
+        Calendar today = Calendar.getInstance();
+        int DD = today.get(Calendar.DATE);
+        int WK = today.get(Calendar.DAY_OF_WEEK) - 1; // 1 for sunday
+
+        long todayEvent = today.getTimeInMillis();
+        today.set(Calendar.SECOND, 0);
+        long nextEvent = 0;
+        today.set(Calendar.HOUR_OF_DAY, nextHour);
+        today.set(Calendar.MINUTE, nextMin);
+        for (int i = WK; ; ) {
+            if (week[i]) {
+                nextEvent = today.getTimeInMillis();
+                if (nextEvent > todayEvent)
+                    break;
+            }
+            today.set(Calendar.DATE, ++DD);
+            DD = today.get(Calendar.DATE);
+            i++;
+            if (i == 7)
+                i = 0;
+        }
+        return nextEvent;
     }
 
     @Override
@@ -179,8 +262,6 @@ public class AddActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             onSave();
             return true;
@@ -191,6 +272,46 @@ public class AddActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_delete) {
+            DatabaseIO databaseIO = new DatabaseIO(this);
+            Cursor cursor = databaseIO.getAll();
+            ArrayList<Reminder> myReminder;
+            myReminder = databaseIO.showAll(cursor);
+            if (databaseIO.delete(myReminder.get(Vars.nowPosition).getId()) != -1) {
+//                myReminder.remove(myReminder.get(Vars.nowPosition));
+//                ListViewAdapter listViewAdapter = new ListViewAdapter(getBaseContext(),MainActivity.this, myReminder);
+//                lVReminder.setAdapter(listViewAdapter);
+            }
+            finish();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onPause() {
+
+        // hide the keyboard in order to avoid getTextBeforeCursor on inactive InputConnection
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        EditText et = findViewById(R.id.et_subject);
+        inputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+
+        super.onPause();
+    }
+//    public static void cancelReminder(Context context,Class<?> cls)
+//    {
+//        // Disable a receiver
+//        ComponentName receiver = new ComponentName(context, cls);
+//        PackageManager pm = context.getPackageManager();
+//        pm.setComponentEnabledSetting(receiver,
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+//                PackageManager.DONT_KILL_APP);
+//
+//        Intent intent1 = new Intent(context, cls);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+//                0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+//        AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+//        am.cancel(pendingIntent);
+//        pendingIntent.cancel();
+//    }
 }

@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <LinearLayout
         android:gravity="center"
@@ -49,69 +48,127 @@
     </LinearLayout>
     <LinearLayout
         android:gravity="center"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/subject"
-            android:gravity="center_vertical"
-            android:textSize="17sp"
-            android:textColor="@color/black"
-            android:background="@color/back"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"/>
+        android:layout_height="76dp">
+        <ImageView
+            android:id="@+id/av_vibrate"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:src="@mipmap/ic_phone_vibrate"
+            android:contentDescription="@string/todo" />
 
         <EditText
             android:id="@+id/et_subject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="12"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
             android:hint="@string/subject"
             android:gravity="center_vertical"
             android:background="@color/white"
             android:padding="8dp"
             android:inputType=""
             android:importantForAutofill="no" />
+        <CheckBox
+            android:id="@+id/cb_active"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"/>
     </LinearLayout>
-
     <LinearLayout
-        android:id="@+id/bot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal">
-        <ImageButton
-            android:id="@+id/iv_delete"
+        <TextView
+            android:id="@+id/av_week0"
+            android:tag="0"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_delete"
-            android:layout_marginStart="16dp"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:contentDescription="@string/todo" />
-        <ImageButton
-            android:id="@+id/iv_vibrate"
+            android:text="@string/week_0"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week1"
+            android:tag="1"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_phone_vibrate"
-            android:layout_marginStart="16dp"
-            android:scaleX="0.5"
-            android:scaleY="0.5"
-            android:contentDescription="@string/todo" />
-        <CheckBox
+            android:text="@string/week_1"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week2"
+            android:tag="2"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="@string/apply"/>
-        <ImageButton
-            android:id="@+id/iv_save"
+            android:text="@string/week_2"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week3"
+            android:tag="3"
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_save"
-            android:layout_marginStart="16dp"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:contentDescription="@string/todo" />
+            android:text="@string/week_3"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week4"
+            android:tag="4"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/week_4"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week5"
+            android:tag="5"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/week_5"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
+        <TextView
+            android:id="@+id/av_week6"
+            android:tag="6"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/week_6"
+            android:layout_margin="4dp"
+            android:padding="1dp"
+            android:onClick="toggleWeek"
+            android:gravity="center_vertical"
+            android:textSize="20sp"/>
 
     </LinearLayout>
 
