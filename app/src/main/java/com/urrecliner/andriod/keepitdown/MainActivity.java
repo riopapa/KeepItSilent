@@ -96,11 +96,11 @@ public class MainActivity extends AppCompatActivity {
     private void setVariables() {
         Vars.mainActivity = this;
         Vars.mainContext = getApplicationContext();
-        Vars.colorOn = ContextCompat.getColor(getBaseContext(),R.color.CrystalBlue);
+        Vars.colorOn = ContextCompat.getColor(getBaseContext(),R.color.Navy);
         Vars.colorInactiveBack = ContextCompat.getColor(getBaseContext(),R.color.RosyBrown);
         Vars.colorOnBack = ContextCompat.getColor(getBaseContext(),R.color.BrownBear);
-        Vars.colorOff = ContextCompat.getColor(getBaseContext(),R.color.gray);
-        Vars.colorActive = ContextCompat.getColor(getBaseContext(),R.color.black);
+        Vars.colorOff = ContextCompat.getColor(getBaseContext(),R.color.BlueGray);
+        Vars.colorActive = ContextCompat.getColor(getBaseContext(),R.color.EarthBlue);
         Vars.colorActiveBack = ContextCompat.getColor(getBaseContext(),R.color.OrangeSalmon);
         Vars.colorOffBack = ContextCompat.getColor(getBaseContext(),R.color.transparent);
 
@@ -118,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         Point size = new Point();
         display.getSize(size);
         Vars.Xsize = size.x / 9;
-
     }
 
     @Override
@@ -183,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         databaseIO = new DatabaseIO(this);
         Cursor cursor = databaseIO.getAll();
         thisReminder = databaseIO.showAll(cursor);
+        databaseIO.close();
         return thisReminder;
     }
     private void dialog(final Reminder reminder) {

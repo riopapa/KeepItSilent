@@ -173,7 +173,6 @@ public class AddActivity extends AppCompatActivity {
             databaseIO.update(reminder.getId(), reminder);
         }
         databaseIO.close();
-
         requestBroadCasting(reminder);
 
         finish();
@@ -214,7 +213,7 @@ public class AddActivity extends AppCompatActivity {
         intentF.putExtra("start",false);
         intentF.putExtra("uniq",reminder.getUniq());
 
-        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getId() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntentF);
         }
@@ -282,12 +281,25 @@ public class AddActivity extends AppCompatActivity {
 //                ListViewAdapter listViewAdapter = new ListViewAdapter(getBaseContext(),MainActivity.this, myReminder);
 //                lVReminder.setAdapter(listViewAdapter);
             }
+            databaseIO.close();
+            cancelReminder();
             finish();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
+
+    private void cancelReminder() {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.cancel(pendingIntent);
+        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq() + 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.cancel(pendingIntent);
+        utils.log("reminder","Deleted");
+    }
+
     @Override
     protected void onPause() {
 

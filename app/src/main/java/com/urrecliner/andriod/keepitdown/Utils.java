@@ -27,9 +27,6 @@ public class Utils {
         BufferedWriter bw = null;
         FileWriter fw = null;
         String fullName = directory.toString() + "/" + "KeepItDown_" + dateFormat.format(new Date())+".txt";
-        if (textLine.length() > 100) {
-            textLine = textLine.substring(0,100);
-        }
         try {
             File file = new File(fullName);
             // if file doesnt exists, then create it

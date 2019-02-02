@@ -3,12 +3,12 @@
     android:layout_centerInParent="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp"
     android:orientation="horizontal"
     android:baselineAligned="true">
     <ImageView
         android:id="@+id/iv_icon"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
@@ -19,6 +19,8 @@
     <LinearLayout
         android:gravity="center_vertical"
         android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_height="64dp">
 
         <LinearLayout
@@ -115,6 +117,9 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="3"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
@@ -122,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hh_mm"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"/>
             <TextView
@@ -130,7 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hh_mm"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:gravity="center"/>
         </LinearLayout>

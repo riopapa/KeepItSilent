@@ -11,7 +11,7 @@
         android:id="@+id/action_add"
         android:orderInCategory="100"
         android:title="@string/action_add"
-        android:icon="@drawable/ic_add"
+        android:icon="@mipmap/icon_add"
         app:showAsAction="ifRoom"
         />
 
