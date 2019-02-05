@@ -17,7 +17,7 @@
         android:id="@+id/bottom_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="설정 후, 홈버튼 누르고 대기하면 됩니다"
+        android:text="@string/press_home"
         android:textStyle="bold|italic"
         android:textSize="16sp"
         android:gravity="center"

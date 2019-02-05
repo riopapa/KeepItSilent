@@ -17,7 +17,7 @@
 
     <string name="date">일자</string>
     <string name="time">시각</string>
-    <string name="not_allowed">다가올 시각으로 설정해 주세요</string>
+    <string name="not_allowed">다가올 시각으로 설정해 주세요</string>    /* time should be in future */
     <string name="edit">수정</string>
     <string name="delete">삭제</string>
 
@@ -34,8 +34,8 @@
     <string name="week_5">금</string>
     <string name="week_6">토</string>
     <string name="hh_mm">HH:MM</string>
-    <string name="apply">적용</string>
     <string name="start_time">시작 시각</string>
     <string name="finish_time">종료 시각</string>
+    <string name="press_home">설정 후, 홈버튼 누르고 대기하면 됩니다</string> /* / after setting, press home button / */
 
 </resources>
