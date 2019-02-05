@@ -8,25 +8,23 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+
+import static com.urrecliner.andriod.keepitdown.Vars.sdfDate;
+import static com.urrecliner.andriod.keepitdown.Vars.sdfLog;
 
 public class Utils {
-    Context context;
+    private Context context;
     public void Utils(Context context) {
         this.context = context;
     }
 
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-    final SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.KOREA);
-
-    public void append2file(String textLine) {
+    void append2file(String textLine) {
 
         File directory = getDirectory();
         BufferedWriter bw = null;
         FileWriter fw = null;
-        String fullName = directory.toString() + "/" + "KeepItDown_" + dateFormat.format(new Date())+".txt";
+        String fullName = directory.toString() + "/" + "KeepItDown_" + sdfDate.format(new Date())+".txt";
         try {
             File file = new File(fullName);
             // if file doesnt exists, then create it
@@ -63,19 +61,19 @@ public class Utils {
         return directory;
     }
 
-    public void log(String tag, String text) {
+    void log(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
         String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " "+text;
         Log.w(tag , log);
-        append2file(timeFormat.format(new Date())+" : " +log);
+        append2file(sdfLog.format(new Date())+" : " +log);
     }
 
-    public void logE(String tag, String text) {
+    void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String where = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber();
-        Log.e("<" + tag + ">" , where + " " + text);
+        String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " " + text;
+        Log.e("<" + tag + ">" , log);
+        append2file(sdfLog.format(new Date())+" : " +log);
     }
-
 }

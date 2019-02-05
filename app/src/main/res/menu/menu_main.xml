@@ -2,11 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.urrecliner.andriod.keepitdown.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_reset"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_reset"
+        android:icon="@mipmap/icon_reset"
+        app:showAsAction="ifRoom"
+        />
+
     <item
         android:id="@+id/action_add"
         android:orderInCategory="100"
@@ -14,5 +18,9 @@
         android:icon="@mipmap/icon_add"
         app:showAsAction="ifRoom"
         />
-
 </menu>
+<!--<item-->
+<!--android:id="@+id/action_settings"-->
+<!--android:orderInCategory="100"-->
+<!--android:title="@string/action_settings"-->
+<!--app:showAsAction="never" />-->

@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -32,13 +31,15 @@ import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOnBack;
+import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 
 public class AddActivity extends AppCompatActivity {
 
     private Reminder reminder;
-    private long id, uniq;
+    private long id;
+    private int uniqueId;
     private String subject;
     private int startHour, startMin, finishHour, finishMin;
     private boolean active;
@@ -75,7 +76,7 @@ public class AddActivity extends AppCompatActivity {
             actionBar.setTitle("추가");
         }
         id = reminder.getId();
-        uniq = reminder.getUniq();
+        uniqueId = reminder.getUniqueId();
         subject = reminder.getSubject();
         startHour = reminder.getStartHour();
         startMin = reminder.getStartMin();
@@ -103,7 +104,7 @@ public class AddActivity extends AppCompatActivity {
         et.setText(subject);
         for (int i=0; i < 7; i++) {
             weekView[i].setId(i);
-            weekView[i].setWidth(Vars.Xsize);
+            weekView[i].setWidth(Vars.xSize);
             weekView[i].setGravity(Gravity.CENTER);
             weekView[i].setTextColor((week[i]) ? colorOn:colorOff);
             weekView[i].setBackgroundColor((week[i]) ? colorOnBack:colorOffBack);
@@ -161,10 +162,8 @@ public class AddActivity extends AppCompatActivity {
         startHour = tp.getHour(); startMin = tp.getMinute();
         tp = findViewById(R.id.timePickerFinish);
         finishHour = tp.getHour(); finishMin = tp.getMinute();
-
-        Reminder reminder = new Reminder(id, uniq, subject, startHour, startMin, finishHour, finishMin,
+        Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
             week, active, vibrate);
-
         DatabaseIO databaseIO = new DatabaseIO(this);
         if (isNew) {
             id = databaseIO.insert(reminder);
@@ -174,7 +173,6 @@ public class AddActivity extends AppCompatActivity {
         }
         databaseIO.close();
         requestBroadCasting(reminder);
-
         finish();
     }
 
@@ -185,13 +183,11 @@ public class AddActivity extends AppCompatActivity {
         Bundle args = new Bundle();
         args.putSerializable("reminder", reminder);
         intentS.putExtra("DATA",args);
-        intentS.putExtra("start",true);
-        intentS.putExtra("uniq",reminder.getUniq());
+        intentS.putExtra("case","S");   // "S" : Start, "F" : Finish, "O" : One time
+        intentS.putExtra("uniqueId",reminder.getUniqueId());
         long nextStart= calcNextEvent(startHour, startMin,week);
 
-        PendingIntent pendingIntentS = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
-        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        PendingIntent pendingIntentS = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntentS);
@@ -199,7 +195,7 @@ public class AddActivity extends AppCompatActivity {
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-            utils.log("reminder","Activated START : " + sdf.format(nextStart));
+            utils.log("reminder",subject + "  Activated START : " + sdfDateTime.format(nextStart));
         }
 
         long timeDiff = (finishHour * 60 + finishMin - startHour * 60 - startMin) * 60 * 1000;
@@ -210,16 +206,16 @@ public class AddActivity extends AppCompatActivity {
         Bundle argsF = new Bundle();
         argsF.putSerializable("reminder", reminder);
         intentF.putExtra("DATA",argsF);
-        intentF.putExtra("start",false);
-        intentF.putExtra("uniq",reminder.getUniq());
+        intentF.putExtra("case","F");
+        intentF.putExtra("uniqueId",reminder.getUniqueId());
 
-        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this,  reminder.getUniqueId() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntentF);
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
-            utils.log("reminder","Activated FINISH : " + sdf.format(nextStart));
+            utils.log("reminder",subject + "  Activated FINISH : " + sdfDateTime.format(nextStart));
         }
     }
 
@@ -249,9 +245,22 @@ public class AddActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_add, menu);
+        if (isNew) {
+            menu.findItem(R.id.action_delete).setEnabled(false);
+            menu.findItem(R.id.action_delete).getIcon().setAlpha(80);
+        }
+        else {
+            menu.findItem(R.id.action_delete).setEnabled(true);
+            menu.findItem(R.id.action_delete).getIcon().setAlpha(255);
+        }
         return true;
     }
 
@@ -293,9 +302,9 @@ public class AddActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
-        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, (int) reminder.getUniq() + 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId() + 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
         utils.log("reminder","Deleted");
     }

@@ -4,21 +4,19 @@ import java.io.Serializable;
 
 public class Reminder implements Serializable {
     private long id;
-    private long uniq;
+    private int uniqueId;
     private String subject;
     private int startHour, startMin, finishHour, finishMin;
     private boolean active;
     private boolean[] week = {true, true, true, true, true, true, true};
     private boolean vibrate;
 
-    public Reminder() {
+    public Reminder() { }
 
-    }
-
-    public Reminder(long id, long uniq, String subject, int startHour, int startMin, int finishHour, int finishMin,
+    public Reminder(long id, int uniqueId, String subject, int startHour, int startMin, int finishHour, int finishMin,
                     boolean week[], boolean active, boolean vibrate) {
         this.id = id;
-        this.uniq = uniq;
+        this.uniqueId = uniqueId;
         this.subject = subject;
         this.startHour = startHour;
         this.startMin = startMin;
@@ -36,12 +34,15 @@ public class Reminder implements Serializable {
         this.id = id;
     }
 
+    public int getUniqueId() { return uniqueId; }
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public String getSubject() {
         return subject;
     }
-
-    public long getUniq() { return uniq; }
-    public void setUniq(long uniq) { this.uniq = uniq; }
+    public void setSubject(String subject) { this.subject = subject; }
 
     public int getStartHour() { return startHour; }
 
@@ -52,6 +53,9 @@ public class Reminder implements Serializable {
     public int getFinishMin() { return finishMin; }
 
     public boolean getActive() { return active; }
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public boolean[] getWeek() {
         boolean week[] = new boolean[7];
@@ -61,16 +65,13 @@ public class Reminder implements Serializable {
 
     public boolean getVibrate() { return vibrate; }
 
-
     public Reminder getDefaultReminder() {
-        uniq = System.currentTimeMillis();
+        uniqueId = (int) (System.currentTimeMillis() % 1000000000L);
         subject = "Weekday Silent";
-        startHour = 22; startMin = 0; finishHour= 7; finishMin = 0;
-        active = true;
-        week = new boolean[]{false, true, false, true, true, true, false};
-        vibrate = true;
-        return new Reminder(id, uniq, subject, startHour, startMin, finishHour, finishMin,
-                week, active, vibrate);
+        startHour = 23; startMin = 0; finishHour= 8; finishMin = 0;
+        week = new boolean[]{false, true, true, true, true, true, false};
+        return new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
+                week, true, true);
     }
 
 }

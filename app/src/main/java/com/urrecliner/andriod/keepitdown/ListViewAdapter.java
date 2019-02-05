@@ -17,6 +17,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
 import static com.urrecliner.andriod.keepitdown.Vars.listViewWeek;
+import static com.urrecliner.andriod.keepitdown.Vars.oneTimeId;
 
 public class ListViewAdapter extends BaseAdapter {
 
@@ -64,22 +65,37 @@ public class ListViewAdapter extends BaseAdapter {
         tv.setText(myReminder.get(position).getSubject());
         tv.setTextColor((active) ? colorOn:colorOff);
 
-        boolean week[] = myReminder.get(position).getWeek();
-        for (int i=0;i<7;i++) {
-            TextView tV = listItem.findViewById(listViewWeek[i]);
-            tV.setTextColor(week[i] ? colorActive:colorOff);
-            if (active)
-                tV.setBackgroundColor(week[i] ? colorActiveBack:colorOffBack);
-            else
-                tV.setBackgroundColor(week[i] ? colorInactiveBack:colorOffBack);
+        int uniqueId = myReminder.get(position).getUniqueId();
+        if (uniqueId == oneTimeId) {
+            for (int i = 0; i < 7; i++) {
+                TextView tV = listItem.findViewById(listViewWeek[i]);
+                tV.setTextColor(colorOffBack);  // transparent
+            }
+            String txt = "-";
+            tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
+            tv.setTextColor((active) ? colorOn:colorOff);
+            txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
+            tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
+            tv.setTextColor((active) ? colorOn:colorOff);
+        }
+        else{
+            boolean week[] = myReminder.get(position).getWeek();
+            for (int i = 0; i < 7; i++) {
+                TextView tV = listItem.findViewById(listViewWeek[i]);
+                tV.setTextColor(week[i] ? colorActive : colorOff);
+                if (active)
+                    tV.setBackgroundColor(week[i] ? colorActiveBack : colorOffBack);
+                else
+                    tV.setBackgroundColor(week[i] ? colorInactiveBack : colorOffBack);
+            }
+            String txt = (""+(myReminder.get(position).getStartHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getStartMin()+100)).substring(1);
+            tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
+            tv.setTextColor((active) ? colorOn:colorOff);
+            txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
+            tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
+            tv.setTextColor((active) ? colorOn:colorOff);
         }
 
-        String txt = (""+(myReminder.get(position).getStartHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getStartMin()+100)).substring(1);
-        tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
-        tv.setTextColor((active) ? colorOn:colorOff);
-        txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
-        tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
-        tv.setTextColor((active) ? colorOn:colorOff);
         return listItem;
     }
 }
