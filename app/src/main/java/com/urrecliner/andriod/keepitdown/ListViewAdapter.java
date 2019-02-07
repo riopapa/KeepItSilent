@@ -23,7 +23,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private ArrayList<Reminder> myReminder;
-    public ListViewAdapter(Context context, ArrayList<Reminder> myReminder) {
+    ListViewAdapter(Context context, ArrayList<Reminder> myReminder) {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.myReminder = myReminder;
     }
@@ -48,18 +48,18 @@ public class ListViewAdapter extends BaseAdapter {
 
         View listItem = convertView;
         if (listItem == null) {
-            listItem = layoutInflater.inflate(R.layout.list_reminder_layout, null);
+             listItem = layoutInflater.inflate(R.layout.list_reminder_layout, null);
         }
         boolean active = myReminder.get(position).getActive();
         boolean vibrate = myReminder.get(position).getVibrate();
 
-        ImageView iv_icon = listItem.findViewById(R.id.iv_icon);
+        ImageView lvVibrate = listItem.findViewById(R.id.lv_vibrate);
         int resource;
         if (vibrate)
             resource = (active) ? R.mipmap.ic_phone_vibrate :R.mipmap.ic_phone_vibrate_notactive;
         else
             resource = (active) ? R.mipmap.ic_phone_silent : R.mipmap.ic_phone_silent_notactive;
-        iv_icon.setImageResource(resource);
+        lvVibrate.setImageResource(resource);
 
         TextView tv = listItem.findViewById(R.id.tv_subject);
         tv.setText(myReminder.get(position).getSubject());
@@ -68,8 +68,8 @@ public class ListViewAdapter extends BaseAdapter {
         int uniqueId = myReminder.get(position).getUniqueId();
         if (uniqueId == oneTimeId) {
             for (int i = 0; i < 7; i++) {
-                TextView tV = listItem.findViewById(listViewWeek[i]);
-                tV.setTextColor(colorOffBack);  // transparent
+                TextView tVWeek = listItem.findViewById(listViewWeek[i]);
+                tVWeek.setTextColor(colorOffBack);  // transparent
             }
             String txt = "-";
             tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
@@ -95,7 +95,6 @@ public class ListViewAdapter extends BaseAdapter {
             tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
         }
-
         return listItem;
     }
 }

@@ -33,7 +33,7 @@ public class Utils {
                     logE("createFile", " Error");
                 }
             }
-            String outText = "\n"+textLine;
+            String outText = "\n"+textLine+"\n";
             fw = new FileWriter(file.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);
             bw.write(outText);

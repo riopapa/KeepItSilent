@@ -20,7 +20,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "KeepITDown";
     private static final int SCHEMA_VERSION = 1;
 
-    public DatabaseIO(Context context) {
+    DatabaseIO(Context context) {
         super(context, DATABASE_NAME, null, SCHEMA_VERSION);
     }
 
@@ -37,7 +37,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         Log.w("my log on create ", "onCreate, sqlCommand: " + sqlCommand);
     }
 
-    public long insert(Reminder reminder) {
+    long insert(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         int uniqueId = reminder.getUniqueId();
@@ -46,10 +46,10 @@ public class DatabaseIO extends SQLiteOpenHelper {
         int timeStart = reminder.getStartHour() * 1000 + reminder.getStartMin();
         int timeFinish = reminder.getFinishHour() * 1000 + reminder.getFinishMin();
         boolean [] week = reminder.getWeek();
-        String weekTbl = "";
+        StringBuilder weekTbl = new StringBuilder();
         for (int i=0; i<7;i++) {
             String tf = (week[i])? "1":"0";
-            weekTbl += tf;
+            weekTbl.append(tf);
         }
         int active = (reminder.getActive()) ? 1:0;
         int vibrate = (reminder.getVibrate()) ? 1:0;
@@ -58,7 +58,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         cv.put("subject", subject);
         cv.put("timeStart", timeStart);
         cv.put("timeFinish", timeFinish);
-        cv.put("weekTbl", weekTbl);
+        cv.put("weekTbl", weekTbl.toString());
         cv.put("active",active);
         cv.put("vibrate",vibrate);
 
@@ -68,20 +68,19 @@ public class DatabaseIO extends SQLiteOpenHelper {
         return result;
     }
 
-    public long update(long id, Reminder reminder) {
+    void update(long id, Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         int uniqueId = reminder.getUniqueId();
-        Log.w("Update","uniqid "+uniqueId);
 
         String subject = reminder.getSubject();
         int timeStart = reminder.getStartHour() * 1000 + reminder.getStartMin();
         int timeFinish = reminder.getFinishHour() * 1000 + reminder.getFinishMin();
         boolean [] week = reminder.getWeek();
-        String weekTbl = "";
+        StringBuilder weekTbl = new StringBuilder();
         for (int i=0; i<7;i++) {
             String tf = (week[i])? "1":"0";
-            weekTbl += tf;
+            weekTbl.append(tf);
         }
         int active = (reminder.getActive()) ? 1:0;
         int vibrate = (reminder.getVibrate()) ? 1:0;
@@ -91,25 +90,23 @@ public class DatabaseIO extends SQLiteOpenHelper {
         cv.put("subject", subject);
         cv.put("timeStart", timeStart);
         cv.put("timeFinish", timeFinish);
-        cv.put("weekTbl", weekTbl);
+        cv.put("weekTbl", weekTbl.toString());
         cv.put("active",active);
         cv.put("vibrate",vibrate);
         String[] args = {String.valueOf(id)};
-        long nb = db.update(TABLE_NAME, cv, "_id=?", args);
+        db.update(TABLE_NAME, cv, "_id=?", args);
         db.close();
-        return  nb;
     }
 
-    public long delete(long id) {
+    void delete(long id) {
         SQLiteDatabase db = getWritableDatabase();
         String[] args = {String.valueOf(id)};
         long result = db.delete(TABLE_NAME, "_id=?", args);
         db.close();
         Log.w("mylog delete", "Delete: id = " + result);
-        return result;
     }
 
-    public Cursor getAll() {
+    Cursor getAll() {
         SQLiteDatabase db = getReadableDatabase();
         String sqlCommand = "SELECT * FROM " + TABLE_NAME;
         Cursor result;
@@ -122,8 +119,8 @@ public class DatabaseIO extends SQLiteOpenHelper {
         return result;
     }
 
-    public ArrayList<Reminder> showAll(Cursor result) {
-        ArrayList<Reminder> list = new ArrayList<Reminder>();
+    ArrayList<Reminder> retrieveAllReminders(Cursor result) {
+        ArrayList<Reminder> list = new ArrayList<>();
         result.moveToFirst();
         while (!result.isAfterLast()) {
             long id = result.getInt(0);
@@ -141,13 +138,13 @@ public class DatabaseIO extends SQLiteOpenHelper {
             boolean vibrate = result.getInt(7)==1;
             Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin, week, active, vibrate);
             list.add(reminder);
-//            Log.w("showAll", ""+id + ", "+uniqueId+" , " + subject + " , " + startHour + ":" + startMin + " ~ " + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate);
+//            Log.w("retrieveAllReminders", ""+id + ", "+uniqueId+" , " + subject + " , " + startHour + ":" + startMin + " ~ " + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate);
             result.moveToNext();
         }
         return list;
     }
 
-    public void clearDatabase(Context context) {
+    void clearDatabase(Context context) {
 
         DatabaseIO databaseIO = new DatabaseIO(context);
         Cursor cursor = databaseIO.getAll();
@@ -178,7 +175,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         db.close();
     }
 
-    public long getCount(Cursor result) {
+    long getCount(Cursor result) {
         return result.getCount();
     }
 
@@ -186,4 +183,5 @@ public class DatabaseIO extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+    @Override protected void finalize() throws Throwable { this.close(); super.finalize(); }
 }

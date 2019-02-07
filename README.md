@@ -1,5 +1,5 @@
-# Keep It Down (Be quiet, manner mode)
-<b>Keep It Down</b> is the android application to support periodic silence setting (aka <i>manner mode</i>)
+# Keep It Down (Be Quiet, Be in Manner mode)
+**Keep It Down** is the android application to support periodic silence setting, e.g. every nights
 
 - you can set weekly based periodic silents time
 - you can make the phone silent for a while immediately
@@ -15,7 +15,7 @@
 - Items will be grayed if it is not active
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="./app/src/main/res/screenshots/mainActivity.jpg" width=240 height=480>
+    <img src="./screenshots/mainActivity.jpg" width=240 height=480>
 
 <H3>addActivity</H3>
 
@@ -32,7 +32,7 @@
 - Top menu icon  <img src="./app/src/main/res/mipmap-xhdpi/icon_cancel.png" width=24 height=24> will ignore current change and go back to main Activity screen.
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="./app/src/main/res/screenshots/addActivity.jpg" width=240 height=480>
+<img src="./screenshots/addActivity.jpg" width=240 height=480>
 
 
 <H3>timerActivity</H3>
@@ -46,16 +46,23 @@
 - Top menu icon  <img src="./app/src/main/res/mipmap-xhdpi/icon_cancel.png" width=24 height=24> will ignore current change and go back to main Activity screen.
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="./app/src/main/res/screenshots/timerActivity.jpg" width=240 height=480>
+<img src="./screenshots/timerActivity.jpg" width=240 height=480>
 
-<H1>Coded By</H1>
+<H1>Comments</H1>
 
-- Woncherl Ha - riopapa@gmail.com
+- Coded by **Woncherl Ha** - riopapa@gmail.com
+
+<H3>Updates / Changes</H3>
+- 2019.02.07 Boot Receiver added : all tables are read and setted when booted
+
+<H3>What I learned in this application</H3>
+- listViewAdapter, time picker, menu.xml, Pending Intent id update, Object putExtras/getExtras, Sqlite handling, .. 
 
 <H1>Issues not fixed yet</H1>
 
-- When phone is rebooted, every itmes should be loaded and saved by you, sorry :-(
+- ~~When phone is rebooted, to active all the event, I force to run this app, so mainActivity will be displayed after boot completion, sorry :-P~~
+- ~~A SQLiteConnection object for database .. was leaked !~~ 
+- When it goes to normal status, main Activity is shown in foreground
 
 <H3>Thanks all persons in GitHub for good examples.</H3>
-
 

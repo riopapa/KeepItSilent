@@ -5,7 +5,7 @@ import android.content.Context;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class Vars {
+class Vars {
     static Context mainContext;
     static int colorOn, colorOnBack, colorInactiveBack, colorOff, colorOffBack, colorActive, colorActiveBack;
     static long dbCount;
@@ -19,6 +19,7 @@ public class Vars {
     static MainActivity mainActivity;
     static AddActivity addActivity;
     static TimerActivity timerActivity;
+    static String Receiver = "init";
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);

@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,15 +22,14 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
+import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
 import static com.urrecliner.andriod.keepitdown.Vars.addActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOnBack;
-import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 
@@ -47,24 +45,29 @@ public class AddActivity extends AppCompatActivity {
     private TextView [] weekView = new TextView[7];
     private boolean vibrate;
     private boolean isNew = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
-        ActionBar actionBar;
-        actionBar = getSupportActionBar();
-        addActivity = this;
 
-        for (int i=0; i < 7; i++)
-            weekView[i] = findViewById(addViewWeek[i]);
+        super.onCreate(savedInstanceState);
+        addActivity = this;
+        setContentView(R.layout.activity_add);
 
         Bundle data = getIntent().getExtras();
+        assert data != null;
         try {
             reminder = (Reminder) data.getSerializable("reminder");
         }
         catch (Exception e) {
-            Log.w("reminder","is null");
+            utils.logE("Reminder ","is NULL when GET REMINDER");
         }
+
+        for (int i=0; i < 7; i++)
+            weekView[i] = findViewById(addViewWeek[i]);
+
+        ActionBar actionBar;
+        actionBar = getSupportActionBar();
+        assert actionBar != null;
         if (reminder != null) {
             isNew = false;
             actionBar.setTitle("수정");
@@ -90,7 +93,6 @@ public class AddActivity extends AppCompatActivity {
 
     void build_addActivity() {
 
-        Log.w("building ","AddActivity");
         TimePicker tp = findViewById(R.id.timePickerStart);
         tp.setIs24HourView(true);
         tp.setHour(startHour); tp.setMinute(startMin);
@@ -117,7 +119,6 @@ public class AddActivity extends AppCompatActivity {
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","vibrate toggle");
                 vibrate ^= true;
                 ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
                 v.invalidate();
@@ -129,7 +130,6 @@ public class AddActivity extends AppCompatActivity {
         cb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","Checkbox toggle");
                 active ^= true;
                 cb.setChecked(active);
                 v.invalidate();
@@ -172,76 +172,11 @@ public class AddActivity extends AppCompatActivity {
             databaseIO.update(reminder.getId(), reminder);
         }
         databaseIO.close();
-        requestBroadCasting(reminder);
+        Receiver = "refresh";
+        MainActivity m = new MainActivity();
+        m.requestBroadCasting(reminder);
+        m.finish();
         finish();
-    }
-
-    public void requestBroadCasting(Reminder reminder) {
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intentS = new Intent(this, AlarmReceiver.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminder", reminder);
-        intentS.putExtra("DATA",args);
-        intentS.putExtra("case","S");   // "S" : Start, "F" : Finish, "O" : One time
-        intentS.putExtra("uniqueId",reminder.getUniqueId());
-        long nextStart= calcNextEvent(startHour, startMin,week);
-
-        PendingIntent pendingIntentS = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if (!reminder.getActive()) {
-            alarmManager.cancel(pendingIntentS);
-            utils.log("reminder","CANCELED");
-        }
-        else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-            utils.log("reminder",subject + "  Activated START : " + sdfDateTime.format(nextStart));
-        }
-
-        long timeDiff = (finishHour * 60 + finishMin - startHour * 60 - startMin) * 60 * 1000;
-        if (timeDiff < 0)
-            timeDiff += 24 * 60 * 60 * 1000;
-        nextStart += timeDiff;
-        Intent intentF = new Intent(this, AlarmReceiver.class);
-        Bundle argsF = new Bundle();
-        argsF.putSerializable("reminder", reminder);
-        intentF.putExtra("DATA",argsF);
-        intentF.putExtra("case","F");
-        intentF.putExtra("uniqueId",reminder.getUniqueId());
-
-        PendingIntent pendingIntentF = PendingIntent.getBroadcast(AddActivity.this,  reminder.getUniqueId() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (!reminder.getActive()) {
-            alarmManager.cancel(pendingIntentF);
-        }
-        else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
-            utils.log("reminder",subject + "  Activated FINISH : " + sdfDateTime.format(nextStart));
-        }
-    }
-
-    private long calcNextEvent(int nextHour, int nextMin, boolean week[]) {
-        Calendar today = Calendar.getInstance();
-        int DD = today.get(Calendar.DATE);
-        int WK = today.get(Calendar.DAY_OF_WEEK) - 1; // 1 for sunday
-
-        long todayEvent = today.getTimeInMillis();
-        today.set(Calendar.SECOND, 0);
-        long nextEvent = 0;
-        today.set(Calendar.HOUR_OF_DAY, nextHour);
-        today.set(Calendar.MINUTE, nextMin);
-        for (int i = WK; ; ) {
-            if (week[i]) {
-                nextEvent = today.getTimeInMillis();
-                if (nextEvent > todayEvent)
-                    break;
-            }
-            today.set(Calendar.DATE, ++DD);
-            DD = today.get(Calendar.DATE);
-            i++;
-            if (i == 7)
-                i = 0;
-        }
-        return nextEvent;
     }
 
     @Override
@@ -284,12 +219,14 @@ public class AddActivity extends AppCompatActivity {
             DatabaseIO databaseIO = new DatabaseIO(this);
             Cursor cursor = databaseIO.getAll();
             ArrayList<Reminder> myReminder;
-            myReminder = databaseIO.showAll(cursor);
-            if (databaseIO.delete(myReminder.get(Vars.nowPosition).getId()) != -1) {
+            myReminder = databaseIO.retrieveAllReminders(cursor);
+            cursor.close();
+            databaseIO.delete(myReminder.get(Vars.nowPosition).getId());
+//            if (databaseIO.delete(myReminder.get(Vars.nowPosition).getId()) != -1) {
 //                myReminder.remove(myReminder.get(Vars.nowPosition));
 //                ListViewAdapter listViewAdapter = new ListViewAdapter(getBaseContext(),MainActivity.this, myReminder);
 //                lVReminder.setAdapter(listViewAdapter);
-            }
+//            }
             databaseIO.close();
             cancelReminder();
             finish();
@@ -301,6 +238,7 @@ public class AddActivity extends AppCompatActivity {
     private void cancelReminder() {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        assert alarmManager != null;
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
@@ -311,28 +249,11 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-
-        // hide the keyboard in order to avoid getTextBeforeCursor on inactive InputConnection
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        assert inputMethodManager != null;
         EditText et = findViewById(R.id.et_subject);
         inputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
 
         super.onPause();
     }
-//    public static void cancelReminder(Context context,Class<?> cls)
-//    {
-//        // Disable a receiver
-//        ComponentName receiver = new ComponentName(context, cls);
-//        PackageManager pm = context.getPackageManager();
-//        pm.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-//                PackageManager.DONT_KILL_APP);
-//
-//        Intent intent1 = new Intent(context, cls);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-//                0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager am = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-//        am.cancel(pendingIntent);
-//        pendingIntent.cancel();
-//    }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
@@ -189,12 +190,12 @@ public class TimerActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, finishMin);
         calendar.set(Calendar.SECOND,0);
         long nextStart = calendar.getTimeInMillis();
-
-        PendingIntent pendingIntentS = PendingIntent.getBroadcast(TimerActivity.this, reminder.getUniqueId(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntentS = PendingIntent.getBroadcast(TimerActivity.this, reminder.getUniqueId(),
+                intentS, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
-        alarmReceiver.setMannerOn(vibrate);
+        alarmReceiver.setMannerOn(vibrate, mainContext);
         finish();
     }
 
@@ -212,9 +213,6 @@ public class TimerActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_save) {
             onSave();
@@ -222,6 +220,9 @@ public class TimerActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_cancel) {
+            DatabaseIO databaseIO = new DatabaseIO(this);
+            databaseIO.update(reminder.getId(), reminder);
+            databaseIO.close();
             finish();
             return true;
         }
@@ -230,12 +231,6 @@ public class TimerActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-
-//        // hide the keyboard in order to avoid getTextBeforeCursor on inactive InputConnection
-//        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//        EditText et = findViewById(R.id.et_subject);
-//        inputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
-//
         super.onPause();
     }
 }
