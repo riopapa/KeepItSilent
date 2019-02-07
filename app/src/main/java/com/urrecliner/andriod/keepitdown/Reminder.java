@@ -66,9 +66,10 @@ public class Reminder implements Serializable {
     public boolean getVibrate() { return vibrate; }
 
     public Reminder getDefaultReminder() {
+        id = 1;
         uniqueId = (int) (System.currentTimeMillis() % 1000000000L);
         subject = "Weekday Silent";
-        startHour = 23; startMin = 0; finishHour= 8; finishMin = 0;
+        startHour = 23; startMin = 30; finishHour= 7; finishMin = 30;
         week = new boolean[]{false, true, true, true, true, true, false};
         return new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, true);

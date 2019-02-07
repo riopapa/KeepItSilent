@@ -79,7 +79,6 @@
             android:gravity="center_vertical"
             android:background="@color/white"
             android:padding="8dp"
-            android:inputType=""
             android:importantForAutofill="no" />
         <CheckBox
             android:id="@+id/cb_active"
@@ -183,3 +182,4 @@
 
 </LinearLayout>
     <!--android:layout_alignParentBottom="true"-->
+    <!--android:inputType=""-->

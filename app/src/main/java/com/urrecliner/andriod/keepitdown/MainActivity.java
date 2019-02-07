@@ -18,10 +18,8 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,37 +46,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         utils = new Utils();
         utils.log("MainActivity","onCreate");
         preparePermission(getApplicationContext());
-//        Receiver = "mainOnCreate";
-//        try {
-//            Intent intent = getIntent();
-//            if (intent != null) {
-//                utils.log("mainOnCreate"," On create has intent \n"+intent.toString());
-//                Bundle extras = intent.getExtras();
-//                if (extras == null) {
-//                    utils.log("onCreate","extra is null");
-//                }
-//                else
-//                    Receiver = extras.getString("receiver");
-//                Bundle args = getIntent().getBundleExtra("DATA");
-//                if (args == null) {
-//                    utils.log("onCreate"," args is null");
-//                }
-//                else {
-//                    reminder = (Reminder) args.getSerializable("reminder");
-//                    utils.log("onCreate","reminder ----- uniq "+reminder.getUniqueId());
-//                }
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Receiver = "oCC";
-//        }
         utils.log("Receiver ","onCreate is "+Receiver);
-        if (Receiver.equals("Alarm")) { // it means from receiver
+        if (Receiver.equals("Alarm")) {
             utils.log("From","ALARM");
             Bundle args = getIntent().getBundleExtra("DATA");
             reminder = (Reminder) args.getSerializable("reminder");
@@ -93,12 +67,18 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         else {
+            if (Receiver.equals("AddUpdate")) {
+                utils.log("From", "AddUpdate");
+                Bundle args = getIntent().getBundleExtra("DATA");
+                reminder = (Reminder) args.getSerializable("reminder");
+                requestBroadCasting(reminder);
+                Receiver = "AddEnd";
+            }
             setContentView(R.layout.activity_main);
             setVariables();
             showArrayLists();
         }
-        utils.log("END of","ONCREATE");
-        super.onCreate(savedInstanceState);
+//        utils.log("END of","ONCREATE");
     }
 
     void setVariables() {
@@ -185,35 +165,44 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
 
         ListViewAdapter listViewAdapter = new ListViewAdapter(this, myReminder);
-        utils.log("listViewAdapter","BUILD");
+//        utils.log("listViewAdapter","BUILD");
         lVReminder.setAdapter(listViewAdapter);
         lVReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 nowPosition = position;
-                nowUniqueId = myReminder.get(position).getUniqueId();
-                new callReminder().execute(myReminder.get(position));
+                reminder = myReminder.get(position);
+                nowUniqueId = reminder.getUniqueId();
+//                new callReminder().execute(myReminder.get(position));
+                Intent intent;
+                if (nowUniqueId != oneTimeId)
+                    intent = new Intent(MainActivity.this, AddActivity.class);
+                else
+                    intent = new Intent(MainActivity.this, TimerActivity.class);
+                intent.putExtra("reminder", myReminder.get(position));
+                startActivity(intent);
             }
         });
-        lVReminder.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                //dialog(myReminder.get(position));
-                return false;
-            }
-        });
-        TextView tv = findViewById(R.id.bottom_message);
-        tv.startAnimation(AnimationUtils.loadAnimation(mainActivity, R.anim.move));
+//        lVReminder.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                //dialog(myReminder.get(position));
+//                return false;
+//            }
+//        });
+
+//        TextView tv = findViewById(R.id.bottom_message);
+//        tv.startAnimation(AnimationUtils.loadAnimation(mainActivity, R.anim.move));
     }
 
-    public ArrayList getAllDatabase() {
-        ArrayList<Reminder> dbList;
-        databaseIO = new DatabaseIO(this);
-        Cursor cursor = databaseIO.getAll();
-        dbList = databaseIO.retrieveAllReminders(cursor);
-        cursor.close();
-        return dbList;
-    }
+//    public ArrayList getAllDatabase() {
+//        ArrayList<Reminder> dbList;
+//        databaseIO = new DatabaseIO(this);
+//        Cursor cursor = databaseIO.getAll();
+//        dbList = databaseIO.retrieveAllReminders(cursor);
+//        cursor.close();
+//        return dbList;
+//    }
 
     private class callReminder extends AsyncTask<Reminder, Void, Void> {
 //        private ProgressDialog dialog;
@@ -328,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 args.putSerializable("reminder", rm1);
                 intentS.putExtra("DATA", args);
                 intentS.putExtra("case", "S");   // "S" : Start, "F" : Finish, "O" : One time
-                intentS.putExtra("uniqueId", rm1.getUniqueId());
+//                intentS.putExtra("uniqueId", rm1.getUniqueId());
                 long nextStart = calcNextEvent(rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
                 PendingIntent pendingIntentS = PendingIntent.getBroadcast(mainActivity, rm1.getUniqueId(),
                         intentS, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -343,11 +332,11 @@ public class MainActivity extends AppCompatActivity {
                 argsF.putSerializable("reminder", rm1);
                 intentF.putExtra("DATA", argsF);
                 intentF.putExtra("case", "F");
-                intentF.putExtra("uniqueId", rm1.getUniqueId());
-                PendingIntent pendingIntentF = PendingIntent.getBroadcast(mainActivity, rm1.getUniqueId() + 100,
+//                intentF.putExtra("uniqueId", rm1.getUniqueId());
+                PendingIntent pendingIntentF = PendingIntent.getBroadcast(mainActivity, rm1.getUniqueId() + 1,
                         intentF, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
-                utils.log("Boot", "FINISH : " + sdfDateTime.format(nextStart) + " uniqueId: " + (rm1.getUniqueId() + 100)+" "+rm1.getSubject());
+                utils.log("Boot", "FINISH : " + sdfDateTime.format(nextStart) + " uniqueId: " + (rm1.getUniqueId() + 1)+" "+rm1.getSubject());
             }
         }
     }
@@ -361,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         args.putSerializable("reminder", reminder);
         intentS.putExtra("DATA",args);
         intentS.putExtra("case","S");   // "S" : Start, "F" : Finish, "O" : One time
-        intentS.putExtra("uniqueId",reminder.getUniqueId());
+//        intentS.putExtra("uniqueId",reminder.getUniqueId());
         long nextStart= calcNextEvent(reminder.getStartHour(), reminder.getStartMin(),reminder.getWeek());
 
         PendingIntent pendingIntentS = PendingIntent.getBroadcast(mainContext, reminder.getUniqueId(), intentS, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -384,18 +373,18 @@ public class MainActivity extends AppCompatActivity {
         argsF.putSerializable("reminder", reminder);
         intentF.putExtra("DATA",argsF);
         intentF.putExtra("case","F");
-        intentF.putExtra("uniqueId",reminder.getUniqueId());
+//        intentF.putExtra("uniqueId",reminder.getUniqueId());
 
-        PendingIntent pendingIntentF = PendingIntent.getBroadcast(mainActivity,  reminder.getUniqueId() + 100, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntentF = PendingIntent.getBroadcast(mainActivity,  reminder.getUniqueId() + 1, intentF, PendingIntent.FLAG_UPDATE_CURRENT);
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntentF);
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
-            utils.log("FINISH", sdfDateTime.format(nextStart) + " uniqueId: " + (reminder.getUniqueId() + 100)+" "+reminder.getSubject());
+            utils.log("FINISH", sdfDateTime.format(nextStart) + " uniqueId: " + (reminder.getUniqueId() + 1)+" "+reminder.getSubject());
         }
         if (Receiver.equals("refresh")) {
-            Receiver = "refreshEnd";
+            Receiver = "refreshed";
         }
     }
 
@@ -424,10 +413,10 @@ public class MainActivity extends AppCompatActivity {
         return nextEvent;
     }
 
-    @Override
-    public void onBackPressed() {   // ignore back key
-//        super.onBackPressed();
-    }
+//    @Override
+//    public void onBackPressed() {   // ignore back key
+////        super.onBackPressed();
+//    }
 
     void preparePermission(Context context) {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

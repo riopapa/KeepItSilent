@@ -51,18 +51,19 @@
 <H1>Comments</H1>
 
 - Coded by **Woncherl Ha** - riopapa@gmail.com
+- When return time comes, it reactivate vibration to normal regardless you were in manner mode
 
 <H3>Updates / Changes</H3>
-- 2019.02.07 Boot Receiver added : all tables are read and setted when booted
+- 2019.02.07 Boot Receiver added : all tables are read and set broadcasting again when booted
 
 <H3>What I learned in this application</H3>
 - listViewAdapter, time picker, menu.xml, Pending Intent id update, Object putExtras/getExtras, Sqlite handling, .. 
 
 <H1>Issues not fixed yet</H1>
 
-- ~~When phone is rebooted, to active all the event, I force to run this app, so mainActivity will be displayed after boot completion, sorry :-P~~
-- ~~A SQLiteConnection object for database .. was leaked !~~ 
-- When it goes to normal status, main Activity is shown in foreground
+- ~~When phone is rebooted, to active all the event, I force to run this app, so mainActivity will be displayed after boot completion~~ <= add boot receiver
+- ~~A SQLiteConnection object for database .. was leaked !~~ <== add cursor close
+- ~~When it goes to normal status, main Activity is shown in foreground~~ <= add status check to reshow list or not
 
 <H3>Thanks all persons in GitHub for good examples.</H3>
 

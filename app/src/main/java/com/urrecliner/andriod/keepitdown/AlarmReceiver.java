@@ -36,7 +36,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 break;
             case "F":   // finish
                 setMannerOff(context);
-//                Bundle args = intent.getBundleExtra("DATA");
                 Receiver = "Alarm";
                 Intent i = new Intent(context, MainActivity.class);
                 i.putExtra("Receiver","Alarm");

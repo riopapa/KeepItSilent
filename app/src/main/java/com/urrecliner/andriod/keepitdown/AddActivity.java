@@ -166,16 +166,19 @@ public class AddActivity extends AppCompatActivity {
             week, active, vibrate);
         DatabaseIO databaseIO = new DatabaseIO(this);
         if (isNew) {
-            id = databaseIO.insert(reminder);
-            reminder.setId(id);
+            databaseIO.insert(reminder);
+//            id = databaseIO.insert(reminder);
+//            reminder.setId(id);
         } else {
             databaseIO.update(reminder.getId(), reminder);
         }
         databaseIO.close();
-        Receiver = "refresh";
-        MainActivity m = new MainActivity();
-        m.requestBroadCasting(reminder);
-        m.finish();
+        Receiver = "AddUpdate";
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("reminder", reminder);
+        i.putExtra("DATA", args);
+        getApplicationContext().startActivity(i);
         finish();
     }
 
@@ -242,7 +245,7 @@ public class AddActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
-        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId() + 100, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId() + 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
         utils.log("reminder","Deleted");
     }

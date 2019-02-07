@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
 import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
@@ -31,41 +31,33 @@ public class TimerActivity extends AppCompatActivity {
     private int startHour, startMin;
     private int finishHour, finishMin;
     private boolean vibrate, active;
-    private int startTime, durationMin = 0;       // in minutes
+    private int durationMin = 0;       // in minutes
     Calendar calendar;
     private TextView tVDuration;
     TimePicker tp;
-    boolean timeUpDown = false;
+    boolean timePicker_UpDown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
+        timerActivity = this;
         ActionBar actionBar;
         actionBar = getSupportActionBar();
         actionBar.setTitle(getResources().getString(R.string.action_timer));
 
         Bundle data = getIntent().getExtras();
-        try {
-            reminder = (Reminder) data.getSerializable("reminder");
-        }
-        catch (Exception e) {
-            Log.w("reminder","is null");
-        }
+        reminder = (Reminder) data.getSerializable("reminder");
         id = reminder.getId();
         uniqueId = reminder.getUniqueId();
         subject = reminder.getSubject();
         vibrate = reminder.getVibrate();
-        active = true;
-
-        timerActivity = this;
+        active = reminder.getActive();
         calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND,0);
-        subject = getResources().getString(R.string.action_timer);
         startHour = calendar.get(Calendar.HOUR_OF_DAY);
         startMin = calendar.get(Calendar.MINUTE);
-        startTime = startHour * 60 + startMin;
-        finishHour = startHour + 1;     // might be error if over 24 hour
+        finishHour = startHour + 1;     // default is 60 min.
         finishMin = startMin;
         durationMin = 60;
         tVDuration = findViewById(R.id.tm_duration);
@@ -74,15 +66,15 @@ public class TimerActivity extends AppCompatActivity {
         tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hour, int min) {
-                if (timeUpDown)
+                if (timePicker_UpDown)
                     return;
-                if (hour * 60 + min <= startTime) {
-                    warningTime();
-                    return;
-                }
                 finishHour = hour; finishMin = min;
                 durationMin = (finishHour - startHour) * 60 + finishMin - startMin;
-                String text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1)+  " 후";
+                String text;
+                if (durationMin > 1)
+                    text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1)+  " 후";
+                else
+                    text = getString(R.string.already_passed_time);
                 tVDuration.setText(text);
             }
         });
@@ -91,13 +83,13 @@ public class TimerActivity extends AppCompatActivity {
     }
 
     void buttonSetting() {
-        final ImageView ib = findViewById(R.id.tm_vibrate);
-        ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
-        ib.setOnClickListener(new View.OnClickListener() {
+        final ImageView iVVibrate = findViewById(R.id.tm_vibrate);
+        iVVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+        iVVibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vibrate ^= true;
-                ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+                iVVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
                 v.invalidate();
             }
         });
@@ -105,13 +97,10 @@ public class TimerActivity extends AppCompatActivity {
         time10minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","minus 10 ");
                 if (durationMin > 10) {
                     durationMin -= 10;
                     adjustTimePicker();
                 }
-                else
-                    warningTime();
             }
         });
 
@@ -119,7 +108,6 @@ public class TimerActivity extends AppCompatActivity {
         time10plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","plus 10 ");
                 durationMin += 10;
                 adjustTimePicker();
             }
@@ -129,13 +117,10 @@ public class TimerActivity extends AppCompatActivity {
         time30minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","minus 30 ");
                 if (durationMin > 30) {
                     durationMin -= 30;
                     adjustTimePicker();
                 }
-                else
-                    warningTime();
             }
         });
 
@@ -143,35 +128,30 @@ public class TimerActivity extends AppCompatActivity {
         time30plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w("onclick","plus 30 ");
                 durationMin += 30;
                 adjustTimePicker();
             }
         });
     }
 
-    private void warningTime() {
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_allowed),Toast.LENGTH_LONG).show();
-        Log.w("TIME BELOW","start ---");
-        finishHour = startHour + 1;
-        finishMin = startMin;
-        durationMin = 60;
-        adjustTimePicker();
-    }
-
     void adjustTimePicker() {
         int time = startHour * 60 + startMin + durationMin;
         finishHour = time / 60; finishMin = time % 60;
-        timeUpDown = true;  // to prevent double TimeChanged action
+        timePicker_UpDown = true;  // to prevent double TimeChanged action
         tp.setHour(finishHour);
         tp.setMinute(finishMin);
         String text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1) + " 후";
         tVDuration.setText(text);
-        timeUpDown = false;
+        timePicker_UpDown = false;
     }
 
     private void onSave() {
 
+        int duration = (finishHour - startHour) * 60 + finishMin - startMin;
+        if (duration < 1) {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_allowed),Toast.LENGTH_SHORT).show();
+            return;
+        }
         boolean week[] = new boolean[7];
         Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, active, vibrate);
@@ -196,6 +176,9 @@ public class TimerActivity extends AppCompatActivity {
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setMannerOn(vibrate, mainContext);
+        Receiver = "refresh";
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        getApplicationContext().startActivity(i);
         finish();
     }
 
