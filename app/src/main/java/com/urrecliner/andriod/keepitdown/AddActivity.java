@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
+import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
 import static com.urrecliner.andriod.keepitdown.Vars.addActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
@@ -173,12 +173,13 @@ public class AddActivity extends AppCompatActivity {
             databaseIO.update(reminder.getId(), reminder);
         }
         databaseIO.close();
-        Receiver = "AddUpdate";
+        ReceiverCase = "AddUpdate";
         Intent i = new Intent(getApplicationContext(), MainActivity.class);
         Bundle args = new Bundle();
         args.putSerializable("reminder", reminder);
         i.putExtra("DATA", args);
         getApplicationContext().startActivity(i);
+        utils.log("AddActivity","start MainActivity");
         finish();
     }
 

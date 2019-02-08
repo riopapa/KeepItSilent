@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
+import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
 public class BootReceiver extends BroadcastReceiver {
@@ -13,9 +13,9 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         utils = new Utils();
         utils.log("BootReceiver", "Activated -- action is " + intent.getAction());
-        Receiver = "Boot";
+        ReceiverCase = "Boot";
         Intent i = new Intent(context, MainActivity.class);
-        i.putExtra("Receiver", "Boot");
+        i.putExtra("ReceiverCase", "Boot");
         context.startActivity(i);
     }
 }

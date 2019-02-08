@@ -24,8 +24,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
-import static com.urrecliner.andriod.keepitdown.Vars.addActivity;
+import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
 import static com.urrecliner.andriod.keepitdown.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.listViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.mainActivity;
@@ -40,6 +39,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 public class MainActivity extends AppCompatActivity {
 
     ListView lVReminder;
+    ListViewAdapter listViewAdapter;
     private DatabaseIO databaseIO;
     private ArrayList<Reminder> myReminder;
     Reminder reminder;
@@ -51,28 +51,28 @@ public class MainActivity extends AppCompatActivity {
         utils = new Utils();
         utils.log("MainActivity","onCreate");
         preparePermission(getApplicationContext());
-        utils.log("Receiver ","onCreate is "+Receiver);
-        if (Receiver.equals("Alarm")) {
+        utils.log("ReceiverCase ","onCreate is "+ ReceiverCase);
+        if (ReceiverCase.equals("Alarm")) {
             utils.log("From","ALARM");
             Bundle args = getIntent().getBundleExtra("DATA");
             reminder = (Reminder) args.getSerializable("reminder");
             requestBroadCasting(reminder);
-            Receiver = "AlarmEnd";
+            ReceiverCase = "AlarmEnd";
             finish();
         }
-        else if (Receiver.equals("Boot")) { // it means from receiver
+        else if (ReceiverCase.equals("Boot")) { // it means from receiver
             utils.log("From","BOOT");
             requestBroadCastingAll();
-            Receiver = "BootEnd";
+            ReceiverCase = "BootEnd";
             finish();
         }
         else {
-            if (Receiver.equals("AddUpdate")) {
+            if (ReceiverCase.equals("AddUpdate")) {
                 utils.log("From", "AddUpdate");
                 Bundle args = getIntent().getBundleExtra("DATA");
                 reminder = (Reminder) args.getSerializable("reminder");
                 requestBroadCasting(reminder);
-                Receiver = "AddEnd";
+                ReceiverCase = "AddEnd";
             }
             setContentView(R.layout.activity_main);
             setVariables();
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         myReminder = databaseIO.retrieveAllReminders(cursor);
         cursor.close();
 
-        ListViewAdapter listViewAdapter = new ListViewAdapter(this, myReminder);
+        listViewAdapter = new ListViewAdapter(this, myReminder);
 //        utils.log("listViewAdapter","BUILD");
         lVReminder.setAdapter(listViewAdapter);
         lVReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 //        tv.startAnimation(AnimationUtils.loadAnimation(mainActivity, R.anim.move));
     }
 
-//    public ArrayList getAllDatabase() {
+    //    public ArrayList getAllDatabase() {
 //        ArrayList<Reminder> dbList;
 //        databaseIO = new DatabaseIO(this);
 //        Cursor cursor = databaseIO.getAll();
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
 //    @Override
 //    protected void onPostResume() {
-//        utils.log("onPostResume","  ---------- start "+Receiver);
+//        utils.log("onPostResume","  ---------- start "+ReceiverCase);
 //        super.onPostResume();
 //        try {
 //            Intent intent = getIntent();
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
 //                    utils.log("onPostResume","extra is null");
 //                }
 //                else
-//                    Receiver = extras.getString("Receiver");
+//                    ReceiverCase = extras.getString("ReceiverCase");
 //                if (args == null) {
 //                    utils.log("onPostResume"," args is null");
 //                }
@@ -272,23 +272,23 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        } catch (Exception e) {
 //            e.printStackTrace();
-//            Receiver = "oCC";
+//            ReceiverCase = "oCC";
 //        }
 //
-//        utils.log("RECEICER","onPostResume is "+Receiver);
+//        utils.log("RECEICER","onPostResume is "+ReceiverCase);
 //
-//        if (Receiver.equals("Alarm")) { // it means from receiver
+//        if (ReceiverCase.equals("Alarm")) { // it means from receiver
 //            utils.log("From","Alarm");
 //            Bundle args = getIntent().getBundleExtra("DATA");
 //            reminder = (Reminder) args.getSerializable("reminder");
 //            requestBroadCasting(reminder);
-//            Receiver = "AlarmEnd";
+//            ReceiverCase = "AlarmEnd";
 //            finish();
 //        }
-//        else if (Receiver.equals("Boot")) { // it means from receiver
+//        else if (ReceiverCase.equals("Boot")) { // it means from receiver
 //            utils.log("From","BOOT");
 //            requestBroadCastingAll();
-//            Receiver = "BootEnd";
+//            ReceiverCase = "BootEnd";
 //            finish();
 //        }
 //        else
@@ -297,11 +297,11 @@ public class MainActivity extends AppCompatActivity {
 
     void requestBroadCastingAll() {
 
-        if (mainActivity == null)
-            mainActivity = new MainActivity();
-        if (addActivity == null)
-            addActivity = new AddActivity();
-        AlarmManager alarmManager = (AlarmManager) mainActivity.getSystemService(ALARM_SERVICE);
+//        if (mainActivity == null)
+//            mainActivity = new MainActivity();
+//        if (addActivity == null)
+//            addActivity = new AddActivity();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
         Intent intentS = new Intent(this, AlarmReceiver.class);
 //        myReminder = getAllDatabase();
@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 intentS.putExtra("case", "S");   // "S" : Start, "F" : Finish, "O" : One time
 //                intentS.putExtra("uniqueId", rm1.getUniqueId());
                 long nextStart = calcNextEvent(rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
-                PendingIntent pendingIntentS = PendingIntent.getBroadcast(mainActivity, rm1.getUniqueId(),
+                PendingIntent pendingIntentS = PendingIntent.getBroadcast(getApplicationContext(), rm1.getUniqueId(),
                         intentS, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
                 utils.log("Boot",  "_START : " + sdfDateTime.format(nextStart) + " uniqueId: " + rm1.getUniqueId() + " "+rm1.getSubject());
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 intentF.putExtra("DATA", argsF);
                 intentF.putExtra("case", "F");
 //                intentF.putExtra("uniqueId", rm1.getUniqueId());
-                PendingIntent pendingIntentF = PendingIntent.getBroadcast(mainActivity, rm1.getUniqueId() + 1,
+                PendingIntent pendingIntentF = PendingIntent.getBroadcast(getApplicationContext(), rm1.getUniqueId() + 1,
                         intentF, PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
                 utils.log("Boot", "FINISH : " + sdfDateTime.format(nextStart) + " uniqueId: " + (rm1.getUniqueId() + 1)+" "+rm1.getSubject());
@@ -383,8 +383,9 @@ public class MainActivity extends AppCompatActivity {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
             utils.log("FINISH", sdfDateTime.format(nextStart) + " uniqueId: " + (reminder.getUniqueId() + 1)+" "+reminder.getSubject());
         }
-        if (Receiver.equals("refresh")) {
-            Receiver = "refreshed";
+        if (ReceiverCase.equals("refresh")) {
+            ReceiverCase = "refreshEnd";
+            finish();
         }
     }
 
@@ -417,6 +418,22 @@ public class MainActivity extends AppCompatActivity {
 //    public void onBackPressed() {   // ignore back key
 ////        super.onBackPressed();
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        utils.log("RESUME","ReceiverCase "+ReceiverCase);
+        if (ReceiverCase.equals("Timer")) {
+            ReceiverCase = "TimerEnd";
+            showArrayLists();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     void preparePermission(Context context) {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

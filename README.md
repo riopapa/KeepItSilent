@@ -1,7 +1,7 @@
 # Keep It Down (Be Quiet, Be in Manner mode)
 **Keep It Down** is the android application to support periodic silence setting, e.g. every nights
 
-- you can set weekly based periodic silents time
+- you can set weekly based periodic silents time, week name selectable
 - you can make the phone silent for a while immediately
 <H1>Screenshots and How to operate</H1>
 
@@ -34,7 +34,6 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="./screenshots/addActivity.jpg" width=240 height=480>
 
-
 <H3>timerActivity</H3>
  
 - Screen when first item (immediate silent) is pressed <br>
@@ -65,5 +64,5 @@
 - ~~A SQLiteConnection object for database .. was leaked !~~ <== add cursor close
 - ~~When it goes to normal status, main Activity is shown in foreground~~ <= add status check to reshow list or not
 
-<H3>Thanks all persons in GitHub for good examples.</H3>
+<H3>Thanks to all persons in GitHub for good examples.</H3>
 

@@ -19,7 +19,8 @@ class Vars {
     static MainActivity mainActivity;
     static AddActivity addActivity;
     static TimerActivity timerActivity;
-    static String Receiver = "init";
+    static String ReceiverCase = "init";
+    static int finishHour, finishMin;
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);

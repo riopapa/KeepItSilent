@@ -36,7 +36,6 @@
     <string name="hh_mm">HH:MM</string>
     <string name="start_time">시작 시각</string>
     <string name="finish_time">종료 시각</string>
-    <string name="press_home">설정 후, 홈버튼 누르고 대기하면 됩니다</string>
     <string name="already_passed_time">이미 지난 시각입니다</string>
     /* / after setting, press home button / */
 

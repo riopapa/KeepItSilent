@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
+import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
+import static com.urrecliner.andriod.keepitdown.Vars.finishHour;
+import static com.urrecliner.andriod.keepitdown.Vars.finishMin;
 import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
@@ -29,7 +31,6 @@ public class TimerActivity extends AppCompatActivity {
     private int uniqueId;
     private String subject;
     private int startHour, startMin;
-    private int finishHour, finishMin;
     private boolean vibrate, active;
     private int durationMin = 0;       // in minutes
     Calendar calendar;
@@ -154,7 +155,7 @@ public class TimerActivity extends AppCompatActivity {
         }
         boolean week[] = new boolean[7];
         Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
-                week, active, vibrate);
+                week, true, vibrate);
         DatabaseIO databaseIO = new DatabaseIO(this);
         databaseIO.update(reminder.getId(), reminder);
 
@@ -164,7 +165,7 @@ public class TimerActivity extends AppCompatActivity {
         args.putSerializable("reminder", reminder);
         intentS.putExtra("DATA",args);
         intentS.putExtra("case","O");
-        intentS.putExtra("uniqueId",reminder.getUniqueId());
+//        intentS.putExtra("uniqueId",reminder.getUniqueId());
 
         calendar.set(Calendar.HOUR_OF_DAY, finishHour);
         calendar.set(Calendar.MINUTE, finishMin);
@@ -176,9 +177,7 @@ public class TimerActivity extends AppCompatActivity {
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         alarmReceiver.setMannerOn(vibrate, mainContext);
-        Receiver = "refresh";
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        getApplicationContext().startActivity(i);
+        ReceiverCase = "Timer";
         finish();
     }
 

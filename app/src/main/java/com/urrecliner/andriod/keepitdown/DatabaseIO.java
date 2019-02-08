@@ -155,6 +155,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
             Log.w("db delete","id "+id);
             cursor.moveToNext();
         }
+        cursor.close();
         databaseIO.close();
         Toast.makeText(context,"Initiating time table",Toast.LENGTH_LONG).show();
         utils.log("create db", "new");

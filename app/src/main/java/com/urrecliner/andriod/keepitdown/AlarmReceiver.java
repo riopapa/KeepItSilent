@@ -8,21 +8,22 @@ import android.os.Bundle;
 
 import java.util.Objects;
 
-import static com.urrecliner.andriod.keepitdown.Vars.Receiver;
-import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
+import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
+import static com.urrecliner.andriod.keepitdown.Vars.reminder;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
-    Reminder reminder;
     String subject;
     boolean vibrate;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         utils = new Utils();
+        utils.log("AlarmReceiver", "Activated -- action is " + intent.getAction()+" ReceiverCase: "+ReceiverCase);
 
         Bundle args = intent.getBundleExtra("DATA");
+        assert args != null;
         reminder = (Reminder) args.getSerializable("reminder");
         subject = reminder.getSubject();
         int uniqueId = reminder.getUniqueId();
@@ -36,18 +37,17 @@ public class AlarmReceiver extends BroadcastReceiver {
                 break;
             case "F":   // finish
                 setMannerOff(context);
-                Receiver = "Alarm";
+                ReceiverCase = "Alarm";
                 Intent i = new Intent(context, MainActivity.class);
-                i.putExtra("Receiver","Alarm");
-//                args.putSerializable("reminder", reminder);
+                i.putExtra("ReceiverCase","Alarm");
                 i.putExtra("DATA",args);
                 context.startActivity(i);
                 break;
             case "O":   // onetime
                 setMannerOff(context);
                 reminder.setActive(false);
-                DatabaseIO databaseIO = new DatabaseIO(mainContext);
-                databaseIO.update(reminder.getId(), reminder);
+                DatabaseIO dbIO = new DatabaseIO(context);
+                dbIO.update(reminder.getId(), reminder);
                 break;
             default:
                 utils.logE("receive","Case Error " + caseSFO);
