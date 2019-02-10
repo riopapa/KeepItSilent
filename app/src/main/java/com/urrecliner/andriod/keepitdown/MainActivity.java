@@ -423,11 +423,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        utils.log("RESUME","ReceiverCase "+ReceiverCase);
-        if (ReceiverCase.equals("Timer")) {
-            ReceiverCase = "TimerEnd";
+//        utils.log("RESUME","ReceiverCase "+ReceiverCase);
+//        if (ReceiverCase.equals("Timer") || ReceiverCase.equals("AddUpdate")) {
+//            ReceiverCase = "TimerEnd";
             showArrayLists();
-        }
+//        }
     }
 
     @Override

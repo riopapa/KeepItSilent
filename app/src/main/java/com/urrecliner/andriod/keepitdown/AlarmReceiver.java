@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import java.util.Objects;
@@ -68,6 +69,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+        final MediaPlayer mp = MediaPlayer.create(context, R.raw.manner_off_sound);
+        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mp.start();
+            }
+        });
     }
 
 //    private static void dumpIntent(Intent i){

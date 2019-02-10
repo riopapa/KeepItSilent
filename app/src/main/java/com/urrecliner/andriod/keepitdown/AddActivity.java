@@ -174,12 +174,12 @@ public class AddActivity extends AppCompatActivity {
         }
         databaseIO.close();
         ReceiverCase = "AddUpdate";
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminder", reminder);
-        i.putExtra("DATA", args);
-        getApplicationContext().startActivity(i);
-        utils.log("AddActivity","start MainActivity");
+//        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//        Bundle args = new Bundle();
+//        args.putSerializable("reminder", reminder);
+//        i.putExtra("DATA", args);
+//        getApplicationContext().startActivity(i);
+//        utils.log("AddActivity","start MainActivity");
         finish();
     }
 

@@ -138,7 +138,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
             boolean vibrate = result.getInt(7)==1;
             Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin, week, active, vibrate);
             list.add(reminder);
-            Log.w("db", ""+id + ","+uniqueId+"," + startHour + ":" + startMin + "~" + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate + " , " +subject );
+//            Log.w("db", ""+id + ","+uniqueId+"," + startHour + ":" + startMin + "~" + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate + " , " +subject );
             result.moveToNext();
         }
         return list;
