@@ -37,7 +37,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         Log.w("my log on create ", "onCreate, sqlCommand: " + sqlCommand);
     }
 
-    long insert(Reminder reminder) {
+    void insert(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         int uniqueId = reminder.getUniqueId();
@@ -65,7 +65,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         long result = db.insert(TABLE_NAME, null, cv);
         db.close();
         Log.w("mylog insert", "Insert DB: id = " + result);
-        return result;
+//        return result;
     }
 
     void update(long id, Reminder reminder) {
@@ -138,7 +138,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
             boolean vibrate = result.getInt(7)==1;
             Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin, week, active, vibrate);
             list.add(reminder);
-//            Log.w("db", ""+id + ","+uniqueId+"," + startHour + ":" + startMin + "~" + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate + " , " +subject );
+            Log.w("db", ""+id + ","+uniqueId+"," + startHour + ":" + startMin + "~" + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active "+ active + " vib "+vibrate + " , " +subject );
             result.moveToNext();
         }
         return list;

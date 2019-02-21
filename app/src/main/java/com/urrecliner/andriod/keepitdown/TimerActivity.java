@@ -12,13 +12,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
 import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
+import static com.urrecliner.andriod.keepitdown.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitdown.Vars.finishHour;
 import static com.urrecliner.andriod.keepitdown.Vars.finishMin;
+import static com.urrecliner.andriod.keepitdown.Vars.interval_Long;
+import static com.urrecliner.andriod.keepitdown.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
@@ -31,7 +33,7 @@ public class TimerActivity extends AppCompatActivity {
     private int uniqueId;
     private String subject;
     private int startHour, startMin;
-    private boolean vibrate, active;
+    private boolean vibrate;
     private int durationMin = 0;       // in minutes
     Calendar calendar;
     private TextView tVDuration;
@@ -45,22 +47,24 @@ public class TimerActivity extends AppCompatActivity {
         timerActivity = this;
         ActionBar actionBar;
         actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(getResources().getString(R.string.action_timer));
 
         Bundle data = getIntent().getExtras();
+        assert data != null;
         reminder = (Reminder) data.getSerializable("reminder");
+        assert reminder != null;
         id = reminder.getId();
         uniqueId = reminder.getUniqueId();
         subject = reminder.getSubject();
         vibrate = reminder.getVibrate();
-        active = reminder.getActive();
         calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND,0);
         startHour = calendar.get(Calendar.HOUR_OF_DAY);
         startMin = calendar.get(Calendar.MINUTE);
         finishHour = startHour + 1;     // default is 60 min.
         finishMin = startMin;
-        durationMin = 60;
+        durationMin = default_Duration;
         tVDuration = findViewById(R.id.tm_duration);
         tp = findViewById(R.id.timePickerTimer);
         tp.setIs24HourView(true);
@@ -79,10 +83,19 @@ public class TimerActivity extends AppCompatActivity {
                 tVDuration.setText(text);
             }
         });
+        buildScreen();
         buttonSetting();
         adjustTimePicker();
     }
 
+    void buildScreen() {
+        String text;
+        TextView tv;
+        tv = findViewById(R.id.minus10Min); text = interval_Short+"분↓"; tv.setText(text);
+        tv = findViewById(R.id.plus10Min); text = interval_Short+"분↑"; tv.setText(text);
+        tv = findViewById(R.id.minus30Min); text = interval_Long+"분↓"; tv.setText(text);
+        tv = findViewById(R.id.plus30Min); text = interval_Long+"분↑"; tv.setText(text);
+    }
     void buttonSetting() {
         final ImageView iVVibrate = findViewById(R.id.tm_vibrate);
         iVVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
@@ -98,8 +111,8 @@ public class TimerActivity extends AppCompatActivity {
         time10minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (durationMin > 10) {
-                    durationMin -= 10;
+                if (durationMin > interval_Short) {
+                    durationMin -= interval_Short;
                     adjustTimePicker();
                 }
             }
@@ -109,7 +122,7 @@ public class TimerActivity extends AppCompatActivity {
         time10plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                durationMin += 10;
+                durationMin += interval_Short;
                 adjustTimePicker();
             }
         });
@@ -118,8 +131,8 @@ public class TimerActivity extends AppCompatActivity {
         time30minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (durationMin > 30) {
-                    durationMin -= 30;
+                if (durationMin > interval_Long) {
+                    durationMin -= interval_Long;
                     adjustTimePicker();
                 }
             }
@@ -129,7 +142,7 @@ public class TimerActivity extends AppCompatActivity {
         time30plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                durationMin += 30;
+                durationMin += interval_Long;
                 adjustTimePicker();
             }
         });
@@ -138,21 +151,19 @@ public class TimerActivity extends AppCompatActivity {
     void adjustTimePicker() {
         int time = startHour * 60 + startMin + durationMin;
         finishHour = time / 60; finishMin = time % 60;
+        if (finishHour >= 24)
+            finishHour -= 24;
         timePicker_UpDown = true;  // to prevent double TimeChanged action
         tp.setHour(finishHour);
         tp.setMinute(finishMin);
         String text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1) + " 후";
         tVDuration.setText(text);
         timePicker_UpDown = false;
+        tp.invalidate();
     }
 
     private void onSave() {
 
-        int duration = (finishHour - startHour) * 60 + finishMin - startMin;
-        if (duration < 1) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.not_allowed),Toast.LENGTH_SHORT).show();
-            return;
-        }
         boolean week[] = new boolean[7];
         Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, vibrate);
@@ -160,23 +171,25 @@ public class TimerActivity extends AppCompatActivity {
         databaseIO.update(reminder.getId(), reminder);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        assert alarmManager != null;
         Intent intentS = new Intent(this, AlarmReceiver.class);
         Bundle args = new Bundle();
         args.putSerializable("reminder", reminder);
         intentS.putExtra("DATA",args);
         intentS.putExtra("case","O");
-//        intentS.putExtra("uniqueId",reminder.getUniqueId());
 
         calendar.set(Calendar.HOUR_OF_DAY, finishHour);
         calendar.set(Calendar.MINUTE, finishMin);
         calendar.set(Calendar.SECOND,0);
         long nextStart = calendar.getTimeInMillis();
+        if (nextStart < System.currentTimeMillis())     // in case next day
+            nextStart += 24 * 60 * 60000;
         PendingIntent pendingIntentS = PendingIntent.getBroadcast(TimerActivity.this, reminder.getUniqueId(),
                 intentS, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
-        alarmReceiver.setMannerOn(vibrate, mainContext);
+        alarmReceiver.setMannerOn(mainContext, subject, vibrate);
         ReceiverCase = "Timer";
         finish();
     }

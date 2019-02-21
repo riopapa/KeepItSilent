@@ -37,6 +37,13 @@
     <string name="start_time">시작 시각</string>
     <string name="finish_time">종료 시각</string>
     <string name="already_passed_time">이미 지난 시각입니다</string>
+    <string name="interval_short">짧은 간격</string>
+    <string name="sign_plus">+</string>
+    <string name="beep_to_manner_mode">매너 설정시 소리내기</string>
+    <string name="interval_long">긴 간격</string>
+    <string name="sign_minus">-</string>
+    <string name="default_duration">초기 기간</string>
+    <string name="re_initiate_all">리스트에 설정된 대로</string>
     /* / after setting, press home button / */
 
 </resources>

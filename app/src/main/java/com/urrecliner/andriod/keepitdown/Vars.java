@@ -1,6 +1,7 @@
 package com.urrecliner.andriod.keepitdown;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -19,8 +20,17 @@ class Vars {
     static MainActivity mainActivity;
     static AddActivity addActivity;
     static TimerActivity timerActivity;
+    static SettingActivity settingActivity;
     static String ReceiverCase = "init";
     static int finishHour, finishMin;
+
+    static SharedPreferences mSettings;
+    static SharedPreferences.Editor editor;
+    static boolean beepManner = true;
+
+    static int interval_Short = 5;
+    static int interval_Long = 30;
+    static int default_Duration = 60;
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);

@@ -1,6 +1,5 @@
 package com.urrecliner.andriod.keepitdown;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -8,16 +7,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.Date;
 
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDate;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfLog;
 
-public class Utils {
-    private Context context;
-    public void Utils(Context context) {
-        this.context = context;
-    }
+class Utils {
+//    private Context context;
+//    void Utils(Context context) {
+//        this.context = context;
+//    }
 
     void append2file(String textLine) {
 
@@ -76,4 +76,25 @@ public class Utils {
         Log.e("<" + tag + ">" , log);
         append2file(sdfLog.format(new Date())+" : " +log);
     }
+
+    void deleteOldFiles() {     // remove older than 5 days
+
+        String weekAgo = sdfDate.format(System.currentTimeMillis() - 5*24*60*60*1000L);
+        File packageDirectory = getDirectory();
+        File[] files = getDirectoryList(packageDirectory);
+        Collator myCollator = Collator.getInstance();
+        for (File file : files) {
+            String shortFileName = file.getName();
+            if (myCollator.compare(shortFileName, weekAgo) < 0) {
+                file.delete();
+            }
+        }
+    }
+
+    File[] getDirectoryList(File fullPath) {
+        File[] files = fullPath.listFiles();
+//        log("# of files", "in dir : " + files.length);
+        return files;
+    }
+
 }

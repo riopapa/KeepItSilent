@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,18 +163,17 @@ public class AddActivity extends AppCompatActivity {
         startHour = tp.getHour(); startMin = tp.getMinute();
         tp = findViewById(R.id.timePickerFinish);
         finishHour = tp.getHour(); finishMin = tp.getMinute();
-        Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
+        reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
             week, active, vibrate);
         DatabaseIO databaseIO = new DatabaseIO(this);
         if (isNew) {
             databaseIO.insert(reminder);
-//            id = databaseIO.insert(reminder);
-//            reminder.setId(id);
         } else {
-            databaseIO.update(reminder.getId(), reminder);
+            databaseIO.update(id, reminder);
         }
         databaseIO.close();
         ReceiverCase = "AddUpdate";
+        Log.w("addupdate",isNew+ " "+startHour+ ":"+startMin);
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        Bundle args = new Bundle();
 //        args.putSerializable("reminder", reminder);

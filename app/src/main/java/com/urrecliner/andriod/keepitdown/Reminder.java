@@ -11,9 +11,9 @@ public class Reminder implements Serializable {
     private boolean[] week = {true, true, true, true, true, true, true};
     private boolean vibrate;
 
-    public Reminder() { }
+    Reminder() { }
 
-    public Reminder(long id, int uniqueId, String subject, int startHour, int startMin, int finishHour, int finishMin,
+    Reminder(long id, int uniqueId, String subject, int startHour, int startMin, int finishHour, int finishMin,
                     boolean week[], boolean active, boolean vibrate) {
         this.id = id;
         this.uniqueId = uniqueId;
@@ -34,8 +34,8 @@ public class Reminder implements Serializable {
         this.id = id;
     }
 
-    public int getUniqueId() { return uniqueId; }
-    public void setUniqueId(int uniqueId) {
+    int getUniqueId() { return uniqueId; }
+    void setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;
     }
 

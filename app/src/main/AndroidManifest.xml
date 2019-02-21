@@ -28,6 +28,7 @@
         <activity android:name=".AddActivity"
             android:exported="true" />
         <activity android:name=".TimerActivity" />
+        <activity android:name=".SettingActivity"/>
 
         <receiver android:name=".AlarmReceiver">
         </receiver>
