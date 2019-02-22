@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
 import static com.urrecliner.andriod.keepitdown.Vars.beepManner;
+import static com.urrecliner.andriod.keepitdown.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.reminder;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
@@ -38,6 +39,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             case "S":   // start
                 vibrate = reminder.getVibrate();
                 setMannerOn(context, subject, vibrate);
+                String text = "Go into Mute till " + (""+(100 + reminder.getFinishHour())).substring(1) + " : " + (""+(100 + reminder.getFinishMin())).substring(1);
+                Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "F":   // finish
                 setMannerOff(context, subject);

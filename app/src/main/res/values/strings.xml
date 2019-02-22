@@ -43,7 +43,7 @@
     <string name="interval_long">긴 간격</string>
     <string name="sign_minus">-</string>
     <string name="default_duration">초기 기간</string>
-    <string name="re_initiate_all">리스트에 설정된 대로</string>
-    /* / after setting, press home button / */
+    <string name="re_initiate_all">리스트에 설정된 대로 재설정</string>
+    <string name="rerun">지금 수행</string>
 
 </resources>

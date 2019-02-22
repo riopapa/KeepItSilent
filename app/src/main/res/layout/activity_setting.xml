@@ -247,7 +247,7 @@
             android:clickable="true"
             android:textColor="#012345"
             android:layout_height="wrap_content"
-            android:text="@string/set"
+            android:text="@string/rerun"
             android:textStyle="bold"
             android:layout_margin="4dp"
             android:padding="4dp"

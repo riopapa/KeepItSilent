@@ -33,6 +33,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitdown.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitdown.Vars.listViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.mSettings;
+import static com.urrecliner.andriod.keepitdown.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.nowPosition;
 import static com.urrecliner.andriod.keepitdown.Vars.nowUniqueId;
@@ -63,40 +64,7 @@ public class MainActivity extends AppCompatActivity {
         interval_Long = mSettings.getInt("interval_Long", 30);
         default_Duration = mSettings.getInt("default_Duration", 60);
 
-        switch (ReceiverCase) {
-            case "Alarm":
-                utils.log("From", "ALARM");
-                Bundle args = getIntent().getBundleExtra("DATA");
-                reminder = (Reminder) args.getSerializable("reminder");
-                requestBroadCasting(reminder);
-                ReceiverCase = "AlarmEnd";
-                finish();
-                break;
-            case "ReRun":  // it means from receiver
-                utils.log("From", "ReRun");
-                requestBroadCastingAll();
-                ReceiverCase = "RunEnd";
-                finish();
-                break;
-            case "Boot":  // it means from receiver
-                utils.log("From", "BOOT");
-                requestBroadCastingAll();
-                ReceiverCase = "BootEnd";
-                finish();
-                break;
-            default:
-                if (ReceiverCase.equals("AddUpdate")) {
-                    utils.log("From", "AddUpdate");
-                    Bundle arg = getIntent().getBundleExtra("DATA");
-                    reminder = (Reminder) arg.getSerializable("reminder");
-                    requestBroadCasting(reminder);
-                    ReceiverCase = "AddEnd";
-                }
-                setContentView(R.layout.activity_main);
-                setVariables();
-                showArrayLists();
-                break;
-        }
+        run_by_ReceiverCase();
 //        utils.log("END of","ONCREATE");
     }
 
@@ -138,6 +106,57 @@ public class MainActivity extends AppCompatActivity {
         Vars.xSize = size.x / 9;
     }
 
+    void run_by_ReceiverCase() {
+        switch (ReceiverCase) {
+            case "Timer":
+                ReceiverCase = "TimerEnd";
+                showArrayLists();
+                break;
+            case "Alarm":
+                utils.log("From", "ALARM");
+                Bundle args = getIntent().getBundleExtra("DATA");
+                reminder = (Reminder) args.getSerializable("reminder");
+                requestBroadCasting(reminder);
+                ReceiverCase = "AlarmEnd";
+                String text = "Restart " + reminder.getSubject()+" " + (""+(100 + reminder.getStartHour())).substring(1) + " : " + (""+(100 + reminder.getStartMin())).substring(1) + " ~ " + (""+(100 + reminder.getFinishHour())).substring(1) + " : " + (""+(100 + reminder.getFinishMin())).substring(1);
+                Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
+                finish();
+                break;
+            case "ReRun":  // it means from receiver
+                utils.log("From", "ReRun");
+                requestBroadCastingAll();
+                ReceiverCase = "RunEnd";
+                finish();
+                break;
+            case "Boot":  // it means from receiver
+                utils.log("From", "BOOT");
+                requestBroadCastingAll();
+                ReceiverCase = "BootEnd";
+                finish();
+                break;
+            case "AddUpdate":
+                utils.log("From", "AddUpdate");
+                requestBroadCasting(reminder);
+                ReceiverCase = "AddEnd";
+                setContentView(R.layout.activity_main);
+                setVariables();
+                showArrayLists();
+                break;
+            default:
+                if (ReceiverCase.equals("AddUpdate")) {
+                    utils.log("From", "AddUpdate");
+                    Bundle arg = getIntent().getBundleExtra("DATA");
+                    reminder = (Reminder) arg.getSerializable("reminder");
+                    requestBroadCasting(reminder);
+                    ReceiverCase = "AddEnd";
+                }
+                setContentView(R.layout.activity_main);
+                setVariables();
+                showArrayLists();
+                break;
+        }
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -330,37 +349,23 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = databaseIO.getAll();
         myReminder = databaseIO.retrieveAllReminders(cursor);
         cursor.close();
+        String text = "";
 
         for (Reminder rm1 : myReminder) {
             if (rm1.getUniqueId() != oneTimeId && rm1.getActive()) {
-                Bundle args = new Bundle();
-                args.putSerializable("reminder", rm1);
-                intentS.putExtra("DATA", args);
-                intentS.putExtra("case", "S");   // "S" : Start, "F" : Finish, "O" : One time
-//                intentS.putExtra("uniqueId", rm1.getUniqueId());
                 long nextStart = calcNextEvent(rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
-                PendingIntent pendingIntentS = PendingIntent.getBroadcast(getApplicationContext(), rm1.getUniqueId(),
-                        intentS, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-                utils.log("Boot",  "_START : " + sdfDateTime.format(nextStart) + " uniqueId: " + rm1.getUniqueId() + " "+rm1.getSubject());
                 long timeDiff = ((rm1.getFinishHour() - rm1.getStartHour()) * 60 + rm1.getFinishMin() - rm1.getStartMin()) * 60 * 1000;
                 if (timeDiff < 0)
                     timeDiff += 24 * 60 * 60 * 1000;
-                nextStart += timeDiff;
-                Intent intentF = new Intent(this, AlarmReceiver.class);
-                Bundle argsF = new Bundle();
-                argsF.putSerializable("reminder", rm1);
-                intentF.putExtra("DATA", argsF);
-                intentF.putExtra("case", "F");
-//                intentF.putExtra("uniqueId", rm1.getUniqueId());
-                PendingIntent pendingIntentF = PendingIntent.getBroadcast(getApplicationContext(), rm1.getUniqueId() + 1,
-                        intentF, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentF);
-                utils.log("Boot", "FINISH : " + sdfDateTime.format(nextStart) + " uniqueId: " + (rm1.getUniqueId() + 1)+" "+rm1.getSubject());
+                long nextFinish = nextStart + timeDiff;
+                requestAlarm(rm1, nextStart,"S");
+                requestAlarm(rm1, nextFinish,"F");
+                text += "\n\n"+rm1.getSubject() + "\nSTART : " + sdfDateTime.format(nextStart) + "\nFINISH : " + sdfDateTime.format(nextFinish);
+                utils.log(ReceiverCase,rm1.getSubject() + " START : " + sdfDateTime.format(nextStart) + " FINISH : " + sdfDateTime.format(nextFinish));
             }
         }
         if (ReceiverCase.equals("ReRun")) {
-            Toast.makeText(getApplicationContext(),"모든 리스트의 내용대로 제 설정되었습니다",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),text + "\n\n제 설정되었습니다" ,Toast.LENGTH_LONG).show();
         }
     }
 
@@ -372,8 +377,7 @@ public class MainActivity extends AppCompatActivity {
             timeDiff += 24 * 60 * 60 * 1000;
         long nextFinish = nextStart + timeDiff;
 
-        utils.log("next",  "Start : " +sdfDateTime.format(nextStart) + " "+reminder.getSubject());
-        utils.log("next",  "Finish: " +sdfDateTime.format(nextFinish));
+        utils.log(ReceiverCase,reminder.getSubject() + " START: " + sdfDateTime.format(nextStart) + " FINISH: " + sdfDateTime.format(nextFinish));
         requestAlarm(reminder, nextStart, "S");
         requestAlarm(reminder, nextFinish, "F");
 
@@ -384,7 +388,8 @@ public class MainActivity extends AppCompatActivity {
         utils.deleteOldFiles();
     }
 
-    private void requestAlarm(Reminder reminder, long nextStart, String S_F) {
+
+    private void requestAlarm(Reminder reminder, long nextTime, String S_F) {
         AlarmManager alarmManager = (AlarmManager) mainContext.getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
         Intent intent = new Intent(mainContext, AlarmReceiver.class);
@@ -401,8 +406,8 @@ public class MainActivity extends AppCompatActivity {
             utils.log(S_F,"CANCELED uniqueId: "+reminder.getUniqueId());
         }
         else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntent);
-            utils.log(S_F,  sdfDateTime.format(nextStart) + " uniqueId: " + uniqueId + " "+reminder.getSubject());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, nextTime, pendingIntent);
+            utils.log(S_F,  sdfDateTime.format(nextTime) + " uniqueId: " + uniqueId + " "+reminder.getSubject());
         }
     }
 
@@ -441,25 +446,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         utils.log("RESUME","ReceiverCase "+ReceiverCase);
-        switch (ReceiverCase) {
-            case "Timer":
-                ReceiverCase = "TimerEnd";
-                showArrayLists();
-                break;
-            case "ReRun":  // it means from receiver
-                utils.log("From", "ReRun");
-                requestBroadCastingAll();
-                ReceiverCase = "RunEnd";
-                break;
-            case "AddUpdate":
-                utils.log("From", "AddUpdate");
-                requestBroadCasting(reminder);
-                ReceiverCase = "AddEnd";
-                setContentView(R.layout.activity_main);
-                setVariables();
-                showArrayLists();
-                break;
-        }
+        run_by_ReceiverCase();
     }
 
     @Override
