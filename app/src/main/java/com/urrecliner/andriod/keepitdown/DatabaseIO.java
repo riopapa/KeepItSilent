@@ -10,7 +10,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static com.urrecliner.andriod.keepitdown.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitdown.Vars.mainActivity;
+import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.oneTimeId;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
@@ -20,8 +22,8 @@ public class DatabaseIO extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "KeepITDown";
     private static final int SCHEMA_VERSION = 1;
 
-    DatabaseIO(Context context) {
-        super(context, DATABASE_NAME, null, SCHEMA_VERSION);
+    DatabaseIO() {
+        super(mainContext, DATABASE_NAME, null, SCHEMA_VERSION);
     }
 
     @Override
@@ -146,7 +148,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
 
     void clearDatabase(Context context) {
 
-        DatabaseIO databaseIO = new DatabaseIO(context);
         Cursor cursor = databaseIO.getAll();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

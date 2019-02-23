@@ -16,12 +16,12 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
+import static com.urrecliner.andriod.keepitdown.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitdown.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitdown.Vars.finishHour;
 import static com.urrecliner.andriod.keepitdown.Vars.finishMin;
 import static com.urrecliner.andriod.keepitdown.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitdown.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
@@ -167,7 +167,6 @@ public class TimerActivity extends AppCompatActivity {
         boolean week[] = new boolean[7];
         Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, vibrate);
-        DatabaseIO databaseIO = new DatabaseIO(this);
         databaseIO.update(reminder.getId(), reminder);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -188,8 +187,7 @@ public class TimerActivity extends AppCompatActivity {
                 intentS, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
-        AlarmReceiver alarmReceiver = new AlarmReceiver();
-        alarmReceiver.setMannerOn(mainContext, subject, vibrate);
+        MannerSet.on(getApplicationContext(), subject, vibrate);
         ReceiverCase = "Timer";
         finish();
     }
@@ -215,7 +213,6 @@ public class TimerActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_cancel) {
-            DatabaseIO databaseIO = new DatabaseIO(this);
             databaseIO.update(reminder.getId(), reminder);
             databaseIO.close();
             finish();

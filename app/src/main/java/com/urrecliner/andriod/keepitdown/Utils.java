@@ -19,6 +19,10 @@ class Utils {
 //        this.context = context;
 //    }
 
+    String int2NN (int nbr) {
+        return (""+(100 + nbr)).substring(1);
+    }
+
     void append2file(String textLine) {
 
         File directory = getDirectory();
@@ -62,9 +66,10 @@ class Utils {
     }
 
     void log(String tag, String text) {
+        int pid = android.os.Process.myPid();
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " "+text;
+        String log = pid+ " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.w(tag , log);
         append2file(sdfLog.format(new Date())+" : " +log);
     }
@@ -72,7 +77,7 @@ class Utils {
     void logE(String tag, String text) {
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " " + text;
+        String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.e("<" + tag + ">" , log);
         append2file(sdfLog.format(new Date())+" : " +log);
     }

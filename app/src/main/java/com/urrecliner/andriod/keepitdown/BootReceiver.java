@@ -12,7 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         utils = new Utils();
-        utils.log("BootReceiver", "Activated -- action is " + intent.getAction());
+        utils.log("BootReceiver", "Activated " + intent.getAction());
         ReceiverCase = "Boot";
         Intent i = new Intent(context, MainActivity.class);
         i.putExtra("ReceiverCase", "Boot");

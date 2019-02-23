@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,12 +30,13 @@ import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOnBack;
+import static com.urrecliner.andriod.keepitdown.Vars.databaseIO;
+import static com.urrecliner.andriod.keepitdown.Vars.reminder;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 
 public class AddActivity extends AppCompatActivity {
 
-    private Reminder reminder;
     private long id;
     private int uniqueId;
     private String subject;
@@ -165,7 +165,7 @@ public class AddActivity extends AppCompatActivity {
         finishHour = tp.getHour(); finishMin = tp.getMinute();
         reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
             week, active, vibrate);
-        DatabaseIO databaseIO = new DatabaseIO(this);
+        databaseIO = new DatabaseIO();
         if (isNew) {
             databaseIO.insert(reminder);
         } else {
@@ -173,7 +173,7 @@ public class AddActivity extends AppCompatActivity {
         }
         databaseIO.close();
         ReceiverCase = "AddUpdate";
-        Log.w("addupdate",isNew+ " "+startHour+ ":"+startMin);
+        utils.log("addupdate",isNew+ " "+startHour+ ":"+startMin);
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        Bundle args = new Bundle();
 //        args.putSerializable("reminder", reminder);
@@ -209,32 +209,24 @@ public class AddActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_save) {
-            onSave();
-            return true;
-        }
-
-        if (id == R.id.action_cancel) {
-            finish();
-            return true;
-        }
-
-        if (id == R.id.action_delete) {
-            DatabaseIO databaseIO = new DatabaseIO(this);
-            Cursor cursor = databaseIO.getAll();
-            ArrayList<Reminder> myReminder;
-            myReminder = databaseIO.retrieveAllReminders(cursor);
-            cursor.close();
-            databaseIO.delete(myReminder.get(Vars.nowPosition).getId());
-//            if (databaseIO.delete(myReminder.get(Vars.nowPosition).getId()) != -1) {
-//                myReminder.remove(myReminder.get(Vars.nowPosition));
-//                ListViewAdapter listViewAdapter = new ListViewAdapter(getBaseContext(),MainActivity.this, myReminder);
-//                lVReminder.setAdapter(listViewAdapter);
-//            }
-            databaseIO.close();
-            cancelReminder();
-            finish();
-            return true;
+        switch (id) {
+            case R.id.action_save:
+                onSave();
+                return true;
+            case R.id.action_cancel:
+                finish();
+                return true;
+            case R.id.action_delete:
+                databaseIO = new DatabaseIO();
+                Cursor cursor = databaseIO.getAll();
+                ArrayList<Reminder> myReminder;
+                myReminder = databaseIO.retrieveAllReminders(cursor);
+                cursor.close();
+                databaseIO.delete(myReminder.get(Vars.nowPosition).getId());
+                databaseIO.close();
+                cancelReminder();
+                finish();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
