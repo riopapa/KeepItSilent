@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         default_Duration = mSettings.getInt("default_Duration", 60);
         setVariables();
         act_OnReceiverCase();
-//        utils.log("END of","ONCREATE");
     }
 
     void setVariables() {
@@ -111,54 +110,51 @@ public class MainActivity extends AppCompatActivity {
 
     void act_OnReceiverCase() {
         String text;
-        utils.log("run by","ReceiverCase "+ReceiverCase);
+        utils.log("run by","ReceiverCase = "+ReceiverCase);
         switch (ReceiverCase) {
             case "Timer":
                 ReceiverCase = "TimerEnd";
                 showArrayLists();
                 break;
             case "Alarm":
-                utils.log("From", "ALARM");
 //                Bundle args = getIntent().getBundleExtra("DATA");
 //                reminder = (Reminder) args.getSerializable("reminder");
-                requestBroadCasting(reminder);
+                requestBroadCastOne(reminder);
                 ReceiverCase = "AlarmEnd";
-                text = "New Alarm Settled " + reminder.getSubject()+" " + utils.int2NN(reminder.getStartHour()) + ":" + utils.int2NN(reminder.getStartMin()) + " ~ " +utils.int2NN(reminder.getFinishHour()) + ":" + utils.int2NN(reminder.getFinishMin());
+                text = "New Alarm Settled " + reminder.getSubject()+" " + utils.hourMin(reminder.getStartHour(),reminder.getStartMin()) + " ~ " +utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
                 utils.log(ReceiverCase,text);
                 finish();
                 break;
             case "ReRun":  // it means from receiver
-                utils.log("From", "ReRun");
-                requestBroadCastingAll();
+                text = requestBroadCastAll();
+                Toast.makeText(getApplicationContext(),text + "\n모두 재 설정되었습니다" ,Toast.LENGTH_LONG).show();
                 ReceiverCase = "RunEnd";
 //                finish();
                 break;
             case "Boot":  // it means from receiver
-                utils.log("From", "BOOT");
-                requestBroadCastingAll();
+                requestBroadCastAll();
                 ReceiverCase = "BootEnd";
                 finish();
                 break;
             case "AddUpdate":
-                utils.log("From", "AddUpdate");
 //                Bundle arg = getIntent().getBundleExtra("DATA");
 //                reminder = (Reminder) arg.getSerializable("reminder");
-                requestBroadCasting(reminder);
+                requestBroadCastOne(reminder);
                 ReceiverCase = "AddEnd";
-                text = "Alarm " + reminder.getSubject()+" " + utils.int2NN(reminder.getStartHour()) + ":" + utils.int2NN(reminder.getStartMin()) + " ~ " +utils.int2NN(reminder.getFinishHour()) + ":" + utils.int2NN(reminder.getFinishMin());
+                text =  (reminder.getActive()) ? "Alarm Updated ": "Alarm Canceled ";
+                text += reminder.getSubject()+" " + utils.hourMin(reminder.getStartHour(),reminder.getStartMin()) + " ~ " +utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
                 setContentView(R.layout.activity_main);
 //                setVariables();
                 showArrayLists();
                 break;
             default:
-                utils.logE("ReceiveCase","DEFAULT found "+ReceiverCase);
 //                if (ReceiverCase.equals("AddUpdate")) {
 //                    utils.log("From", "AddUpdate");
 //                    Bundle arg = getIntent().getBundleExtra("DATA");
 //                    reminder = (Reminder) arg.getSerializable("reminder");
-//                    requestBroadCasting(reminder);
+//                    requestBroadCastOne(reminder);
 //                    ReceiverCase = "AddEnd";
 //                }
                 setContentView(R.layout.activity_main);
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         switch (item.getItemId()) {
             case R.id.action_add:
-                intent = new Intent(MainActivity.this, AddActivity.class);
+                intent = new Intent(MainActivity.this, AddUpdateActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_setting:
@@ -223,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 //                new callReminder().execute(myReminder.get(position));
                 Intent intent;
                 if (nowUniqueId != oneTimeId)
-                    intent = new Intent(MainActivity.this, AddActivity.class);
+                    intent = new Intent(MainActivity.this, AddUpdateActivity.class);
                 else
                     intent = new Intent(MainActivity.this, TimerActivity.class);
                 intent.putExtra("reminder", myReminder.get(position));
@@ -248,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 //            utils.log("doInBackground", "doInBackground");
 //            Intent intent;
 //            if (nowUniqueId != oneTimeId)
-//                intent = new Intent(MainActivity.this, AddActivity.class);
+//                intent = new Intent(MainActivity.this, AddUpdateActivity.class);
 //            else
 //                intent = new Intent(MainActivity.this, TimerActivity.class);
 //            intent.putExtra("reminder", params[0]);
@@ -303,19 +299,19 @@ public class MainActivity extends AppCompatActivity {
 //            ReceiverCase = "oCC";
 //        }
 //
-//        utils.log("RECEICER","onPostResume is "+ReceiverCase);
+//        utils.log("RECEIVER","onPostResume is "+ReceiverCase);
 //
 //        if (ReceiverCase.equals("Alarm")) { // it means from receiver
 //            utils.log("From","Alarm");
 //            Bundle args = getIntent().getBundleExtra("DATA");
 //            reminder = (Reminder) args.getSerializable("reminder");
-//            requestBroadCasting(reminder);
+//            requestBroadCastOne(reminder);
 //            ReceiverCase = "AlarmEnd";
 //            finish();
 //        }
 //        else if (ReceiverCase.equals("Boot")) { // it means from receiver
 //            utils.log("From","BOOT");
-//            requestBroadCastingAll();
+//            requestBroadCastAll();
 //            ReceiverCase = "BootEnd";
 //            finish();
 //        }
@@ -323,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 //            showArrayLists();
 //    }
 
-    void requestBroadCastingAll() {
+    String requestBroadCastAll() {
 
         databaseIO = new DatabaseIO();
         Cursor cursor = databaseIO.getAll();
@@ -331,35 +327,26 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         StringBuilder text = new StringBuilder();
         for (Reminder rm1 : myReminder) {
-            utils.log("x", "uid "+rm1.getSubject());
+            utils.log(ReceiverCase, "uid "+rm1.getSubject());
             if (rm1.getUniqueId() != oneTimeId && rm1.getActive()) {
-                long nextStart = NextEventTime.calc(rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
-                long timeDiff = ((rm1.getFinishHour() - rm1.getStartHour()) * 60 + rm1.getFinishMin() - rm1.getStartMin()) * 60 * 1000;
-                if (timeDiff < 0)
-                    timeDiff += 24 * 60 * 60 * 1000;
-                long nextFinish = nextStart + timeDiff;
+                long nextStart = NextEventTime.calc(false, rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
                 NextAlarm.request(rm1, nextStart,"S");
+                long nextFinish = NextEventTime.calc(true, rm1.getFinishHour(), rm1.getFinishMin(), rm1.getWeek());
                 NextAlarm.request(rm1, nextFinish,"F");
-                text.append("\n").append(rm1.getSubject()).append("\nSTART : ").append(sdfDateTime.format(nextStart)).append("\nFINISH : ").append(sdfDateTime.format(nextFinish)+"\n");
+                text.append("\n").append(rm1.getSubject()).append("\nSTART : ").append(sdfDateTime.format(nextStart)).append("\nFINISH : ").append(sdfDateTime.format(nextFinish)).append("\n");
                 utils.log(ReceiverCase,rm1.getSubject() + " START : " + sdfDateTime.format(nextStart) + " FINISH : " + sdfDateTime.format(nextFinish));
             }
         }
-        if (ReceiverCase.equals("ReRun")) {
-            Toast.makeText(getApplicationContext(),text + "\n모두 재 설정되었습니다" ,Toast.LENGTH_LONG).show();
-        }
+        return text.toString();
     }
 
-    void requestBroadCasting(Reminder reminder) {
+    void requestBroadCastOne(Reminder reminder) {
 
-        long nextStart = NextEventTime.calc(reminder.getStartHour(), reminder.getStartMin(),reminder.getWeek());
-        long timeDiff = ((reminder.getFinishHour() - reminder.getStartHour()) * 60 + reminder.getFinishMin() - reminder.getStartMin()) * 60 * 1000;
-        if (timeDiff < 0)
-            timeDiff += 24 * 60 * 60 * 1000;
-        long nextFinish = nextStart + timeDiff;
-
-        utils.log(ReceiverCase,reminder.getSubject() + " START: " + sdfDateTime.format(nextStart) + " FINISH: " + sdfDateTime.format(nextFinish));
+        long nextStart = NextEventTime.calc(false, reminder.getStartHour(), reminder.getStartMin(),reminder.getWeek());
         NextAlarm.request(reminder, nextStart, "S");
+        long nextFinish = NextEventTime.calc(true, reminder.getFinishHour(), reminder.getFinishMin(),reminder.getWeek());
         NextAlarm.request(reminder, nextFinish, "F");
+        utils.log(ReceiverCase,reminder.getSubject() + " START: " + sdfDateTime.format(nextStart) + " FINISH: " + sdfDateTime.format(nextFinish));
 
         if (ReceiverCase.equals("refresh")) {
             ReceiverCase = "refreshEnd";
@@ -371,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        utils.log("RESUME","\n\n\n--- ReceiverCase ---- "+ReceiverCase);
+        utils.log("RESUME","\n\n\n--- ReceiverCase : "+ReceiverCase);
         setVariables();
         act_OnReceiverCase();
     }

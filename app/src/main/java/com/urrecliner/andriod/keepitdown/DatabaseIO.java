@@ -21,6 +21,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "KeepITDowN.db";
     private static final String TABLE_NAME = "KeepITDown";
     private static final int SCHEMA_VERSION = 1;
+    private static String dbTag = "DB";
 
     DatabaseIO() {
         super(mainContext, DATABASE_NAME, null, SCHEMA_VERSION);
@@ -36,14 +37,13 @@ public class DatabaseIO extends SQLiteOpenHelper {
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT, uniqueId INTEGER, " +
                 "subject TEXT, timeStart INTEGER, timeFinish  INTEGER, weekTbl TEXT, active INTEGER, vibrate INTEGER) ;";
         db.execSQL(sqlCommand);
-        Log.w("my log on create ", "onCreate, sqlCommand: " + sqlCommand);
+        Log.w(dbTag, "onCreate, sqlCommand: " + sqlCommand);
     }
 
     void insert(Reminder reminder) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         int uniqueId = reminder.getUniqueId();
-        Log.w("insert","uid "+uniqueId);
         String subject = reminder.getSubject();
         int timeStart = reminder.getStartHour() * 1000 + reminder.getStartMin();
         int timeFinish = reminder.getFinishHour() * 1000 + reminder.getFinishMin();
@@ -66,7 +66,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_NAME, null, cv);
         db.close();
-        Log.w("mylog insert", "Insert DB: id = " + result);
+        Log.w(dbTag, "Insert DB: id = " + result+ "uid = "+uniqueId);
 //        return result;
     }
 
@@ -105,7 +105,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         String[] args = {String.valueOf(id)};
         long result = db.delete(TABLE_NAME, "_id=?", args);
         db.close();
-        Log.w("mylog delete", "Delete: id = " + result);
+        Log.w(dbTag, "Delete id = " + result);
     }
 
     Cursor getAll() {
@@ -153,13 +153,13 @@ public class DatabaseIO extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             long id = cursor.getInt(0);
             databaseIO.delete(id);
-            Log.w("db delete","id "+id);
+            Log.w(dbTag, "clear id "+id);
             cursor.moveToNext();
         }
         cursor.close();
         databaseIO.close();
         Toast.makeText(context,"Initiating time table",Toast.LENGTH_LONG).show();
-        utils.log("create db", "new");
+        utils.log(dbTag, "create new db");
         Reminder reminder = new Reminder();
         reminder = reminder.getDefaultReminder();
         int uId = reminder.getUniqueId();

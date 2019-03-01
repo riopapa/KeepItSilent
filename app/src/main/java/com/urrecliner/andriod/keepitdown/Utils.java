@@ -11,7 +11,7 @@ import java.text.Collator;
 import java.util.Date;
 
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDate;
-import static com.urrecliner.andriod.keepitdown.Vars.sdfLog;
+import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTimeLog;
 
 class Utils {
 //    private Context context;
@@ -19,19 +19,19 @@ class Utils {
 //        this.context = context;
 //    }
 
-    String int2NN (int nbr) {
+    String hourMin (int hour, int min) { return int2NN(hour)+":"+int2NN(min); }
+    private String int2NN (int nbr) {
         return (""+(100 + nbr)).substring(1);
     }
 
-    void append2file(String textLine) {
+    private void append2file(String textLine) {
 
         File directory = getDirectory();
         BufferedWriter bw = null;
         FileWriter fw = null;
-        String fullName = directory.toString() + "/" + "KeepItDown_" + sdfDate.format(new Date())+".txt";
+        String fullName = directory.toString() + "/" + "log_" + sdfDate.format(new Date())+".txt";
         try {
             File file = new File(fullName);
-            // if file doesnt exists, then create it
             if (!file.exists()) {
                 if (!file.createNewFile()) {
                     logE("createFile", " Error");
@@ -54,10 +54,12 @@ class Utils {
         }
     }
     private File getDirectory() {
-        File directory = new File(Environment.getExternalStorageDirectory(), "KeepItDown");
+        File directory = new File(Environment.getExternalStorageDirectory(), "Keep It Down");
         try {
             if (!directory.exists()) {
-                directory.mkdirs();
+                if(directory.mkdirs()) {
+                    Log.e("mkdirs","Failed "+directory);
+                }
             }
         } catch (Exception e) {
             Log.e("creating Directory error", directory.toString() + "_" + e.toString());
@@ -71,7 +73,7 @@ class Utils {
         traces = Thread.currentThread().getStackTrace();
         String log = pid+ " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.w(tag , log);
-        append2file(sdfLog.format(new Date())+" : " +log);
+        append2file(sdfDateTimeLog.format(new Date())+" : " +log);
     }
 
     void logE(String tag, String text) {
@@ -79,7 +81,7 @@ class Utils {
         traces = Thread.currentThread().getStackTrace();
         String log = " " + traces[5].getMethodName() + " > " + traces[4].getMethodName() + " > " + traces[3].getMethodName() + " #" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
         Log.e("<" + tag + ">" , log);
-        append2file(sdfLog.format(new Date())+" : " +log);
+        append2file(sdfDateTimeLog.format(new Date())+" : " +log);
     }
 
     void deleteOldFiles() {     // remove older than 5 days
@@ -91,15 +93,14 @@ class Utils {
         for (File file : files) {
             String shortFileName = file.getName();
             if (myCollator.compare(shortFileName, weekAgo) < 0) {
-                file.delete();
+                if (file.delete())
+                    Log.e("file","Delete Error "+file);
             }
         }
     }
 
-    File[] getDirectoryList(File fullPath) {
-        File[] files = fullPath.listFiles();
-//        log("# of files", "in dir : " + files.length);
-        return files;
+    private File[] getDirectoryList(File fullPath) {
+        return fullPath.listFiles();
     }
 
 }

@@ -24,7 +24,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
-import static com.urrecliner.andriod.keepitdown.Vars.addActivity;
+import static com.urrecliner.andriod.keepitdown.Vars.addUpdateActivity;
 import static com.urrecliner.andriod.keepitdown.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOff;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
@@ -35,7 +35,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.reminder;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 import static com.urrecliner.andriod.keepitdown.Vars.weekName;
 
-public class AddActivity extends AppCompatActivity {
+public class AddUpdateActivity extends AppCompatActivity {
 
     private long id;
     private int uniqueId;
@@ -51,7 +51,7 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        addActivity = this;
+        addUpdateActivity = this;
         setContentView(R.layout.activity_add);
 
         Bundle data = getIntent().getExtras();
@@ -60,7 +60,8 @@ public class AddActivity extends AppCompatActivity {
             reminder = (Reminder) data.getSerializable("reminder");
         }
         catch (Exception e) {
-            utils.logE("Reminder ","is NULL when GET REMINDER");
+            utils.logE("Reminder ","is NULL\n"+e);
+            return;
         }
 
         for (int i=0; i < 7; i++)
@@ -71,13 +72,13 @@ public class AddActivity extends AppCompatActivity {
         assert actionBar != null;
         if (reminder != null) {
             isNew = false;
-            actionBar.setTitle("수정");
+            actionBar.setTitle(R.string.update_table);
         }
         else {
             isNew = true;
             reminder = new Reminder();
             reminder = reminder.getDefaultReminder();
-            actionBar.setTitle("추가");
+            actionBar.setTitle(R.string.add_table);
         }
         id = reminder.getId();
         uniqueId = reminder.getUniqueId();
@@ -103,7 +104,7 @@ public class AddActivity extends AppCompatActivity {
 
         EditText et = findViewById(R.id.et_subject);
         if (subject == null)
-            subject = "제목 없음";
+            subject = getString(R.string.no_subject);
         et.setText(subject);
         for (int i=0; i < 7; i++) {
             weekView[i].setId(i);
@@ -152,7 +153,7 @@ public class AddActivity extends AppCompatActivity {
         boolean any = false;
         for (int i = 0; i < 7; i++) { any |= week[i]; }
         if (!any) {
-            Toast.makeText(getBaseContext(), "적어도 하루는 선택해야 하지 않을까요?",Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.at_least_one_day_selected,Toast.LENGTH_LONG).show();
             return;
         }
         EditText et = findViewById(R.id.et_subject);
@@ -173,13 +174,13 @@ public class AddActivity extends AppCompatActivity {
         }
         databaseIO.close();
         ReceiverCase = "AddUpdate";
-        utils.log("addupdate",isNew+ " "+startHour+ ":"+startMin);
+        utils.log(ReceiverCase,isNew+ " "+utils.hourMin(startHour,startMin));
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        Bundle args = new Bundle();
 //        args.putSerializable("reminder", reminder);
 //        i.putExtra("DATA", args);
 //        getApplicationContext().startActivity(i);
-//        utils.log("AddActivity","start MainActivity");
+//        utils.log("AddUpdateActivity","start MainActivity");
         finish();
     }
 
@@ -236,9 +237,9 @@ public class AddActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
         Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(AddUpdateActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
-        pendingIntent = PendingIntent.getBroadcast(AddActivity.this, reminder.getUniqueId() + 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(AddUpdateActivity.this, reminder.getUniqueId() + 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
         utils.log("reminder","Deleted");
     }

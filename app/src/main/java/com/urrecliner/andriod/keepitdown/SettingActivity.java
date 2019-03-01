@@ -21,12 +21,11 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.w("Setting","Oncreate");
+        Log.w("Setting","OnCreate");
         super.onCreate(savedInstanceState);
         settingActivity = this;
         setContentView(R.layout.activity_setting);
         showSoundSetting();
-
     }
 
     public void adjustSetting(View v) {
@@ -80,7 +79,7 @@ public class SettingActivity extends AppCompatActivity {
         final TextView tvSoundText = findViewById(R.id.set_sound_text);
         String text = (beepManner) ? "끔" : "켬";
         tvSound.setText(text);
-        text = "매너 변경시 소리 ";
+        text = getString(R.string.sound_when_manner_changed);
         text += (beepManner) ? "남" : "안 남";
         tvSoundText.setText(text);
         final TextView tvShort = findViewById(R.id.set_interval_short);

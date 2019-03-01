@@ -22,7 +22,8 @@ public class Reminder implements Serializable {
         this.startMin = startMin;
         this.finishHour = finishHour;
         this.finishMin = finishMin;
-        for (int i = 0; i < 7; i++) this.week[i] = week[i];
+        System.arraycopy(week, 0, this.week, 0, 7);
+//        for (int i = 0; i < 7; i++) this.week[i] = week[i];
         this.active = active;
         this.vibrate = vibrate;
     }
@@ -39,33 +40,33 @@ public class Reminder implements Serializable {
         this.uniqueId = uniqueId;
     }
 
-    public String getSubject() {
+    String getSubject() {
         return subject;
     }
-    public void setSubject(String subject) { this.subject = subject; }
+    void setSubject(String subject) { this.subject = subject; }
 
-    public int getStartHour() { return startHour; }
+    int getStartHour() { return startHour; }
 
-    public int getStartMin() { return startMin; }
+    int getStartMin() { return startMin; }
 
-    public int getFinishHour() { return finishHour; }
+    int getFinishHour() { return finishHour; }
 
-    public int getFinishMin() { return finishMin; }
+    int getFinishMin() { return finishMin; }
 
-    public boolean getActive() { return active; }
-    public void setActive(boolean active) {
+    boolean getActive() { return active; }
+    void setActive(boolean active) {
         this.active = active;
     }
 
-    public boolean[] getWeek() {
-        boolean week[] = new boolean[7];
-        for (int i = 0; i < 7; i++) week[i] = this.week[i];
+    boolean[] getWeek() {
+//        boolean week[] = new boolean[7];
+//        System.arraycopy(this.week, 0, week, 0, 7);
         return week;
     }
 
-    public boolean getVibrate() { return vibrate; }
+    boolean getVibrate() { return vibrate; }
 
-    public Reminder getDefaultReminder() {
+    Reminder getDefaultReminder() {
         id = 1;
         uniqueId = (int) (System.currentTimeMillis() % 1000000000L);
         subject = "Weekday Silent";

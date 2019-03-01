@@ -2,26 +2,31 @@ package com.urrecliner.andriod.keepitdown;
 
 import java.util.Calendar;
 
-public class NextEventTime {
+class NextEventTime {
 
-    static long calc(int hour, int min, boolean week[]) {
-        Calendar today = Calendar.getInstance();
-        int DD = today.get(Calendar.DATE);
-        int WK = today.get(Calendar.DAY_OF_WEEK) - 1; // 1 for sunday
+    static long calc(boolean finish, int hour, int min, boolean week[]) {
+        Calendar nextDay = Calendar.getInstance();
+        nextDay.set(Calendar.HOUR_OF_DAY, hour);
+        nextDay.set(Calendar.MINUTE, min);
+        nextDay.set(Calendar.SECOND, 0);
 
-        long todayEvent = today.getTimeInMillis();
-        today.set(Calendar.SECOND, 0);
+        int DD = nextDay.get(Calendar.DATE);
+        int WK = nextDay.get(Calendar.DAY_OF_WEEK) - 1; // 1 for sunday
+
+        long nowTime = System.currentTimeMillis();
         long nextEvent;
-        today.set(Calendar.HOUR_OF_DAY, hour);
-        today.set(Calendar.MINUTE, min);
         for (int i = WK; ; ) {
             if (week[i]) {
-                nextEvent = today.getTimeInMillis();
-                if (nextEvent > todayEvent)
+                nextEvent = nextDay.getTimeInMillis();
+                if (nextEvent > nowTime)
                     break;
+                if (finish) {
+                    nextEvent += 24*60*60000;
+                    break;
+                }
             }
-            today.set(Calendar.DATE, ++DD);
-            DD = today.get(Calendar.DATE);
+            nextDay.set(Calendar.DATE, ++DD);
+            DD = nextDay.get(Calendar.DATE);
             i++;
             if (i == 7)
                 i = 0;

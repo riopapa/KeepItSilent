@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         utils = new Utils();
-        utils.log("AlarmReceiver", "action:" + intent.getAction()+" ReceiverCase: "+ReceiverCase);
+        utils.log("AlarmReceiver", "action: " + intent.getAction()+" ReceiverCase: "+ReceiverCase);
 
         Bundle args = intent.getBundleExtra("DATA");
         assert args != null;
@@ -37,7 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             case "S":   // start
                 vibrate = reminder.getVibrate();
                 MannerSet.on(context, subject, vibrate);
-                String text = "Go into Mute till " + (""+(100 + reminder.getFinishHour())).substring(1) + " : " + (""+(100 + reminder.getFinishMin())).substring(1);
+                String text = "Go into Mute till " + utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
                 Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "F":   // finish

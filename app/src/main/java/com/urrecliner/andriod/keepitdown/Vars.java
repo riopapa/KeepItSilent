@@ -12,13 +12,13 @@ class Vars {
     static long dbCount;
     static int nowPosition, nowUniqueId;
     static int oneTimeId = -12345;
-    static int xSize; // width for each week in AddActivity
+    static int xSize; // width for each week in AddUpdateActivity
     static int addViewWeek[] = new int[7];
     static int listViewWeek[] = new int[7];
     static String weekName[] = new String[7];
     static Utils utils = null;
     static MainActivity mainActivity;
-    static AddActivity addActivity;
+    static AddUpdateActivity addUpdateActivity;
     static TimerActivity timerActivity;
     static SettingActivity settingActivity;
     static String ReceiverCase = "init";
@@ -34,7 +34,7 @@ class Vars {
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-    static final SimpleDateFormat sdfLog = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.US);
+    static final SimpleDateFormat sdfDateTimeLog = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.US);
     static Reminder reminder = new Reminder();
     static DatabaseIO databaseIO;
 }

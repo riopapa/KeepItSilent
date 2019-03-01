@@ -18,6 +18,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitdown.Vars.colorOn;
 import static com.urrecliner.andriod.keepitdown.Vars.listViewWeek;
 import static com.urrecliner.andriod.keepitdown.Vars.oneTimeId;
+import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
 public class ListViewAdapter extends BaseAdapter {
 
@@ -74,7 +75,7 @@ public class ListViewAdapter extends BaseAdapter {
             String txt = "-";
             tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
-            txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
+            txt = utils.hourMin(myReminder.get(position).getFinishHour(),myReminder.get(position).getFinishMin());
             tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
         }
@@ -88,10 +89,10 @@ public class ListViewAdapter extends BaseAdapter {
                 else
                     tV.setBackgroundColor(week[i] ? colorInactiveBack : colorOffBack);
             }
-            String txt = (""+(myReminder.get(position).getStartHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getStartMin()+100)).substring(1);
+            String txt = utils.hourMin (myReminder.get(position).getStartHour(),myReminder.get(position).getStartMin());
             tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
-            txt = (""+(myReminder.get(position).getFinishHour()+100)).substring(1) + ":" + (""+(myReminder.get(position).getFinishMin()+100)).substring(1);
+            txt = utils.hourMin (myReminder.get(position).getFinishHour(),myReminder.get(position).getFinishMin());
             tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
         }

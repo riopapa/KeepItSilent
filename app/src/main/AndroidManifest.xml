@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddActivity"
+        <activity android:name=".AddUpdateActivity"
             android:exported="true" />
         <activity android:name=".TimerActivity" />
         <activity android:name=".SettingActivity"/>

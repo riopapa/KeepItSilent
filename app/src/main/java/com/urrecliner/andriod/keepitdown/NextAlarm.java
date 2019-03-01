@@ -2,18 +2,18 @@ package com.urrecliner.andriod.keepitdown;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import static android.content.Context.ALARM_SERVICE;
 import static com.urrecliner.andriod.keepitdown.Vars.mainContext;
 import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
-public class NextAlarm {
+class NextAlarm {
 
     static void request(Reminder reminder, long nextTime, String S_F) {
-        AlarmManager alarmManager = (AlarmManager) mainContext.getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) mainContext.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         Intent intent = new Intent(mainContext, AlarmReceiver.class);
         Bundle args = new Bundle();
@@ -26,7 +26,7 @@ public class NextAlarm {
 
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntent);
-            utils.log(S_F,"CANCELED uniqueId: "+reminder.getUniqueId());
+            utils.log(S_F,"CANCELED uniqueId: "+reminder.getSubject());
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextTime, pendingIntent);
