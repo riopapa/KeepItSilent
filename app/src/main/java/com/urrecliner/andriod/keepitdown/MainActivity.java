@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     void act_OnReceiverCase() {
         String text;
-        utils.log("run by","ReceiverCase = "+ReceiverCase);
+        utils.log("switch",ReceiverCase);
         switch (ReceiverCase) {
             case "Timer":
                 ReceiverCase = "TimerEnd";

@@ -36,12 +36,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         switch (caseSFO) {
             case "S":   // start
                 vibrate = reminder.getVibrate();
-                MannerSet.on(context, subject, vibrate);
+                MannerMode.on(context, subject, vibrate);
                 String text = "Go into Mute till " + utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
                 Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "F":   // finish
-                MannerSet.off(context, subject);
+                MannerMode.off(context, subject);
                 ReceiverCase = "Alarm";
                 Intent i = new Intent(context, MainActivity.class);
                 i.putExtra("ReceiverCase","Alarm");
@@ -49,7 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 context.startActivity(i);
                 break;
             case "O":   // onetime
-                MannerSet.off(context, subject);
+                MannerMode.off(context, subject);
                 reminder.setActive(false);
                 databaseIO.update(reminder.getId(), reminder);
                 break;

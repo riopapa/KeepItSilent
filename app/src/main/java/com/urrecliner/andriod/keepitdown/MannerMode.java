@@ -8,7 +8,7 @@ import android.widget.Toast;
 import static com.urrecliner.andriod.keepitdown.Vars.beepManner;
 import static com.urrecliner.andriod.keepitdown.Vars.utils;
 
-class MannerSet {
+class MannerMode {
 
     static void on (Context context, String subject, boolean vibrate) {
         final String text = subject + "\nGo into Silent";
@@ -35,7 +35,7 @@ class MannerSet {
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
         if (beepManner) {
-            final MediaPlayer mp = MediaPlayer.create(context, R.raw.manner_ending_call);
+            final MediaPlayer mp = MediaPlayer.create(context, R.raw.manner_return2normal);
             mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {

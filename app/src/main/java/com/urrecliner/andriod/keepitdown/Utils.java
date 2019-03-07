@@ -86,13 +86,13 @@ class Utils {
 
     void deleteOldFiles() {     // remove older than 5 days
 
-        String weekAgo = sdfDate.format(System.currentTimeMillis() - 5*24*60*60*1000L);
+        String oldDate = sdfDate.format(System.currentTimeMillis() - 3*24*60*60*1000L);
         File packageDirectory = getDirectory();
         File[] files = getDirectoryList(packageDirectory);
         Collator myCollator = Collator.getInstance();
         for (File file : files) {
             String shortFileName = file.getName();
-            if (myCollator.compare(shortFileName, weekAgo) < 0) {
+            if (myCollator.compare(shortFileName, oldDate) < 0) {
                 if (file.delete())
                     Log.e("file","Delete Error "+file);
             }
