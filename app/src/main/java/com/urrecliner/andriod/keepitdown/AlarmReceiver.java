@@ -50,7 +50,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 break;
             case "O":   // onetime
                 MannerMode.off(context, subject);
-                reminder.setActive(false);
+                reminder.setActiveFalse();
                 databaseIO.update(reminder.getId(), reminder);
                 break;
             default:

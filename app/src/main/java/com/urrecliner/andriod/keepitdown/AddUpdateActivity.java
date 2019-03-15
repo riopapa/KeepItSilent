@@ -60,8 +60,7 @@ public class AddUpdateActivity extends AppCompatActivity {
             reminder = (Reminder) data.getSerializable("reminder");
         }
         catch (Exception e) {
-            utils.logE("Reminder ","is NULL\n"+e);
-            return;
+            reminder = null;
         }
 
         for (int i=0; i < 7; i++)

@@ -43,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
     ListView lVReminder;
     ListViewAdapter listViewAdapter;
-    private ArrayList<Reminder> myReminder;
+    private ArrayList<Reminder> reminders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Vars.mainActivity = this;
+        Vars.mainContext = this;
         utils = new Utils();
 
         Intent intent = getIntent();
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             if (ReceiverCase == null)
                 ReceiverCase = "BLANK";
         }
-        utils.log("MainActivity","\n\n\n--- onCreate --- ReceiverCase: "+ReceiverCase);
+        utils.log("MainActivity","- onCreate - ReceiverCase: "+ReceiverCase);
         preparePermission(getApplicationContext());
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         beepManner = mSettings.getBoolean("beepManner", true);
@@ -73,8 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     void setVariables() {
         utils = new Utils();
-        Vars.mainActivity = this;
-        Vars.mainContext = this;
         Vars.colorOn = ContextCompat.getColor(getBaseContext(), R.color.Navy);
         Vars.colorInactiveBack = ContextCompat.getColor(getBaseContext(), R.color.gray);
         Vars.colorOnBack = ContextCompat.getColor(getBaseContext(), R.color.JeansBlue);
@@ -186,9 +186,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_reset:
                 new AlertDialog.Builder(this)
                         .setTitle("데이터 초기화")
-                        .setMessage("이미 설정되어 있는 것들을 다 삭제합니다")
+                        .setMessage("이미 설정되어 있는 테이블을 다 삭제합니다")
                         .setIcon(R.mipmap.icon_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 databaseIO.clearDatabase(getApplicationContext());
                                 showArrayLists();
@@ -202,27 +202,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void showArrayLists() {
         lVReminder = findViewById(R.id.lv_reminder);
-//        myReminder = getAllDatabase();
+//        reminders = getAllDatabase();
         Cursor cursor = databaseIO.getAll();
-        myReminder = databaseIO.retrieveAllReminders(cursor);
+        reminders = databaseIO.retrieveAllReminders(cursor);
         cursor.close();
 
-        listViewAdapter = new ListViewAdapter(this, myReminder);
+        listViewAdapter = new ListViewAdapter(this, reminders);
 //        utils.log("listViewAdapter","BUILD");
         lVReminder.setAdapter(listViewAdapter);
         lVReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 nowPosition = position;
-                reminder = myReminder.get(position);
+                reminder = reminders.get(position);
                 nowUniqueId = reminder.getUniqueId();
-//                new callReminder().execute(myReminder.get(position));
+//                new callReminder().execute(reminders.get(position));
                 Intent intent;
                 if (nowUniqueId != oneTimeId)
                     intent = new Intent(MainActivity.this, AddUpdateActivity.class);
                 else
                     intent = new Intent(MainActivity.this, TimerActivity.class);
-                intent.putExtra("reminder", myReminder.get(position));
+                intent.putExtra("reminder", reminders.get(position));
                 startActivity(intent);
             }
         });
@@ -323,10 +323,10 @@ public class MainActivity extends AppCompatActivity {
 
         databaseIO = new DatabaseIO();
         Cursor cursor = databaseIO.getAll();
-        myReminder = databaseIO.retrieveAllReminders(cursor);
+        reminders = databaseIO.retrieveAllReminders(cursor);
         cursor.close();
         StringBuilder text = new StringBuilder();
-        for (Reminder rm1 : myReminder) {
+        for (Reminder rm1 : reminders) {
             utils.log(ReceiverCase, "uid "+rm1.getSubject());
             if (rm1.getUniqueId() != oneTimeId && rm1.getActive()) {
                 long nextStart = NextEventTime.calc(false, rm1.getStartHour(), rm1.getStartMin(), rm1.getWeek());
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        utils.log("RESUME","\n\n\n--- ReceiverCase : "+ReceiverCase);
+        utils.log("RESUME","-- ReceiverCase : "+ReceiverCase);
         setVariables();
         act_OnReceiverCase();
     }

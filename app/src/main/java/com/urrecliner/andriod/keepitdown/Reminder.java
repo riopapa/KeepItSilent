@@ -54,9 +54,7 @@ public class Reminder implements Serializable {
     int getFinishMin() { return finishMin; }
 
     boolean getActive() { return active; }
-    void setActive(boolean active) {
-        this.active = active;
-    }
+    void setActiveFalse() { this.active = false; }
 
     boolean[] getWeek() {
 //        boolean week[] = new boolean[7];
