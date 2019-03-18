@@ -187,7 +187,7 @@ public class TimerActivity extends AppCompatActivity {
                 intentS, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
         utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
-        MannerMode.on(getApplicationContext(), subject, vibrate);
+        MannerMode.turnOn(getApplicationContext(), subject, vibrate);
         ReceiverCase = "Timer";
         finish();
     }

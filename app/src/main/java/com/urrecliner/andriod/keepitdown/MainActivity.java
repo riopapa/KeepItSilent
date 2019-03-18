@@ -228,97 +228,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private class callReminder extends AsyncTask<Reminder, Void, Void> {
-//        private ProgressDialog dialog;
-
-//        @Override
-//        protected void onPreExecute() {
-//            utils.log("onPreExecute","onPreExecute");
-//            dialog = ProgressDialog.show(MainActivity.this, "", "Đang tải... ");
-//            dialog.setCancelable(true);
-//            super.onPreExecute();
-//        }
-
-//        @Override
-//        protected Void doInBackground(Reminder... params) {
-//            utils.log("doInBackground", "doInBackground");
-//            Intent intent;
-//            if (nowUniqueId != oneTimeId)
-//                intent = new Intent(MainActivity.this, AddUpdateActivity.class);
-//            else
-//                intent = new Intent(MainActivity.this, TimerActivity.class);
-//            intent.putExtra("reminder", params[0]);
-//            startActivity(intent);
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Void... values) {
-//            super.onProgressUpdate(values);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            utils.log("onPostExecute", "onPostExecute");
-//            super.onPostExecute(aVoid);
-//            if (dialog != null) {
-//                dialog.dismiss();
-//            }
-//        }
-//    }
-
-//    @Override
-//    protected void onPostResume() {
-//        utils.log("onPostResume","  ---------- start "+ReceiverCase);
-//        super.onPostResume();
-//        try {
-//            Intent intent = getIntent();
-//            if (intent == null) {
-//                utils.log("onPostResume","intent is NULL");
-//            }
-//            else {
-//                utils.log("onPostResume"," On create has intent");
-//                Bundle extras = intent.getExtras();
-//                Bundle args = getIntent().getBundleExtra("DATA");
-//                if (extras == null) {
-//                    utils.log("onPostResume","extra is null");
-//                }
-//                else
-//                    ReceiverCase = extras.getString("ReceiverCase");
-//                if (args == null) {
-//                    utils.log("onPostResume"," args is null");
-//                }
-//                else {
-//                    reminder = (Reminder) args.getSerializable("reminder");
-//                    utils.log("onPostResume","reminder ----- uniq "+reminder.getUniqueId());
-//                }
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            ReceiverCase = "oCC";
-//        }
-//
-//        utils.log("RECEIVER","onPostResume is "+ReceiverCase);
-//
-//        if (ReceiverCase.equals("Alarm")) { // it means from receiver
-//            utils.log("From","Alarm");
-//            Bundle args = getIntent().getBundleExtra("DATA");
-//            reminder = (Reminder) args.getSerializable("reminder");
-//            requestBroadCastOne(reminder);
-//            ReceiverCase = "AlarmEnd";
-//            finish();
-//        }
-//        else if (ReceiverCase.equals("Boot")) { // it means from receiver
-//            utils.log("From","BOOT");
-//            requestBroadCastAll();
-//            ReceiverCase = "BootEnd";
-//            finish();
-//        }
-//        else
-//            showArrayLists();
-//    }
-
     String requestBroadCastAll() {
 
         databaseIO = new DatabaseIO();
@@ -333,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
                 NextAlarm.request(rm1, nextStart,"S");
                 long nextFinish = NextEventTime.calc(true, rm1.getFinishHour(), rm1.getFinishMin(), rm1.getWeek());
                 NextAlarm.request(rm1, nextFinish,"F");
-                text.append("\n").append(rm1.getSubject()).append("\nSTART : ").append(sdfDateTime.format(nextStart)).append("\nFINISH : ").append(sdfDateTime.format(nextFinish)).append("\n");
-                utils.log(ReceiverCase,rm1.getSubject() + " START : " + sdfDateTime.format(nextStart) + " FINISH : " + sdfDateTime.format(nextFinish));
+                text.append("\n").append(rm1.getSubject()).append("\n").append(sdfDateTime.format(nextStart)).append(" ~ ").append(sdfDateTime.format(nextFinish));
+                utils.log(ReceiverCase,rm1.getSubject() + " : " + sdfDateTime.format(nextStart) + " ~ " + sdfDateTime.format(nextFinish));
             }
         }
         return text.toString();
@@ -346,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         NextAlarm.request(reminder, nextStart, "S");
         long nextFinish = NextEventTime.calc(true, reminder.getFinishHour(), reminder.getFinishMin(),reminder.getWeek());
         NextAlarm.request(reminder, nextFinish, "F");
-        utils.log(ReceiverCase,reminder.getSubject() + " START: " + sdfDateTime.format(nextStart) + " FINISH: " + sdfDateTime.format(nextFinish));
+        utils.log(ReceiverCase,reminder.getSubject() + " : " + sdfDateTime.format(nextStart) + " ~ " + sdfDateTime.format(nextFinish));
 
         if (ReceiverCase.equals("refresh")) {
             ReceiverCase = "refreshEnd";

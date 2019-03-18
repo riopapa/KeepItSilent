@@ -67,7 +67,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
         long result = db.insert(TABLE_NAME, null, cv);
         db.close();
         Log.w(dbTag, "Insert DB: id = " + result+ "uid = "+uniqueId);
-//        return result;
     }
 
     void update(long id, Reminder reminder) {
@@ -140,7 +139,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
             boolean vibrate = result.getInt(7)==1;
             Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin, week, active, vibrate);
             list.add(reminder);
-//            Log.w("db", ""+id + ","+uniqueId+"," + startHour + ":" + startMin + "~" + finishHour+":"+finishMin+" weekTbl "+ weekTbl + " active="+ active + " vib="+vibrate + " , " +subject );
             result.moveToNext();
         }
         return list;

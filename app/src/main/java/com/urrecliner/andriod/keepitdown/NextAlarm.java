@@ -13,6 +13,7 @@ import static com.urrecliner.andriod.keepitdown.Vars.utils;
 class NextAlarm {
 
     static void request(Reminder reminder, long nextTime, String S_F) {
+        utils.log(S_F, "requested");
         AlarmManager alarmManager = (AlarmManager) mainContext.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         Intent intent = new Intent(mainContext, AlarmReceiver.class);
