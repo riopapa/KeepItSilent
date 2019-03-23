@@ -10,7 +10,7 @@
 - Screen when this app is invoked
 - You can press one of the items to edit
 - First item is used for immediate silence (it shows no weekday information)
-- Press <img src="./app/src/main/res/mipmap-xhdpi/icon_reset.png" width=24 height=24> to reset all defined list
+- Press <img src="./app/src/main/res/mipmap-xhdpi/icon_reset.png" width=24 height=24> to reset all defined list. It deletes all the defined tasks and create two activities (1st: immediate slient, 2nd: default generated)
 - Press <img src="./app/src/main/res/mipmap-xhdpi/icon_add.png" width=24 height=24> to add new item
 - Items will be grayed if it is not active
 
@@ -19,7 +19,7 @@
 
 <H3>addActivity</H3>
 
-- Screen when add or update is requested
+- Screen when add or update is requested (WHen it's new, delete button <img src="./app/src/main/res/mipmap-xhdpi/icon_save.png" width=24 height=24> will not be enabled)
 - Left time is for start (go into silent)
 - Right time is for finish (return to normal)
 - You may change start/finish time by clicking clock images or times displayed
@@ -27,6 +27,7 @@
 - Clicking <img src="./app/src/main/res/mipmap-xhdpi/ic_phone_vibrate.png" width=24 height=24> will toggle whether to allow phone vibrating or not
 - Subject can be edited as you want
 - Check mark is toggle for active or not
+- Touching week name will toggle on that day.
 - Top menu icon <img src="./app/src/main/res/mipmap-xhdpi/icon_delete.png" width=24 height=24> will delete this item immediately.
 - Top menu icon  <img src="./app/src/main/res/mipmap-xhdpi/icon_save.png" width=24 height=24> will save item and go back to main Activity screen
 - Top menu icon  <img src="./app/src/main/res/mipmap-xhdpi/icon_cancel.png" width=24 height=24> will ignore current change and go back to main Activity screen.
@@ -46,6 +47,17 @@
 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="./screenshots/timerActivity.jpg" width=240 height=480>
+
+
+<H3>SettingActivity</H3>
+ 
+- Some parameters adjusting is provided in this screen
+- Sound On/Off when switching to Manner Mode On/Off
+- Immediate time adjust interval : short time interval, long time interval, default duration
+- ReEecute all the tasks now
+
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="./screenshots/SettingActivity.jpg" width=240 height=480>
 
 <H1>Comments</H1>
 

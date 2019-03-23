@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = databaseIO.getAll();
         Vars.dbCount = databaseIO.getCount(cursor);
         cursor.close();
-        utils.log("Initial", "dbCount " + Vars.dbCount);
+//        utils.log("Initial", "dbCount " + Vars.dbCount);
         if (Vars.dbCount == 0)
             databaseIO.clearDatabase(getApplicationContext());
 
@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
     void act_OnReceiverCase() {
         String text;
-        utils.log("switch",ReceiverCase);
+        if (!ReceiverCase.equals("BLANK"))
+            utils.log("switch",ReceiverCase);
         switch (ReceiverCase) {
             case "Timer":
                 ReceiverCase = "TimerEnd";
@@ -274,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 
     void preparePermission(Context context) {

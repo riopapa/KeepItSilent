@@ -66,8 +66,8 @@ public class Reminder implements Serializable {
 
     Reminder getDefaultReminder() {
         id = 1;
-        uniqueId = (int) (System.currentTimeMillis() % 1000000000L);
-        subject = "Weekday Silent";
+        uniqueId = (int) (System.currentTimeMillis() % 100000000L);
+        subject = "WeekNight";
         startHour = 23; startMin = 30; finishHour= 7; finishMin = 30;
         week = new boolean[]{false, true, true, true, true, true, false};
         return new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,

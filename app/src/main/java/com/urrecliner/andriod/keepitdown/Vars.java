@@ -33,7 +33,7 @@ class Vars {
     static int default_Duration = 60;
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
     static final SimpleDateFormat sdfDateTimeLog = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss sss", Locale.US);
     static Reminder reminder = new Reminder();
     static DatabaseIO databaseIO;
