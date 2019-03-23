@@ -23,7 +23,6 @@ class NextAlarm {
         int uniqueId = (S_F.equals("S")) ? reminder.getUniqueId() : reminder.getUniqueId() + 1;
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mainContext, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         if (!reminder.getActive()) {
             alarmManager.cancel(pendingIntent);
             utils.log(S_F,"CANCELED uniqueId: "+reminder.getSubject());
