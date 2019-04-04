@@ -17,7 +17,7 @@
 
     <string name="date">일자</string>
     <string name="time">시각</string>
-    <string name="not_allowed">다가올 시각으로 설정해 주세요</string>    /* time should be in future */
+    <string name="time_should_be_future">다가올 시각으로 설정해 주세요</string>
     <string name="edit">수정</string>
     <string name="delete">삭제</string>
 
