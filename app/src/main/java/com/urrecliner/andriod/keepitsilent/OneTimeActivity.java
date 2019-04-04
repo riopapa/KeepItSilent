@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitdown;
+package com.urrecliner.andriod.keepitsilent;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -15,20 +15,20 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-import static com.urrecliner.andriod.keepitdown.Vars.ReceiverCase;
-import static com.urrecliner.andriod.keepitdown.Vars.databaseIO;
-import static com.urrecliner.andriod.keepitdown.Vars.default_Duration;
-import static com.urrecliner.andriod.keepitdown.Vars.finishHour;
-import static com.urrecliner.andriod.keepitdown.Vars.finishMin;
-import static com.urrecliner.andriod.keepitdown.Vars.interval_Long;
-import static com.urrecliner.andriod.keepitdown.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitdown.Vars.sdfDateTime;
-import static com.urrecliner.andriod.keepitdown.Vars.timerActivity;
-import static com.urrecliner.andriod.keepitdown.Vars.utils;
+import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
+import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
+import static com.urrecliner.andriod.keepitsilent.Vars.finishHour;
+import static com.urrecliner.andriod.keepitsilent.Vars.finishMin;
+import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
+import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
+import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
+import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
+import static com.urrecliner.andriod.keepitsilent.Vars.timerActivity;
+import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
-public class TimerActivity extends AppCompatActivity {
+public class OneTimeActivity extends AppCompatActivity {
 
-    Reminder reminder;
+    com.urrecliner.andriod.keepitsilent.Reminder reminder;
     private long id;
     private int uniqueId;
     private String subject;
@@ -52,7 +52,7 @@ public class TimerActivity extends AppCompatActivity {
 
         Bundle data = getIntent().getExtras();
         assert data != null;
-        reminder = (Reminder) data.getSerializable("reminder");
+        reminder = (com.urrecliner.andriod.keepitsilent.Reminder) data.getSerializable("reminder");
         assert reminder != null;
         id = reminder.getId();
         uniqueId = reminder.getUniqueId();
@@ -165,13 +165,13 @@ public class TimerActivity extends AppCompatActivity {
     private void onSave() {
 
         boolean week[] = new boolean[7];
-        Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
+        com.urrecliner.andriod.keepitsilent.Reminder reminder = new com.urrecliner.andriod.keepitsilent.Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, vibrate);
         databaseIO.update(reminder.getId(), reminder);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
-        Intent intentS = new Intent(this, AlarmReceiver.class);
+        Intent intentS = new Intent(this, com.urrecliner.andriod.keepitsilent.AlarmReceiver.class);
         Bundle args = new Bundle();
         args.putSerializable("reminder", reminder);
         intentS.putExtra("DATA",args);
@@ -183,12 +183,13 @@ public class TimerActivity extends AppCompatActivity {
         long nextStart = calendar.getTimeInMillis();
         if (nextStart < System.currentTimeMillis())     // in case next day
             nextStart += 24 * 60 * 60000;
-        PendingIntent pendingIntentS = PendingIntent.getBroadcast(TimerActivity.this, reminder.getUniqueId(),
+        PendingIntent pendingIntentS = PendingIntent.getBroadcast(OneTimeActivity.this, reminder.getUniqueId(),
                 intentS, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-        utils.log("OneTime",subject + "  Activated " + sdfDateTime.format(nextStart));
-        MannerMode.turnOn(getApplicationContext(), subject, vibrate);
-        ReceiverCase = "Timer";
+        String logID = "OneTime";
+        utils.log(logID,subject + "  Activated " + sdfDateTime.format(nextStart));
+        com.urrecliner.andriod.keepitsilent.MannerMode.turnOn(getApplicationContext(), subject, vibrate);
+        stateCode = "Timer";
         finish();
     }
 
