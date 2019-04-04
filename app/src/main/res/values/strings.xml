@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Keep It Down</string>
+    <string name="app_name">Keep It Silent</string>
     <string name="action_settings">Settings</string>
     <string name="todo">TODO</string>
-    <string name="keep_down">잠시 조용히 하자</string>
+    <string name="keep_silent">잠시 조용히 하자</string>
 
     <string name="action_timer">바로 조용히 하기</string>
     <string name="action_add">추가</string>

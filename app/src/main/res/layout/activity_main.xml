@@ -15,12 +15,3 @@
     </ListView>
 
 </RelativeLayout>
-<!--<TextView-->
-<!--android:id="@+id/bottom_message"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:text="@string/press_home"-->
-<!--android:textStyle="bold|italic"-->
-<!--android:textSize="16sp"-->
-<!--android:gravity="center"-->
-<!--android:layout_alignParentBottom="true"/>-->
