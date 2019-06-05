@@ -14,7 +14,7 @@ public class Reminder implements Serializable {
     Reminder() { }
 
     Reminder(long id, int uniqueId, String subject, int startHour, int startMin, int finishHour, int finishMin,
-                    boolean week[], boolean active, boolean vibrate) {
+             boolean[] week, boolean active, boolean vibrate) {
         this.id = id;
         this.uniqueId = uniqueId;
         this.subject = subject;
@@ -23,7 +23,6 @@ public class Reminder implements Serializable {
         this.finishHour = finishHour;
         this.finishMin = finishMin;
         System.arraycopy(week, 0, this.week, 0, 7);
-//        for (int i = 0; i < 7; i++) this.week[i] = week[i];
         this.active = active;
         this.vibrate = vibrate;
     }
@@ -54,7 +53,7 @@ public class Reminder implements Serializable {
     int getFinishMin() { return finishMin; }
 
     boolean getActive() { return active; }
-    void setActiveFalse() { this.active = false; }
+    void setActive(boolean TorF) { this.active = TorF; }
 
     boolean[] getWeek() { return week; }
 

@@ -24,18 +24,17 @@ class Utils {
     private String int2NN (int nbr) {
         return (""+(100 + nbr)).substring(1);
     }
+    private File packageDir = null;
 
-    private void append2file(String textLine) {
+    private void append2file(String logFile, String textLine) {
 
-        File directory = getPackageDirectory();
         BufferedWriter bw = null;
         FileWriter fw = null;
-        String fullName = directory.toString() + "/" + PREFIX + sdfDate.format(new Date())+".txt";
         try {
-            File file = new File(fullName);
+            File file = new File(logFile);
             if (!file.exists()) {
                 if (!file.createNewFile()) {
-                    logE("createFile", " Error");
+                    log("createFile", " Error");
                 }
             }
             String outText = "\n"+textLine+"\n";
@@ -54,7 +53,9 @@ class Utils {
             }
         }
     }
+
     private File getPackageDirectory() {
+
         String applicationName = getAppLabel(mainContext);
         File directory = new File(Environment.getExternalStorageDirectory(), applicationName);
         try {
@@ -81,15 +82,31 @@ class Utils {
     }
 
     void log(String tag, String text) {
+
+        String log = logTrace() + " {"+ tag + "} " + text;
+        Log.w(tag , log);
+        if (packageDir == null) packageDir = getPackageDirectory();
+        String logFile = packageDir.toString() + "/" + PREFIX + sdfDate.format(new Date())+".txt";
+        append2file(logFile, sdfLogTime.format(new Date())+" " +log);
+    }
+
+    void logE(String tag, String text) {
+        String log = logTrace() + " {"+ tag + "} " + text;
+        Log.e("<" + tag + ">" , log);
+        if (packageDir == null) packageDir = getPackageDirectory();
+        String logFile = packageDir.toString() + "/" + PREFIX + sdfDate.format(new Date())+"E.txt";
+        append2file(logFile, sdfLogTime.format(new Date())+" : " +log);
+    }
+
+    private String logTrace () {
         int pid = android.os.Process.myPid();
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        String log = pid+ ": " + traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
-        Log.w(tag , log);
-        append2file(sdfLogTime.format(new Date())+" " +log);
+        return pid+ ": " + traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber();
+
     }
 
-    private static String omits [] = { "performResume", "performCreate", "callActivityOnResume", "access$",
+    private static String[] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",
             "handleReceiver", "handleMessage", "dispatchKeyEvent"};
     private String traceName (String s) {
         for (String o : omits) {
@@ -101,20 +118,11 @@ class Utils {
         return s.substring(s.lastIndexOf(".")+1);
     }
 
-    void logE(String tag, String text) {
-        int pid = android.os.Process.myPid();
-        StackTraceElement[] traces;
-        traces = Thread.currentThread().getStackTrace();
-        String log = pid+ ": " + traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber() + " {"+ tag + "} " + text;
-        Log.e("<" + tag + ">" , log);
-        append2file(sdfLogTime.format(new Date())+" : " +log);
-    }
-
     void deleteOldLogFiles() {     // remove older than 5 days
 
-        String oldDate = PREFIX + sdfDate.format(System.currentTimeMillis() - 3*24*60*60*1000L);
-        File packageDirectory = getPackageDirectory();
-        File[] files = getCurrentFileList(packageDirectory);
+        String oldDate = PREFIX + sdfDate.format(System.currentTimeMillis() - 2*24*60*60*1000L);
+        if (packageDir == null) packageDir = getPackageDirectory();
+        File[] files = getCurrentFileList(packageDir);
         Collator myCollator = Collator.getInstance();
         for (File file : files) {
             String shortFileName = file.getName();

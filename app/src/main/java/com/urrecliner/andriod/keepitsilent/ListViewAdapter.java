@@ -17,7 +17,7 @@ import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
 import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.oneTimeId;
+import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class ListViewAdapter extends BaseAdapter {
@@ -67,7 +67,7 @@ public class ListViewAdapter extends BaseAdapter {
         tv.setTextColor((active) ? colorOn:colorOff);
 
         int uniqueId = myReminder.get(position).getUniqueId();
-        if (uniqueId == oneTimeId) {
+        if (uniqueId == ONETIME_ID) {
             for (int i = 0; i < 7; i++) {
                 TextView tVWeek = listItem.findViewById(listViewWeek[i]);
                 tVWeek.setTextColor(colorOffBack);  // transparent
@@ -80,7 +80,7 @@ public class ListViewAdapter extends BaseAdapter {
             tv.setTextColor((active) ? colorOn:colorOff);
         }
         else{
-            boolean week[] = myReminder.get(position).getWeek();
+            boolean[] week = myReminder.get(position).getWeek();
             for (int i = 0; i < 7; i++) {
                 TextView tV = listItem.findViewById(listViewWeek[i]);
                 tV.setTextColor(week[i] ? colorActive : colorOff);

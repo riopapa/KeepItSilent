@@ -29,36 +29,38 @@ public class AlarmReceiver extends BroadcastReceiver {
         reminder = (Reminder) args.getSerializable("reminder");
         assert reminder != null;
         subject = reminder.getSubject();
-//        int uniqueId = reminder.getUniqueId();
         String caseSFO = Objects.requireNonNull(intent.getExtras()).getString("case");
         utils.log(logID,"case:"+ caseSFO + " subject: "+subject);
         assert caseSFO != null;
         Intent i = new Intent(context, MainActivity.class);
         switch (caseSFO) {
+            case "L":   // looping
+                break;
             case "S":   // start
                 MannerMode.turnOn(context, subject, reminder.getVibrate());
-                String text = "Go into Mute till " + utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
+                String text = subject+"\nGo into Mute till " + utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
                 Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
-                stateCode = "Alarm";
-                i.putExtra("stateCode","Alarm");
-                i.putExtra("DATA",args);
-                context.startActivity(i);
                 break;
             case "F":   // finish
                 MannerMode.turnOff(context, subject);
-                stateCode = "Alarm";
-                i.putExtra("stateCode","Alarm");
-                i.putExtra("DATA",args);
-                context.startActivity(i);
+                text = subject+"\nFinished ";
+                Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "O":   // onetime
                 MannerMode.turnOff(context, subject);
-                reminder.setActiveFalse();
+                reminder.setActive(false);
                 databaseIO.update(reminder.getId(), reminder);
                 break;
             default:
-                utils.logE(logID,"Case Error " + caseSFO);
+                utils.log(logID,"Case Error " + caseSFO);
         }
+        if (caseSFO.equals("L"))
+            stateCode = "Loop";
+        else
+            stateCode = "Alarm";
+        i.putExtra("stateCode",stateCode);
+        i.putExtra("DATA",args);
+        context.startActivity(i);
     }
 
 //    private static void dumpIntent(Intent i){

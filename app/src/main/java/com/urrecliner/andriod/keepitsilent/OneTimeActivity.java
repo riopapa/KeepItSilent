@@ -1,8 +1,5 @@
 package com.urrecliner.andriod.keepitsilent;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,24 +12,20 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
-import static com.urrecliner.andriod.keepitsilent.Vars.finishHour;
-import static com.urrecliner.andriod.keepitsilent.Vars.finishMin;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
+import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
-import static com.urrecliner.andriod.keepitsilent.Vars.timerActivity;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class OneTimeActivity extends AppCompatActivity {
 
-    com.urrecliner.andriod.keepitsilent.Reminder reminder;
+    Reminder reminder;
     private long id;
-    private int uniqueId;
     private String subject;
-    private int startHour, startMin;
+    private int startHour, startMin, finishHour, finishMin;
     private boolean vibrate;
     private int durationMin = 0;       // in minutes
     Calendar calendar;
@@ -44,7 +37,6 @@ public class OneTimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
-        timerActivity = this;
         ActionBar actionBar;
         actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -52,10 +44,9 @@ public class OneTimeActivity extends AppCompatActivity {
 
         Bundle data = getIntent().getExtras();
         assert data != null;
-        reminder = (com.urrecliner.andriod.keepitsilent.Reminder) data.getSerializable("reminder");
+        reminder = (Reminder) data.getSerializable("reminder");
         assert reminder != null;
         id = reminder.getId();
-        uniqueId = reminder.getUniqueId();
         subject = reminder.getSubject();
         vibrate = reminder.getVibrate();
         calendar = Calendar.getInstance();
@@ -164,33 +155,38 @@ public class OneTimeActivity extends AppCompatActivity {
 
     private void onSave() {
 
-        boolean week[] = new boolean[7];
-        com.urrecliner.andriod.keepitsilent.Reminder reminder = new com.urrecliner.andriod.keepitsilent.Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
+        boolean [] week = new boolean[7];
+        int uniqueId = ONETIME_ID;
+        Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, vibrate);
         databaseIO.update(reminder.getId(), reminder);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        assert alarmManager != null;
-        Intent intentS = new Intent(this, com.urrecliner.andriod.keepitsilent.AlarmReceiver.class);
-        Bundle args = new Bundle();
-        args.putSerializable("reminder", reminder);
-        intentS.putExtra("DATA",args);
-        intentS.putExtra("case","O");
-
-        calendar.set(Calendar.HOUR_OF_DAY, finishHour);
-        calendar.set(Calendar.MINUTE, finishMin);
-        calendar.set(Calendar.SECOND,0);
-        long nextStart = calendar.getTimeInMillis();
-        if (nextStart < System.currentTimeMillis())     // in case next day
-            nextStart += 24 * 60 * 60000;
-        PendingIntent pendingIntentS = PendingIntent.getBroadcast(OneTimeActivity.this, reminder.getUniqueId(),
-                intentS, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-        String logID = "OneTime";
-        utils.log(logID,subject + "  Activated " + sdfDateTime.format(nextStart));
-        com.urrecliner.andriod.keepitsilent.MannerMode.turnOn(getApplicationContext(), subject, vibrate);
+        MannerMode.turnOn(getApplicationContext(), subject, vibrate);
         stateCode = "Timer";
+        if (mainActivity == null)
+            mainActivity = new MainActivity();
+        mainActivity.scheduleNextTask("One Time");
         finish();
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        assert alarmManager != null;
+//        Intent intentS = new Intent(this, AlarmReceiver.class);
+//        Bundle args = new Bundle();
+//        args.putSerializable("reminder", reminder);
+//        intentS.putExtra("DATA",args);
+//        intentS.putExtra("case","O");
+//
+//        calendar.set(Calendar.HOUR_OF_DAY, finishHour);
+//        calendar.set(Calendar.MINUTE, finishMin);
+//        calendar.set(Calendar.SECOND,0);
+//        long nextStart = calendar.getTimeInMillis();
+//        if (nextStart < System.currentTimeMillis())     // in case next day
+//            nextStart += 24 * 60 * 60000;
+//        PendingIntent pendingIntentS = PendingIntent.getBroadcast(OneTimeActivity.this, reminder.getUniqueId(),
+//                intentS, PendingIntent.FLAG_UPDATE_CURRENT);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
+//        String logID = "OneTime";
+//        utils.log(logID,subject + "  Activated " + sdfDateTime.format(nextStart));
+//        finish();
     }
 
     @Override

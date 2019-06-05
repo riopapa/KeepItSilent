@@ -20,19 +20,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.addUpdateActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
+import static com.urrecliner.andriod.keepitsilent.Vars.nowPosition;
 import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 import static com.urrecliner.andriod.keepitsilent.Vars.weekName;
+import static com.urrecliner.andriod.keepitsilent.Vars.xSize;
 
 public class AddUpdateActivity extends AppCompatActivity {
 
@@ -51,13 +53,12 @@ public class AddUpdateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        addUpdateActivity = this;
         setContentView(R.layout.activity_add);
 
         Bundle data = getIntent().getExtras();
         assert data != null;
         try {
-            reminder = (com.urrecliner.andriod.keepitsilent.Reminder) data.getSerializable("reminder");
+            reminder = (Reminder) data.getSerializable("reminder");
         }
         catch (Exception e) {
             reminder = null;
@@ -74,10 +75,15 @@ public class AddUpdateActivity extends AppCompatActivity {
         }
         else {
             isNew = true;
-            reminder = new com.urrecliner.andriod.keepitsilent.Reminder();
+            reminder = new Reminder();
             reminder = reminder.getDefaultReminder();
             actionBar.setTitle(R.string.add_table);
         }
+        build_addActivity();
+    }
+
+    void build_addActivity() {
+
         id = reminder.getId();
         uniqueId = reminder.getUniqueId();
         subject = reminder.getSubject();
@@ -88,11 +94,6 @@ public class AddUpdateActivity extends AppCompatActivity {
         active = reminder.getActive();
         week = reminder.getWeek();
         vibrate = reminder.getVibrate();
-        build_addActivity();
-    }
-
-    void build_addActivity() {
-
         TimePicker tp = findViewById(R.id.timePickerStart);
         tp.setIs24HourView(true);
         tp.setHour(startHour); tp.setMinute(startMin);
@@ -106,7 +107,7 @@ public class AddUpdateActivity extends AppCompatActivity {
         et.setText(subject);
         for (int i=0; i < 7; i++) {
             weekView[i].setId(i);
-            weekView[i].setWidth(com.urrecliner.andriod.keepitsilent.Vars.xSize);
+            weekView[i].setWidth(xSize);
             weekView[i].setGravity(Gravity.CENTER);
             weekView[i].setTextColor((week[i]) ? colorOn:colorOff);
             weekView[i].setBackgroundColor((week[i]) ? colorOnBack:colorOffBack);
@@ -162,9 +163,10 @@ public class AddUpdateActivity extends AppCompatActivity {
         startHour = tp.getHour(); startMin = tp.getMinute();
         tp = findViewById(R.id.timePickerFinish);
         finishHour = tp.getHour(); finishMin = tp.getMinute();
-        reminder = new com.urrecliner.andriod.keepitsilent.Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
+        reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
             week, active, vibrate);
-        databaseIO = new com.urrecliner.andriod.keepitsilent.DatabaseIO();
+        if (databaseIO == null)
+            databaseIO = new DatabaseIO();
         if (isNew) {
             databaseIO.insert(reminder);
         } else {
@@ -189,7 +191,7 @@ public class AddUpdateActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.menu_add, menu);
         if (isNew) {
             menu.findItem(R.id.action_delete).setEnabled(false);
@@ -204,9 +206,7 @@ public class AddUpdateActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks turnOn the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         switch (id) {
             case R.id.action_save:
@@ -216,12 +216,12 @@ public class AddUpdateActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.action_delete:
-                databaseIO = new com.urrecliner.andriod.keepitsilent.DatabaseIO();
+                databaseIO = new DatabaseIO();
                 Cursor cursor = databaseIO.getAll();
-                ArrayList<com.urrecliner.andriod.keepitsilent.Reminder> myReminder;
+                ArrayList<Reminder> myReminder;
                 myReminder = databaseIO.retrieveAllReminders(cursor);
                 cursor.close();
-                databaseIO.delete(myReminder.get(com.urrecliner.andriod.keepitsilent.Vars.nowPosition).getId());
+                databaseIO.delete(myReminder.get(nowPosition).getId());
                 databaseIO.close();
                 cancelReminder();
                 finish();
@@ -234,7 +234,7 @@ public class AddUpdateActivity extends AppCompatActivity {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
-        Intent intent = new Intent(this, com.urrecliner.andriod.keepitsilent.AlarmReceiver.class);
+        Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(AddUpdateActivity.this, reminder.getUniqueId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.cancel(pendingIntent);
         pendingIntent = PendingIntent.getBroadcast(AddUpdateActivity.this, reminder.getUniqueId() + 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);

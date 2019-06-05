@@ -10,7 +10,7 @@
 - Screen when this app is invoked
 - You can press one of the items to edit
 - First item is used for immediate silence (it shows no weekday information)
-- Press <img src="./app/src/main/res/mipmap-xhdpi/icon_reset.png" width=24 height=24> to reset all defined list. It deletes all the defined tasks and create two activities (1st: immediate slient, 2nd: default generated)
+- Press <img src="./app/src/main/res/mipmap-xhdpi/icon_delete_reset.png" width=24 height=24> to reset all defined list. It deletes all the defined tasks and create two activities (1st: immediate slient, 2nd: default generated)
 - Press <img src="./app/src/main/res/mipmap-xhdpi/icon_add.png" width=24 height=24> to add new item
 - Items will be grayed if it is not active
 

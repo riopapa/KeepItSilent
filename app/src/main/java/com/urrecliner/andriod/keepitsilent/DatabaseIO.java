@@ -7,12 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.oneTimeId;
+import static com.urrecliner.andriod.keepitsilent.Vars.NORMAL_ID;
+import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class DatabaseIO extends SQLiteOpenHelper {
@@ -20,7 +22,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "keepitsilent.db";
     private static final String TABLE_NAME = "keepitsilent";
     private static final int SCHEMA_VERSION = 1;
-    private static String logID = "DB";
+    private static String logID = "dbIO";
 
     DatabaseIO() {
         super(mainContext, DATABASE_NAME, null, SCHEMA_VERSION);
@@ -150,7 +152,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             long id = cursor.getInt(0);
             databaseIO.delete(id);
-            Log.w(logID, "clear id "+id);
+//            Log.w(logID, "clear id "+id);
             cursor.moveToNext();
         }
         cursor.close();
@@ -159,15 +161,18 @@ public class DatabaseIO extends SQLiteOpenHelper {
         utils.log(logID, "create new db");
         Reminder reminder = new Reminder();
         reminder = reminder.getDefaultReminder();
-        int uId = reminder.getUniqueId();
         String txt = reminder.getSubject();
-        reminder.setUniqueId(oneTimeId);
+
+        reminder.setUniqueId(ONETIME_ID);
+        reminder.setActive(false);
         reminder.setSubject(mainActivity.getResources().getString(R.string.action_timer));
         insert(reminder);
-        reminder.setUniqueId(uId);
+
+        reminder.setUniqueId(NORMAL_ID);
         reminder.setSubject(txt);
+        reminder.setActive(true);
         insert(reminder);
-        Vars.dbCount = 2;
+//        Vars.dbCount = 2;
     }
     public void close() {
         SQLiteDatabase db = getWritableDatabase();

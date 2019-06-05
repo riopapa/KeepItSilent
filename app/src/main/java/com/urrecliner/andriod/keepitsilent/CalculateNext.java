@@ -2,9 +2,9 @@ package com.urrecliner.andriod.keepitsilent;
 
 import java.util.Calendar;
 
-class NextEventTime {
+class CalculateNext {
 
-    static long calc(boolean finish, int hour, int min, boolean week[]) {
+    static long calc(boolean finish, int hour, int min, boolean[] week) {
         Calendar nextDay = Calendar.getInstance();
         nextDay.set(Calendar.HOUR_OF_DAY, hour);
         nextDay.set(Calendar.MINUTE, min);

@@ -6,18 +6,16 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-public class PermissionCheck {
+class PermissionCheck {
 
     private Activity thisActivity;
 
     boolean isAllPermitted(Activity activity) {
         thisActivity = activity;
-        if (isPermitted(Manifest.permission.WRITE_EXTERNAL_STORAGE) && isPermitted(Manifest.permission.RECEIVE_BOOT_COMPLETED))
-            return true;
-        return false;
+        return isPermitted(Manifest.permission.WRITE_EXTERNAL_STORAGE) && isPermitted(Manifest.permission.RECEIVE_BOOT_COMPLETED);
     }
 
-    boolean isPermitted (String permission) {
+    private boolean isPermitted (String permission) {
         if (ContextCompat.checkSelfPermission(thisActivity, permission)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity, permission)) {

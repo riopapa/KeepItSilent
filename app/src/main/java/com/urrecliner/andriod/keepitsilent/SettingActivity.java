@@ -6,14 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
 import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitsilent.Vars.editor;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitsilent.Vars.mSettings;
-import static com.urrecliner.andriod.keepitsilent.Vars.settingActivity;
+import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class SettingActivity extends AppCompatActivity {
@@ -24,7 +23,6 @@ public class SettingActivity extends AppCompatActivity {
 
         Log.w(logID,"OnCreate");
         super.onCreate(savedInstanceState);
-        settingActivity = this;
         setContentView(R.layout.activity_setting);
         showSoundSetting();
     }
