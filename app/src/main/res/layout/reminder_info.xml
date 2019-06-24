@@ -16,7 +16,7 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:src="@mipmap/ic_phone_vibrate"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/blank" />
     <LinearLayout
         android:gravity="center_vertical"
         android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.urrecliner.andriod.keepitsilent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
+import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
@@ -35,6 +37,9 @@ public class OneTimeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Intent closeIntent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        getApplicationContext().sendBroadcast(closeIntent);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         ActionBar actionBar;
@@ -42,10 +47,13 @@ public class OneTimeActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setTitle(getResources().getString(R.string.action_timer));
 
-        Bundle data = getIntent().getExtras();
-        assert data != null;
-        reminder = (Reminder) data.getSerializable("reminder");
-        assert reminder != null;
+//        Bundle data = getIntent().getExtras();
+//        assert data != null;
+//        reminder = (Reminder) data.getSerializable("reminder");
+        DatabaseIO databaseIO = new DatabaseIO();
+
+        reminder = databaseIO.getOneTime();
+
         id = reminder.getId();
         subject = reminder.getSubject();
         vibrate = reminder.getVibrate();
@@ -155,13 +163,13 @@ public class OneTimeActivity extends AppCompatActivity {
 
     private void onSave() {
 
-        boolean [] week = new boolean[7];
+        boolean [] week = new boolean[]{true, true, true, true, true, true, true};
         int uniqueId = ONETIME_ID;
         Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
                 week, true, vibrate);
         databaseIO.update(reminder.getId(), reminder);
         MannerMode.turnOn(getApplicationContext(), subject, vibrate);
-        stateCode = "Timer";
+        stateCode = STATE_ONETIME;
         if (mainActivity == null)
             mainActivity = new MainActivity();
         mainActivity.scheduleNextTask("One Time");

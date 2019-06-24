@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
+import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
@@ -57,7 +58,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (caseSFO.equals("L"))
             stateCode = "Loop";
         else
-            stateCode = "Alarm";
+            stateCode = STATE_ALARM;
         i.putExtra("stateCode",stateCode);
         i.putExtra("DATA",args);
         context.startActivity(i);

@@ -49,7 +49,7 @@ public class ListViewAdapter extends BaseAdapter {
 
         View listItem = convertView;
         if (listItem == null) {
-             listItem = layoutInflater.inflate(R.layout.list_reminder_layout, null);
+             listItem = layoutInflater.inflate(R.layout.reminder_info, null);
         }
         boolean active = myReminder.get(position).getActive();
         boolean vibrate = myReminder.get(position).getVibrate();

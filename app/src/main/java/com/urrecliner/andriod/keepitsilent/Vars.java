@@ -35,4 +35,10 @@ class Vars {
     static final SimpleDateFormat sdfLogTime = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
     static Reminder reminder = new Reminder();
     static DatabaseIO databaseIO;
+
+    static final String STATE_ALARM = "Alarm";
+    static final String STATE_ONETIME = "OneTime";
+    static final String STATE_BOOT = "Boot";
+    static final String STATE_RERUN = "ReRun";
+    static final String STATE_ADDUPDATE = "AddUpdate";
 }

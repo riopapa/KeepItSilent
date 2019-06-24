@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADDUPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
@@ -173,7 +174,7 @@ public class AddUpdateActivity extends AppCompatActivity {
             databaseIO.update(id, reminder);
         }
         databaseIO.close();
-        stateCode = "AddUpdate";
+        stateCode = STATE_ADDUPDATE;
         utils.log(logID, stateCode + " "+utils.hourMin(startHour,startMin));
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        Bundle args = new Bundle();
@@ -211,10 +212,9 @@ public class AddUpdateActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_save:
                 onSave();
-                return true;
+                break;
             case R.id.action_cancel:
-                finish();
-                return true;
+                break;
             case R.id.action_delete:
                 databaseIO = new DatabaseIO();
                 Cursor cursor = databaseIO.getAll();
@@ -224,10 +224,13 @@ public class AddUpdateActivity extends AppCompatActivity {
                 databaseIO.delete(myReminder.get(nowPosition).getId());
                 databaseIO.close();
                 cancelReminder();
-                finish();
-                return true;
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        finish();
+//        Intent intent = new Intent(mainContext,MainActivity.class);
+//        mainContext.startActivity(intent);
+        return false;
+//        return super.onOptionsItemSelected(item);
     }
 
     private void cancelReminder() {

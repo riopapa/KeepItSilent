@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_customNotification"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#cD6f6afa"
+    android:baselineAligned="false"
+    tools:ignore="ContentDescription"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="64sp"
+        android:layout_margin="8dp"
+        android:src="@mipmap/ic_launcher_foreground" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="6"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:text="@string/app_name"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/stopNow"
+        android:layout_width="0sp"
+        android:layout_weight="3"
+        android:layout_height="64sp"
+        android:layout_margin="8dp"
+        android:src="@raw/silent_now" />
+
+</LinearLayout>

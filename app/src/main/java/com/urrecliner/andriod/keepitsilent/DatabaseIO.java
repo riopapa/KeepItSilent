@@ -100,6 +100,21 @@ public class DatabaseIO extends SQLiteOpenHelper {
         db.close();
     }
 
+    Reminder getOneTime() {
+
+        databaseIO = new DatabaseIO();
+        Cursor cursor = databaseIO.getAll();
+        ArrayList<Reminder> reminders;
+        reminders = retrieveAllReminders(cursor);
+        cursor.close();
+        for (Reminder rm : reminders) {
+            if (rm.getUniqueId() == ONETIME_ID) {
+                return rm;
+            }
+        }
+        return null;
+    }
+
     void delete(long id) {
         SQLiteDatabase db = getWritableDatabase();
         String[] args = {String.valueOf(id)};
