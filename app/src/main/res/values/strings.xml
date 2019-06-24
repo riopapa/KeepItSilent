@@ -50,5 +50,8 @@
     <string name="no_subject">제목 없음</string>
     <string name="at_least_one_day_selected">적어도 하루는 선택해야 하지 않을까요?</string>
     <string name="sound_when_manner_changed">매너 변경시 소리</string>
+    <string name="date_time">12-31 23:59</string>
+    <string name="subject_name">Weekly DayTime</string>
+    <string name="startFinish">시작</string>
 
 </resources>

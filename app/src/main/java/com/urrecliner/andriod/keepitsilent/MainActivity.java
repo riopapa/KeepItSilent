@@ -91,11 +91,21 @@ public class MainActivity extends AppCompatActivity {
         onStateCode();
         new Timer().schedule(new TimerTask() {
             public void run () {
-                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
-                updateIntent.putExtra("isUpdate", true);
-                startService(updateIntent);
+                updateNotificationBar("12:31 00:00","Subject Name","시작");
+//                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+//                updateIntent.putExtra("isUpdate", true);
+//                startService(updateIntent);
             }
         }, 100);
+    }
+
+    void updateNotificationBar(String dateTime, String subject, String startFinish) {
+        Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
+        updateIntent.putExtra("isUpdate", true);
+        updateIntent.putExtra("dateTime", dateTime);
+        updateIntent.putExtra("subject", subject);
+        updateIntent.putExtra("startFinish", startFinish);
+        startService(updateIntent);
     }
 
 //    void setAwakenAlways(Context context) {
@@ -318,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
         utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + rmNext.getSubject());
+        updateNotificationBar (sdfDateTime.format(nextTime), rmNext.getSubject(), (StartFinish.equals("S")? "시작":"끝남"));
     }
 
 //        String scheduleLoopTask() {

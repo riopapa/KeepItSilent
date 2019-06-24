@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class NotificationService extends Service {
@@ -24,7 +23,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
-        Log.w("Noti SVC","Started");
+//        Log.w("Noti SVC","Started");
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {
@@ -43,9 +42,12 @@ public class NotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int operation = intent.getIntExtra("operation", -1);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
+        String dateTime = intent.getStringExtra("dateTime");
+        String subject = intent.getStringExtra("subject");
+        String startFinish = intent.getStringExtra("startFinish");
         createNotification();
         if (isUpdate) {
-            updateRemoteViews();
+            updateRemoteViews(dateTime, subject, startFinish);
             startForeground(100, mBuilder.build());
             return START_STICKY;
         }
@@ -93,8 +95,11 @@ public class NotificationService extends Service {
 
     }
 
-    private void updateRemoteViews() {
+    private void updateRemoteViews(String dateTime, String subject, String startFinish) {
         mRemoteViews.setImageViewResource(R.id.stopNow, R.raw.silent_now);
+        mRemoteViews.setTextViewText(R.id.dateTime, dateTime);
+        mRemoteViews.setTextViewText(R.id.subject, subject);
+        mRemoteViews.setTextViewText(R.id.startFinish, startFinish);
     }
 
     @Override
