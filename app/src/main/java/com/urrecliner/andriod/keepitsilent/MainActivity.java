@@ -22,16 +22,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADDUPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
-import static com.urrecliner.andriod.keepitsilent.Vars.NORMAL_ID;
-import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_RERUN;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
@@ -49,6 +47,7 @@ import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.mSettings;
 import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
+import static com.urrecliner.andriod.keepitsilent.Vars.sdfTime;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 import static com.urrecliner.andriod.keepitsilent.Vars.weekName;
@@ -91,10 +90,7 @@ public class MainActivity extends AppCompatActivity {
         onStateCode();
         new Timer().schedule(new TimerTask() {
             public void run () {
-                updateNotificationBar("12:31 00:00","Subject Name","S");
-//                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
-//                updateIntent.putExtra("isUpdate", true);
-//                startService(updateIntent);
+                updateNotificationBar("23:59","Subject Name","S");
             }
         }, 100);
     }
@@ -107,14 +103,6 @@ public class MainActivity extends AppCompatActivity {
         updateIntent.putExtra("startFinish", startFinish);
         startService(updateIntent);
     }
-
-//    void setAwakenAlways(Context context) {
-//        ComponentName receiver = new ComponentName(context, MainActivity.class);
-//        PackageManager pm = context.getPackageManager();
-//        pm.setComponentEnabledSetting(receiver,
-//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-//                PackageManager.DONT_KILL_APP);
-//    }
 
     void setVariables() {
 
@@ -164,61 +152,29 @@ public class MainActivity extends AppCompatActivity {
             case STATE_ONETIME:
                 stateCode = "@" + stateCode;
                 finish();
-//                finishAffinity();
-//                showArrayLists();
                 break;
 
             case STATE_ALARM:
-//                Bundle args = getIntent().getBundleExtra("DATA");
-//                try {
-//                    Reminder reminder1 = (Reminder) args.getSerializable("reminder");
-//                    if (reminder1 != null)
-//                        reminder = reminder1;
-//                } catch (NullPointerException ne) {
-//                    utils.log(stateCode, "reminder1 is null");
-//                }
-//                if (reminder != null) {
-//                    stateCode = "@" + stateCode;
-//                    text = "New Alarm " + reminder.getSubject() + " Settled " + scheduleOneTask(reminder);
-//                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-//                    utils.log(logID, text);
-//                    finish();
-//                } else
-//                    scheduleAllTasks();
                 stateCode = "@" + stateCode;
                 scheduleNextTask("Next Alarm Settled ");
                 finish();
-//                finishAffinity();
-//                finishAffinity();
                 break;
-
-//            case "Loop":  // it means from receiver
-//                stateCode = "@" + stateCode;
-//                scheduleLooping();
-////                finishAffinity();
-//                break;
 
             case STATE_RERUN:  // it means from receiver
                 stateCode = "@" + stateCode;
                 scheduleNextTask("ReRun Activated ");
-//                finishAffinity();
                 break;
 
             case STATE_BOOT:  // it means from receiver
                 stateCode = "@" + stateCode;
                 scheduleNextTask("Boot triggered new Alarm ");
-//                finishAffinity();
                 break;
 
             case STATE_ADDUPDATE:
-//                stateCode = "@" + stateCode;
-//                scheduleNextTask("Alarm Updated ");
-//                finishAffinity();
+                stateCode = "@" + stateCode;
                 break;
 
             default:
-//                setContentView(R.layout.activity_main);
-//                showArrayLists();
                 break;
         }
         setContentView(R.layout.activity_main);
@@ -278,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
                 Vars.nowPosition = position;
                 reminder = reminders.get(position);
                 int uniqueId = reminder.getUniqueId();
-//                new callReminder().execute(reminders.get(position));
                 Intent intent;
                 if (uniqueId != ONETIME_ID) {
                     intent = new Intent(MainActivity.this, AddUpdateActivity.class);
@@ -303,10 +258,7 @@ public class MainActivity extends AppCompatActivity {
         boolean[] week;
         for (Reminder rm : reminders) {
             if (rm.getActive()) {
-//                if (rm.getUniqueId() == ONETIME_ID)
-//                    week = new boolean[]{true, true, true, true, true, true, true};
-//                else
-                    week = rm.getWeek();
+                week = rm.getWeek();
                 long nextStart = CalculateNext.calc(false, rm.getStartHour(), rm.getStartMin(), week);
                 if (nextStart < nextTime) {
                     nextTime = nextStart;
@@ -321,37 +273,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-//        rmNext.setUniqueId((int) (System.currentTimeMillis() % 10000000L));
-//        rmNext.setUniqueId(NORMAL_ID + (int) (Character) StartFinish.charAt(0));
         NextAlarm.request(rmNext, nextTime, StartFinish, getApplicationContext());
         String msg = headInfo + "\n" + rmNext.getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
         utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + rmNext.getSubject());
-        updateNotificationBar (sdfDateTime.format(nextTime), rmNext.getSubject(), StartFinish);
+        updateNotificationBar (sdfTime.format(nextTime), rmNext.getSubject(), StartFinish);
     }
-
-//        String scheduleLoopTask() {
-//
-//        long nextStart = System.currentTimeMillis() + 30*60*1000;
-//        reminder.setActiveTrue();
-//        NextAlarm.request(reminder, nextStart, "L", getApplicationContext());
-//        String text = sdfDateTime.format(nextStart);
-//        utils.log(logID, text + " : Loop");
-//        return text;
-//    }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (!stateCode.equals("Loop"))
             utils.log(logID, "RESUME " + stateCode);
-//        if (!stateCode.equals(blank)) {
-            setVariables();
-            onStateCode();
-//        }
-//        else
-//            scheduleLooping();
+        setVariables();
+        onStateCode();
     }
 
     @Override
@@ -372,30 +308,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void scheduleLooping() {
-        final long intervalLong = 111 * 60000;
-        final long intervalShort = 25 * 60000;
-        long nextTime = System.currentTimeMillis();
-        reminder.setUniqueId(NORMAL_ID - 11);
-        reminder.setActive(true);
-        reminder.setSubject("Looping");
-        Calendar calendar = Calendar.getInstance();
-        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hourOfDay > 22 || hourOfDay < 8)
-            nextTime += intervalShort;
-        else
-            nextTime+= intervalLong;
-
-        NextAlarm.request(reminder, nextTime, "L", getApplicationContext());
-//        utils.logE(logID,reminder.getSubject() + " " + sdfDateTime.format(nextTime));
-        scheduleNextTask("Looping");
-    }
+//    void scheduleLooping() {
+//        final long intervalLong = 111 * 60000;
+//        final long intervalShort = 25 * 60000;
+//        long nextTime = System.currentTimeMillis();
+//        reminder.setUniqueId(NORMAL_ID - 11);
+//        reminder.setActive(true);
+//        reminder.setSubject("Looping");
+//        Calendar calendar = Calendar.getInstance();
+//        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+//        if (hourOfDay > 22 || hourOfDay < 8)
+//            nextTime += intervalShort;
+//        else
+//            nextTime+= intervalLong;
+//
+//        NextAlarm.request(reminder, nextTime, "L", getApplicationContext());
+////        utils.logE(logID,reminder.getSubject() + " " + sdfDateTime.format(nextTime));
+//        scheduleNextTask("Looping");
+//    }
 
     @Override
     public void onBackPressed() {
         stateCode = "@" + stateCode;
         scheduleNextTask("Activate Silent Time ");
-//        finishAffinity();
         super.onBackPressed();
     }
 

@@ -32,6 +32,7 @@ class Vars {
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("MM-dd HH:mm", Locale.US);
+    static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.US);
     static final SimpleDateFormat sdfLogTime = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
     static Reminder reminder = new Reminder();
     static DatabaseIO databaseIO;
