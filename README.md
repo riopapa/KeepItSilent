@@ -86,7 +86,7 @@
 - ~~When phone is rebooted, to active all the event, I force to run this app, so mainActivity will be displayed after boot completion~~ <= add boot receiver
 - ~~A SQLiteConnection object for database .. was leaked !~~ <== add cursor close
 - ~~When it goes to normal status, main Activity is shown in foreground~~ <= add status check to reshow list or not
-- ~~Android kills this app after some period ~~ <== add notification bar to keep alive
+- ~~Android kills this app after some period~~ <== add notification bar to keep alive
 
 <H3>Thanks to all persons in GitHub for good examples.</H3>
 
