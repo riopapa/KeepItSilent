@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         onStateCode();
         new Timer().schedule(new TimerTask() {
             public void run () {
-                updateNotificationBar("12:31 00:00","Subject Name","시작");
+                updateNotificationBar("12:31 00:00","Subject Name","S");
 //                Intent updateIntent = new Intent(MainActivity.this, NotificationService.class);
 //                updateIntent.putExtra("isUpdate", true);
 //                startService(updateIntent);
@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
         utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + rmNext.getSubject());
-        updateNotificationBar (sdfDateTime.format(nextTime), rmNext.getSubject(), (StartFinish.equals("S")? "시작":"끝남"));
+        updateNotificationBar (sdfDateTime.format(nextTime), rmNext.getSubject(), StartFinish);
     }
 
 //        String scheduleLoopTask() {

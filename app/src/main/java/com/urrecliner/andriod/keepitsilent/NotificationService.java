@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -99,7 +100,11 @@ public class NotificationService extends Service {
         mRemoteViews.setImageViewResource(R.id.stopNow, R.raw.silent_now);
         mRemoteViews.setTextViewText(R.id.dateTime, dateTime);
         mRemoteViews.setTextViewText(R.id.subject, subject);
-        mRemoteViews.setTextViewText(R.id.startFinish, startFinish);
+        mRemoteViews.setTextViewText(R.id.startFinish, startFinish.equals("S")? "시작":"끝남");
+        int color = startFinish.equals("S") ? Color.GREEN : Color.BLUE;
+        mRemoteViews.setTextColor(R.id.dateTime, color);
+        mRemoteViews.setTextColor(R.id.subject, color);
+        mRemoteViews.setTextColor(R.id.startFinish, color);
     }
 
     @Override

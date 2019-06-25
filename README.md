@@ -59,22 +59,34 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="./screenshots/SettingActivity.jpg" width=400 height=800>
 
+
+<H3>Notification Bar</H3>
+
+- It shows next available events
+- Pressing <img src="./app/src/main/res/raw/silent_now.png" width=20 height=24> will show OneTimeActivity screen immediately.
+
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="./screenshots/notification_bar.png" width=400 height=80>
+
 <H1>Comments</H1>
 
 - Coded by **Woncherl Ha** - riopapa@gmail.com
-- When return time comes, it reactivate vibration to normal regardless you were in manner mode
 
 <H3>Updates / Changes</H3>
-- 2019.02.07 Boot Receiver added : all tables are read and set broadcasting again when booted
+
+- 2019.02.07 Boot Receiver added : Next available event will be activated after boot.
+- 2019.06.25 Notification Bar added
+
 
 <H3>What I learned in this application</H3>
-- listViewAdapter, time picker, menu.xml, Pending Intent id update, Object putExtras/getExtras, Sqlite handling, ..
+- listViewAdapter, time picker, menu.xml, Pending Intent id update, Object putExtras/getExtras, Sqlite handling, notification bar update ..
 
 <H1>Issues not fixed yet</H1>
 
 - ~~When phone is rebooted, to active all the event, I force to run this app, so mainActivity will be displayed after boot completion~~ <= add boot receiver
 - ~~A SQLiteConnection object for database .. was leaked !~~ <== add cursor close
 - ~~When it goes to normal status, main Activity is shown in foreground~~ <= add status check to reshow list or not
+- ~~Android kills this app after some period ~~ <== add notification bar to keep alive
 
 <H3>Thanks to all persons in GitHub for good examples.</H3>
 
