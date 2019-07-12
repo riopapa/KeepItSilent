@@ -41,5 +41,5 @@ class Vars {
     static final String STATE_ONETIME = "OneTime";
     static final String STATE_BOOT = "Boot";
     static final String STATE_RERUN = "ReRun";
-    static final String STATE_ADDUPDATE = "AddUpdate";
+    static final String STATE_ADD_UPDATE = "AddUpdate";
 }

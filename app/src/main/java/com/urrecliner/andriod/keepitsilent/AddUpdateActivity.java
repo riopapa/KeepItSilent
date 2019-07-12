@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADDUPDATE;
+import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
@@ -174,7 +174,7 @@ public class AddUpdateActivity extends AppCompatActivity {
             databaseIO.update(id, reminder);
         }
         databaseIO.close();
-        stateCode = STATE_ADDUPDATE;
+        stateCode = STATE_ADD_UPDATE;
         utils.log(logID, stateCode + " "+utils.hourMin(startHour,startMin));
 //        Intent i = new Intent(getApplicationContext(), MainActivity.class);
 //        Bundle args = new Bundle();

@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.widget.Toast;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
@@ -23,7 +22,7 @@ class MannerMode {
         assert am != null;
         beepStart();
         vibratePhone(context);
-        Toast.makeText(context,text,Toast.LENGTH_LONG).show();
+//        Toast.makeText(context,text,Toast.LENGTH_LONG).show();
         if (vibrate)
             am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         else
@@ -35,7 +34,7 @@ class MannerMode {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        Toast.makeText(context, text,Toast.LENGTH_LONG).show();
+//        Toast.makeText(context, text,Toast.LENGTH_LONG).show();
         vibratePhone(context);
         beepFinish();
     }

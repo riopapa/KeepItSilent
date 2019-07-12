@@ -63,28 +63,19 @@ public class SettingActivity extends AppCompatActivity {
                 beepManner ^= true;
                 editor.putBoolean("beepManner", beepManner).apply();
                 break;
-//            case R.id.set_re_run:
-//                stateCode = "ReRun";
-//                finish();
-//                break;
             default:
                 utils.log(logID,"click ID : "+v.getId());
         }
         showSoundSetting();
     }
     private void showSoundSetting() {
-        final TextView tvSound = findViewById(R.id.set_sound);
-        final TextView tvSoundText = findViewById(R.id.set_sound_text);
-        String text = (beepManner) ? "끔" : "켬";
-        tvSound.setText(text);
-        text = getString(R.string.sound_when_manner_changed);
-        text += (beepManner) ? "남" : "안 남";
-        tvSoundText.setText(text);
-        final TextView tvShort = findViewById(R.id.set_interval_short);
-        final TextView tvLong = findViewById(R.id.set_interval_long);
-        final TextView tvDuration = findViewById(R.id.set_default_Duration);
-        text = ""+interval_Short; tvShort.setText(text);
-        text = ""+interval_Long; tvLong.setText(text);
-        text = ""+default_Duration; tvDuration.setText(text);
+        TextView tv;
+        String text;
+        tv = findViewById(R.id.set_sound); text = (beepManner) ? "끔" : "켬"; tv.setText(text);
+        tv = findViewById(R.id.set_sound_text); text = getString(R.string.sound_when_manner_changed) + ((beepManner) ? "남" : "안 남");
+        tv.setText(text);
+        tv = findViewById(R.id.set_interval_short); text = ""+interval_Short; tv.setText(text);
+        tv = findViewById(R.id.set_interval_long); text = ""+interval_Long; tv.setText(text);
+        tv = findViewById(R.id.set_default_Duration); text = ""+default_Duration; tv.setText(text);
     }
 }

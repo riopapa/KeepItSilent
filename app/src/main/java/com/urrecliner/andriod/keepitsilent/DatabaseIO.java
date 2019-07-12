@@ -10,11 +10,10 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
 import static com.urrecliner.andriod.keepitsilent.Vars.NORMAL_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
+import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
+import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class DatabaseIO extends SQLiteOpenHelper {
@@ -180,7 +179,7 @@ public class DatabaseIO extends SQLiteOpenHelper {
 
         reminder.setUniqueId(ONETIME_ID);
         reminder.setActive(false);
-        reminder.setSubject(mainActivity.getResources().getString(R.string.action_timer));
+        reminder.setSubject(context.getResources().getString(R.string.action_timer));
         insert(reminder);
 
         reminder.setUniqueId(NORMAL_ID);

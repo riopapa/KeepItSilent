@@ -4,13 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.Objects;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
@@ -23,7 +21,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String logID = "ALARM RCV";
         if (utils == null)
             utils = new Utils();
-        utils.log(logID, "action: " + intent.getAction()+" stateCode: "+ stateCode);
+//        utils.log(logID, "action: " + intent.getAction()+" stateCode: "+ stateCode);
 
         Bundle args = intent.getBundleExtra("DATA");
         assert args != null;
@@ -31,21 +29,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         assert reminder != null;
         subject = reminder.getSubject();
         String caseSFO = Objects.requireNonNull(intent.getExtras()).getString("case");
-        utils.log(logID,"case:"+ caseSFO + " subject: "+subject);
+//        utils.log(logID,"case:"+ caseSFO + " subject: "+subject);
+        utils.logE(logID,"case:"+ caseSFO + " subject: "+subject);
         assert caseSFO != null;
         Intent i = new Intent(context, MainActivity.class);
         switch (caseSFO) {
-            case "L":   // looping
-                break;
             case "S":   // start
                 MannerMode.turnOn(context, subject, reminder.getVibrate());
-                String text = subject+"\nGo into Mute till " + utils.hourMin(reminder.getFinishHour(),reminder.getFinishMin());
-                Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "F":   // finish
                 MannerMode.turnOff(context, subject);
-                text = subject+"\nFinished ";
-                Toast.makeText(mainActivity, text, Toast.LENGTH_LONG).show();
                 break;
             case "O":   // onetime
                 MannerMode.turnOff(context, subject);
@@ -55,10 +48,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             default:
                 utils.log(logID,"Case Error " + caseSFO);
         }
-        if (caseSFO.equals("L"))
-            stateCode = "Loop";
-        else
-            stateCode = STATE_ALARM;
+        stateCode = STATE_ALARM;
         i.putExtra("stateCode",stateCode);
         i.putExtra("DATA",args);
         context.startActivity(i);

@@ -26,7 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADDUPDATE;
+import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         onStateCode();
         new Timer().schedule(new TimerTask() {
             public void run () {
-                updateNotificationBar("23:59","Subject Name","S");
+                updateNotificationBar("xx:xx","not activated yet","S");
             }
         }, 100);
     }
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 scheduleNextTask("Boot triggered new Alarm ");
                 break;
 
-            case STATE_ADDUPDATE:
+            case STATE_ADD_UPDATE:
                 stateCode = "@" + stateCode;
                 break;
 
@@ -284,8 +284,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!stateCode.equals("Loop"))
-            utils.log(logID, "RESUME " + stateCode);
+        utils.log(logID, "RESUME " + stateCode);
         setVariables();
         onStateCode();
     }
