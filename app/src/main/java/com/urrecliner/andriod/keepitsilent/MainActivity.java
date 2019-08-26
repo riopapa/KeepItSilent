@@ -248,7 +248,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void scheduleNextTask(String headInfo) {
-        long nextTime = System.currentTimeMillis() + (long)2400*60*60*1000;
+        long nextTime = System.currentTimeMillis() + (long)240*60*60*1000;
+        Log.w("Nxt", sdfDateTime.format(nextTime));
         Reminder rmNext = reminder;
         String StartFinish = "S";
         databaseIO = new DatabaseIO();
@@ -259,18 +260,23 @@ public class MainActivity extends AppCompatActivity {
         for (Reminder rm : reminders) {
             if (rm.getActive()) {
                 week = rm.getWeek();
-                long nextStart = CalculateNext.calc(false, rm.getStartHour(), rm.getStartMin(), week);
+                long nextStart = CalculateNext.calc(false, rm.getStartHour(), rm.getStartMin(), week, 0);
                 if (nextStart < nextTime) {
                     nextTime = nextStart;
                     rmNext = rm;
                     StartFinish = "S";
                 }
-                long nextFinish = CalculateNext.calc(true, rm.getFinishHour(), rm.getFinishMin(), week);
+                Log.w("S","H "+rm.getStartHour()+", M:"+rm.getStartMin());
+                Log.w("Start", sdfDateTime.format(nextTime));
+
+                long nextFinish = CalculateNext.calc(true, rm.getFinishHour(), rm.getFinishMin(), week, (rm.getStartHour()> rm.getFinishHour()) ? (long)24*60*60*1000 : 0);
                 if (nextFinish < nextTime) {
                     nextTime = nextFinish;
                     rmNext = rm;
                     StartFinish = (rm.getUniqueId() == ONETIME_ID) ? "O":"F";
                 }
+                Log.w("F","H "+rm.getFinishHour()+", M:"+rm.getFinishMin());
+                Log.w("Fin", sdfDateTime.format(nextTime));
             }
         }
         NextAlarm.request(rmNext, nextTime, StartFinish, getApplicationContext());

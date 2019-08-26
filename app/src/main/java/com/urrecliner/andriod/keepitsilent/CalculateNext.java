@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 class CalculateNext {
 
-    static long calc(boolean finish, int hour, int min, boolean[] week) {
+    static long calc(boolean finish, int hour, int min, boolean[] week, long add24Hour) {
         Calendar nextDay = Calendar.getInstance();
         nextDay.set(Calendar.HOUR_OF_DAY, hour);
         nextDay.set(Calendar.MINUTE, min);
@@ -18,7 +18,7 @@ class CalculateNext {
         for (int i = WK; ; ) {
             if (week[i]) {
                 nextEvent = nextDay.getTimeInMillis();
-                if (nextEvent > nowTime)
+                if ((nextEvent+add24Hour) > nowTime)
                     break;
                 if (finish) {
                     nextEvent += 24*60*60000;
@@ -31,7 +31,7 @@ class CalculateNext {
             if (i == 7)
                 i = 0;
         }
-        return nextEvent;
+        return (nextEvent+add24Hour);
     }
 
 }

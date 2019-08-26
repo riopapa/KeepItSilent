@@ -182,19 +182,6 @@ public class OneTimeActivity extends AppCompatActivity {
 //        args.putSerializable("reminder", reminder);
 //        intentS.putExtra("DATA",args);
 //        intentS.putExtra("case","O");
-//
-//        calendar.set(Calendar.HOUR_OF_DAY, finishHour);
-//        calendar.set(Calendar.MINUTE, finishMin);
-//        calendar.set(Calendar.SECOND,0);
-//        long nextStart = calendar.getTimeInMillis();
-//        if (nextStart < System.currentTimeMillis())     // in case next day
-//            nextStart += 24 * 60 * 60000;
-//        PendingIntent pendingIntentS = PendingIntent.getBroadcast(OneTimeActivity.this, reminder.getUniqueId(),
-//                intentS, PendingIntent.FLAG_UPDATE_CURRENT);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, nextStart, pendingIntentS);
-//        String logID = "OneTime";
-//        utils.log(logID,subject + "  Activated " + sdfDateTime.format(nextStart));
-//        finish();
     }
 
     @Override
