@@ -24,7 +24,6 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
-//        Log.w("Noti SVC","Started");
         super.onCreate();
         mContext = this;
         if (null != mRemoteViews) {
@@ -56,7 +55,6 @@ public class NotificationService extends Service {
         switch (operation) {
             case STOP_ONETIME:
                 intent = new Intent(mContext, OneTimeActivity.class);
-//                intent.putExtra("reminder", reminders.get(position));
                 startActivity(intent);
                 break;
             default:

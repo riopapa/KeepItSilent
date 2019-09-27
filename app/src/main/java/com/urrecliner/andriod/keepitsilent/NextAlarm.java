@@ -21,7 +21,6 @@ class NextAlarm {
 
         intent.putExtra("DATA",args);
         intent.putExtra("case",StartFinish);   // "S" : Start, "F" : Finish, "O" : One time
-//        int uniqueId = (StartFinish.equals("S")) ? reminder.getUniqueId() : reminder.getUniqueId() + 1;
         int uniqueId = reminder.getUniqueId();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (!reminder.getActive()) {

@@ -61,7 +61,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_NAME, null, cv);
         db.close();
-        Log.w(logID, "Insert DB: id = " + result+ "uid = "+uniqueId);
     }
 
     private String buildWeekTbl(Reminder reminder) {
@@ -86,7 +85,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
         int active = (reminder.getActive()) ? 1:0;
         int vibrate = (reminder.getVibrate()) ? 1:0;
 
-//        cv.put("_id", id);
         cv.put("uniqueId", uniqueId);
         cv.put("subject", subject);
         cv.put("timeStart", timeStart);
@@ -166,7 +164,6 @@ public class DatabaseIO extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             long id = cursor.getInt(0);
             databaseIO.delete(id);
-//            Log.w(logID, "clear id "+id);
             cursor.moveToNext();
         }
         cursor.close();

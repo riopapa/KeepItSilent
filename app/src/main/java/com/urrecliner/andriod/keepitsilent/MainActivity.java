@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +29,6 @@ import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_RERUN;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorActive;
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         setContentView(R.layout.activity_main);
         setVariables();
-        onStateCode();
+        actOnStateCode();
         new Timer().schedule(new TimerTask() {
             public void run () {
                 updateNotificationBar("xx:xx","not activated yet","S");
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         xSize = size.x / 9;    // width / (7 week + 2)
     }
 
-    void onStateCode() {
+    void actOnStateCode() {
 
         if (!stateCode.equals(blank))
             utils.log(logID, "State=" + stateCode);
@@ -160,14 +158,10 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 break;
 
-            case STATE_RERUN:  // it means from receiver
-                stateCode = "@" + stateCode;
-                scheduleNextTask("ReRun Activated ");
-                break;
-
             case STATE_BOOT:  // it means from receiver
                 stateCode = "@" + stateCode;
                 scheduleNextTask("Boot triggered new Alarm ");
+                finish();
                 break;
 
             case STATE_ADD_UPDATE:
@@ -195,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_add:
                 intent = new Intent(MainActivity.this, AddUpdateActivity.class);
                 startActivity(intent);
-                Log.w("add","returned");
                 return true;
             case R.id.action_setting:
                 intent = new Intent(MainActivity.this, SettingActivity.class);
@@ -249,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
 
     void scheduleNextTask(String headInfo) {
         long nextTime = System.currentTimeMillis() + (long)240*60*60*1000;
-        Log.w("Nxt", sdfDateTime.format(nextTime));
         Reminder rmNext = reminder;
         String StartFinish = "S";
         databaseIO = new DatabaseIO();
@@ -266,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
                     rmNext = rm;
                     StartFinish = "S";
                 }
-                Log.w("S","H "+rm.getStartHour()+", M:"+rm.getStartMin());
-                Log.w("Start", sdfDateTime.format(nextTime));
 
                 long nextFinish = CalculateNext.calc(true, rm.getFinishHour(), rm.getFinishMin(), week, (rm.getStartHour()> rm.getFinishHour()) ? (long)24*60*60*1000 : 0);
                 if (nextFinish < nextTime) {
@@ -275,8 +265,6 @@ public class MainActivity extends AppCompatActivity {
                     rmNext = rm;
                     StartFinish = (rm.getUniqueId() == ONETIME_ID) ? "O":"F";
                 }
-                Log.w("F","H "+rm.getFinishHour()+", M:"+rm.getFinishMin());
-                Log.w("Fin", sdfDateTime.format(nextTime));
             }
         }
         NextAlarm.request(rmNext, nextTime, StartFinish, getApplicationContext());
@@ -292,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         utils.log(logID, "RESUME " + stateCode);
         setVariables();
-        onStateCode();
+        actOnStateCode();
     }
 
     @Override

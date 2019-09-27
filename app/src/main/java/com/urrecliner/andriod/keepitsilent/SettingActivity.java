@@ -2,7 +2,6 @@ package com.urrecliner.andriod.keepitsilent;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,7 +19,6 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.w(logID,"OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         showSoundSetting();

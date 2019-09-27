@@ -34,7 +34,6 @@ class MannerMode {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-//        Toast.makeText(context, text,Toast.LENGTH_LONG).show();
         vibratePhone(context);
         beepFinish();
     }
@@ -48,11 +47,7 @@ class MannerMode {
 
     private static void beepStart() {
 
-//        utils.log(logID, "Start");
-//        mSettings = PreferenceManager.getDefaultSharedPreferences(mainContext);
-//        beepManner = mSettings.getBoolean("beepManner", true);
         if (beepManner) {
-//            utils.log(logID, "Start ON");
             if (mpStart == null) {
                 utils.log(logID, "creating beep");
                 mpStart = MediaPlayer.create(mainContext, R.raw.manner_starting);
@@ -70,11 +65,7 @@ class MannerMode {
 
     private static void beepFinish() {
 
-//        utils.log(logID, "Finish");
-//        mSettings = PreferenceManager.getDefaultSharedPreferences(mainContext);
-//        beepManner = mSettings.getBoolean("beepManner", true);
         if (beepManner) {
-//            utils.log(logID, "Finish ON");
             if (mpFinish == null) {
                 utils.log(logID, "creating beep");
                 mpFinish = MediaPlayer.create(mainContext, R.raw.manner_return2normal);
