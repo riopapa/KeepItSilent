@@ -1,15 +1,20 @@
 package com.urrecliner.andriod.keepitsilent;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
@@ -43,6 +48,8 @@ import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.mSettings;
+import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
 import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfTime;
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Vars.mainContext = this.getApplicationContext();
         if (utils == null)
             utils = new Utils();
+        askPermission();
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -76,10 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 stateCode = blank;
         }
         utils.log(logID, stateCode);
-        preparePermission(getApplicationContext());
-        PermissionCheck permissionCheck = new PermissionCheck();
-        if (!permissionCheck.isAllPermitted(this))
-            return;
         utils.deleteOldLogFiles();
         if (!stateCode.equals(blank))
             return;
@@ -104,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
     void setVariables() {
 
-        if (utils == null)
-            utils = new Utils();
         mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         beepManner = mSettings.getBoolean("beepManner", true);
         interval_Short = mSettings.getInt("interval_Short", 5);
@@ -326,5 +328,74 @@ public class MainActivity extends AppCompatActivity {
         scheduleNextTask("Activate Silent Time ");
         super.onBackPressed();
     }
+
+
+    // ↓ ↓ ↓ P E R M I S S I O N    RELATED /////// ↓ ↓ ↓ ↓
+    ArrayList<String> permissions = new ArrayList<>();
+    private final static int ALL_PERMISSIONS_RESULT = 101;
+    ArrayList<String> permissionsToRequest;
+    ArrayList<String> permissionsRejected = new ArrayList<>();
+
+    private void askPermission() {
+        permissions.add(Manifest.permission.READ_PHONE_STATE);
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.VIBRATE);
+        permissions.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
+        permissions.add(Manifest.permission.RECEIVE_BOOT_COMPLETED);
+        permissionsToRequest = findUnAskedPermissions(permissions);
+        if (permissionsToRequest.size() != 0) {
+            requestPermissions(permissionsToRequest.toArray(new String[0]),
+//            requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
+                    ALL_PERMISSIONS_RESULT);
+        }
+    }
+
+    private ArrayList findUnAskedPermissions(@NonNull ArrayList<String> wanted) {
+        ArrayList <String> result = new ArrayList<String>();
+        for (String perm : wanted) if (hasPermission(perm)) result.add(perm);
+        return result;
+    }
+    private boolean hasPermission(@NonNull String permission) {
+        return (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == ALL_PERMISSIONS_RESULT) {
+            for (String perms : permissionsToRequest) {
+                if (hasPermission(perms)) {
+                    permissionsRejected.add(perms);
+                }
+            }
+            if (permissionsRejected.size() > 0) {
+                if (shouldShowRequestPermissionRationale(permissionsRejected.get(0))) {
+                    String msg = "These permissions are mandatory for the application. Please allow access.";
+                    showDialog(msg);
+                }
+            }
+            else
+                Toast.makeText(mainContext, "Permissions not granted.", Toast.LENGTH_LONG).show();
+        }
+    }
+    private void showDialog(String msg) {
+        showMessageOKCancel(msg,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(permissionsRejected.toArray(
+                                new String[0]), ALL_PERMISSIONS_RESULT);
+                    }
+                });
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(mainActivity)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+// ↑ ↑ ↑ ↑ P E R M I S S I O N    RELATED /////// ↑ ↑ ↑
 
 }
