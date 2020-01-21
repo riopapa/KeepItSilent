@@ -3,8 +3,6 @@ package com.urrecliner.andriod.keepitsilent;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +11,6 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -289,38 +286,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
     }
-
-    //    @Override
-//    public void onBackPressed() {  }
-
-    void preparePermission(Context context) {
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        assert nm != null;
-        if (!nm.isNotificationPolicyAccessGranted()) {
-            Intent intent = new
-                    Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
-    }
-
-//    void scheduleLooping() {
-//        final long intervalLong = 111 * 60000;
-//        final long intervalShort = 25 * 60000;
-//        long nextTime = System.currentTimeMillis();
-//        reminder.setUniqueId(NORMAL_ID - 11);
-//        reminder.setActive(true);
-//        reminder.setSubject("Looping");
-//        Calendar calendar = Calendar.getInstance();
-//        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-//        if (hourOfDay > 22 || hourOfDay < 8)
-//            nextTime += intervalShort;
-//        else
-//            nextTime+= intervalLong;
-//
-//        NextAlarm.request(reminder, nextTime, "L", getApplicationContext());
-////        utils.logE(logID,reminder.getSubject() + " " + sdfDateTime.format(nextTime));
-//        scheduleNextTask("Looping");
-//    }
 
     @Override
     public void onBackPressed() {
