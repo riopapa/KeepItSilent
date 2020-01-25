@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     SilentInfo getDefaultSilent() {
 
         boolean [] week = new boolean[]{false, true, true, true, true, true, false};
-        return new SilentInfo("WorkingDay @Night", 22, 30, 7, 30, week, true, true);
+        return new SilentInfo(getString(R.string.silent_Default), 22, 30, 7, 30, week, true, true);
     }
 
     SilentInfo getSilentOneTime() {

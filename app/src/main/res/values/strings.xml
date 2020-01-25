@@ -5,6 +5,7 @@
     <string name="blank"> </string>
 
     <string name="silent_Once">바로 조용히 하기</string>
+    <string name="silent_Default">WorkingDay Night</string>
     <string name="action_add">추가</string>
     <string name="action_reset">모두 재 설정 하기</string>
     <string name="action_save">Save</string>
