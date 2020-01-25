@@ -8,8 +8,8 @@ import android.os.Bundle;
 import java.util.Objects;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
-import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
-import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
@@ -25,9 +25,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Bundle args = intent.getBundleExtra("DATA");
         assert args != null;
-        reminder = (Reminder) args.getSerializable("reminder");
-        assert reminder != null;
-        subject = reminder.getSubject();
+        silentInfo = (SilentInfo) args.getSerializable("silentInfo");
+        assert silentInfo != null;
+        subject = silentInfo.getSubject();
         String caseSFO = Objects.requireNonNull(intent.getExtras()).getString("case");
 //        utils.log(logID,"case:"+ caseSFO + " subject: "+subject);
         utils.logE(logID,"case:"+ caseSFO + " subject: "+subject);
@@ -35,15 +35,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent i = new Intent(context, MainActivity.class);
         switch (caseSFO) {
             case "S":   // start
-                MannerMode.turnOn(context, subject, reminder.getVibrate());
+                MannerMode.turnOn(context, subject, silentInfo.getVibrate());
                 break;
             case "F":   // finish
                 MannerMode.turnOff(context, subject);
                 break;
             case "O":   // onetime
                 MannerMode.turnOff(context, subject);
-                reminder.setActive(false);
-                databaseIO.update(reminder.getId(), reminder);
+                silentInfo.setActive(false);
+                silentInfos.set(0,silentInfo);
+                utils.saveSharedPrefTables();
                 break;
             default:
                 utils.log(logID,"Case Error " + caseSFO);

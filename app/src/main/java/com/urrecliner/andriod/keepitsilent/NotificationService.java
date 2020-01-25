@@ -8,12 +8,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
-
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class NotificationService extends Service {
 
@@ -43,11 +40,11 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent == null) {
-            utils.logE("intent","intent is null" + startId);
-        }
-        else
-            utils.log("intent","intent "+intent);
+//        if (intent == null) {
+//            utils.logE("intent","intent is null" + startId);
+//        }
+//        else
+//            utils.log("intent","intent "+intent);
         int operation = intent.getIntExtra("operation", -1);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
         String dateTime = intent.getStringExtra("dateTime");
@@ -75,11 +72,11 @@ public class NotificationService extends Service {
     private void createNotification() {
 
         if (null == mNotificationChannel) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotificationChannel = new NotificationChannel("default","default", NotificationManager.IMPORTANCE_DEFAULT);
                 mNotificationManager.createNotificationChannel(mNotificationChannel);
-            }
+//            }
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(mContext,"default")

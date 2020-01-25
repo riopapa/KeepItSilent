@@ -1,21 +1,31 @@
 package com.urrecliner.andriod.keepitsilent;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfDate;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfLogTime;
+import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
 
 class Utils {
 
@@ -135,6 +145,33 @@ class Utils {
 
     private File[] getCurrentFileList(File fullPath) {
         return fullPath.listFiles();
+    }
+
+
+    void saveSharedPrefTables() {
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainContext);
+        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(silentInfos);
+        prefsEditor.putString("silentInfo", json);
+        prefsEditor.apply();
+    }
+
+    ArrayList<SilentInfo> readSharedPrefTables() {
+
+        ArrayList<SilentInfo> list;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainContext);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("silentInfo", "");
+        if (json.isEmpty()) {
+            list = new ArrayList<>();
+        } else {
+            Type type = new TypeToken<List<SilentInfo>>() {
+            }.getType();
+            list = gson.fromJson(json, type);
+        }
+        return list;
     }
 
 }

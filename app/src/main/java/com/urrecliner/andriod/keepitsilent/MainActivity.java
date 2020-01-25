@@ -3,10 +3,11 @@ package com.urrecliner.andriod.keepitsilent;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,11 +27,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
+import static com.urrecliner.andriod.keepitsilent.Vars.addNewSilent;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorActive;
@@ -39,17 +40,18 @@ import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.mSettings;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.reminder;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitsilent.Vars.sdfTime;
+import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 import static com.urrecliner.andriod.keepitsilent.Vars.weekName;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     ListView lVReminder;
     ListViewAdapter listViewAdapter;
-    private ArrayList<Reminder> reminders;
     private static String logID = "Main";
     private static String blank = "BLANK";
 
@@ -105,11 +106,11 @@ public class MainActivity extends AppCompatActivity {
 
     void setVariables() {
 
-        mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        beepManner = mSettings.getBoolean("beepManner", true);
-        interval_Short = mSettings.getInt("interval_Short", 5);
-        interval_Long = mSettings.getInt("interval_Long", 30);
-        default_Duration = mSettings.getInt("default_Duration", 60);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        beepManner = sharedPreferences.getBoolean("beepManner", true);
+        interval_Short = sharedPreferences.getInt("interval_Short", 5);
+        interval_Long = sharedPreferences.getInt("interval_Long", 30);
+        default_Duration = sharedPreferences.getInt("default_Duration", 60);
         colorOn = ContextCompat.getColor(getBaseContext(), R.color.Navy);
         colorInactiveBack = ContextCompat.getColor(getBaseContext(), R.color.gray);
         colorOnBack = ContextCompat.getColor(getBaseContext(), R.color.colorPrimary);
@@ -117,12 +118,15 @@ public class MainActivity extends AppCompatActivity {
         colorActive = ContextCompat.getColor(getBaseContext(), R.color.EarthBlue);
         colorOffBack = ContextCompat.getColor(getBaseContext(), R.color.transparent);
 
-        databaseIO = new DatabaseIO();
-        Cursor cursor = databaseIO.getAll();
-        long dbCount = databaseIO.getCount(cursor);
-        cursor.close();
-        if (dbCount == 0)
-            databaseIO.clearDatabase(getApplicationContext());
+        silentInfos = utils.readSharedPrefTables();
+        if (silentInfos.size() == 0) {
+            silentInfos.clear();
+            silentInfo = getSilentOneTime(getApplicationContext());
+            silentInfos.add(silentInfo);
+            silentInfo = getDefaultSilent();
+            silentInfos.add(silentInfo);
+            utils.saveSharedPrefTables();
+        }
 
         weekName[0] = getResources().getString(R.string.week_0);    weekName[1] = getResources().getString(R.string.week_1);    weekName[2] = getResources().getString(R.string.week_2);    weekName[3] = getResources().getString(R.string.week_3);
         weekName[4] = getResources().getString(R.string.week_4);    weekName[5] = getResources().getString(R.string.week_5);    weekName[6] = getResources().getString(R.string.week_6);
@@ -139,6 +143,18 @@ public class MainActivity extends AppCompatActivity {
         Point size = new Point();
         display.getSize(size);
         xSize = size.x / 9;    // width / (7 week + 2)
+
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+
     }
 
     void actOnStateCode() {
@@ -186,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         switch (item.getItemId()) {
             case R.id.action_add:
+                addNewSilent = true;
                 intent = new Intent(MainActivity.this, AddUpdateActivity.class);
                 startActivity(intent);
                 return true;
@@ -200,7 +217,12 @@ public class MainActivity extends AppCompatActivity {
                         .setIcon(R.mipmap.icon_alert)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                databaseIO.clearDatabase(getApplicationContext());
+                                silentInfos.clear();
+                                silentInfo = getSilentOneTime(getApplicationContext());
+                                silentInfos.add(silentInfo);
+                                silentInfo = getDefaultSilent();
+                                silentInfos.add(silentInfo);
+                                utils.saveSharedPrefTables();
                                 showArrayLists();
                             }
                         })
@@ -214,22 +236,17 @@ public class MainActivity extends AppCompatActivity {
     public void showArrayLists() {
 
         lVReminder = findViewById(R.id.lv_reminder);
-        Cursor cursor = databaseIO.getAll();
-        reminders = databaseIO.retrieveAllReminders(cursor);
-        cursor.close();
-
-        listViewAdapter = new ListViewAdapter(this, reminders);
+        listViewAdapter = new ListViewAdapter(this);
         lVReminder.setAdapter(listViewAdapter);
         lVReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Vars.nowPosition = position;
-                reminder = reminders.get(position);
-                int uniqueId = reminder.getUniqueId();
+                silentIdx = position;
+                silentInfo = silentInfos.get(position);
                 Intent intent;
-                if (uniqueId != ONETIME_ID) {
+                if (silentIdx != 0) {
+                    addNewSilent = false;
                     intent = new Intent(MainActivity.this, AddUpdateActivity.class);
-                    intent.putExtra("reminder", reminders.get(position));
                     startActivity(intent);
                 } else {
                     intent = new Intent(MainActivity.this, OneTimeActivity.class);
@@ -241,37 +258,47 @@ public class MainActivity extends AppCompatActivity {
 
     void scheduleNextTask(String headInfo) {
         long nextTime = System.currentTimeMillis() + (long)240*60*60*1000;
-        Reminder rmNext = reminder;
+        int saveIdx = 0;
         String StartFinish = "S";
-        databaseIO = new DatabaseIO();
-        Cursor cursor = databaseIO.getAll();
-        reminders = databaseIO.retrieveAllReminders(cursor);
-        cursor.close();
         boolean[] week;
-        for (Reminder rm : reminders) {
-            if (rm.getActive()) {
-                week = rm.getWeek();
-                long nextStart = CalculateNext.calc(false, rm.getStartHour(), rm.getStartMin(), week, 0);
+        for (int idx = 0; idx < silentInfos.size(); idx++) {
+            SilentInfo silentTemp = silentInfos.get(idx);
+            if (silentTemp.getActive()) {
+                week = silentTemp.getWeek();
+                long nextStart = CalculateNext.calc(false, silentTemp.getStartHour(), silentTemp.getStartMin(), week, 0);
                 if (nextStart < nextTime) {
                     nextTime = nextStart;
-                    rmNext = rm;
+                    saveIdx = idx;
                     StartFinish = "S";
                 }
 
-                long nextFinish = CalculateNext.calc(true, rm.getFinishHour(), rm.getFinishMin(), week, (rm.getStartHour()> rm.getFinishHour()) ? (long)24*60*60*1000 : 0);
+                long nextFinish = CalculateNext.calc(true, silentTemp.getFinishHour(), silentTemp.getFinishMin(), week, (silentTemp.getStartHour()> silentTemp.getFinishHour()) ? (long)24*60*60*1000 : 0);
                 if (nextFinish < nextTime) {
                     nextTime = nextFinish;
-                    rmNext = rm;
-                    StartFinish = (rm.getUniqueId() == ONETIME_ID) ? "O":"F";
+                    saveIdx = idx;
+                    StartFinish = (idx == 0) ? "O":"F";
                 }
             }
         }
-        NextAlarm.request(rmNext, nextTime, StartFinish, getApplicationContext());
-        String msg = headInfo + "\n" + rmNext.getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
+        NextAlarm.request(silentInfos.get(saveIdx), nextTime, StartFinish, getApplicationContext());
+        String msg = headInfo + "\n" + silentInfos.get(saveIdx).getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
         utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + rmNext.getSubject());
-        updateNotificationBar (sdfTime.format(nextTime), rmNext.getSubject(), StartFinish);
+        utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + silentInfos.get(saveIdx).getSubject());
+        updateNotificationBar (sdfTime.format(nextTime), silentInfos.get(saveIdx).getSubject(), StartFinish);
+    }
+
+    SilentInfo getDefaultSilent() {
+
+        boolean [] week = new boolean[]{false, true, true, true, true, true, false};
+        return new SilentInfo("WorkingDay @Night", 22, 30, 7, 30, week, true, true);
+    }
+
+    SilentInfo getSilentOneTime(Context context) {
+
+        boolean [] week = new boolean[]{false, false, false, false, false, false, false};
+        return new SilentInfo(context.getResources().getString(R.string.silent_Once), 1,2,3,4,
+                week, true, false);
     }
 
     @Override

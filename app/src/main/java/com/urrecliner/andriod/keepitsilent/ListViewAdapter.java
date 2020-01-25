@@ -8,30 +8,28 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import static com.urrecliner.andriod.keepitsilent.Vars.colorActive;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorInactiveBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
+import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
 import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class ListViewAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private ArrayList<Reminder> myReminder;
-    ListViewAdapter(Context context, ArrayList<Reminder> myReminder) {
+    ListViewAdapter(Context context) {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.myReminder = myReminder;
     }
 
     @Override
     public int getCount() {
-        return myReminder.size();
+        return silentInfos.size();
     }
 
     @Override
@@ -47,12 +45,14 @@ public class ListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        silentIdx = position;
+        silentInfo = silentInfos.get(silentIdx);
         View listItem = convertView;
-        if (listItem == null) {
+        if (listItem == null)
              listItem = layoutInflater.inflate(R.layout.reminder_info, null);
-        }
-        boolean active = myReminder.get(position).getActive();
-        boolean vibrate = myReminder.get(position).getVibrate();
+
+        boolean active = silentInfo.getActive();
+        boolean vibrate = silentInfo.getVibrate();
 
         ImageView lvVibrate = listItem.findViewById(R.id.lv_vibrate);
         int resource;
@@ -63,11 +63,10 @@ public class ListViewAdapter extends BaseAdapter {
         lvVibrate.setImageResource(resource);
 
         TextView tv = listItem.findViewById(R.id.tv_subject);
-        tv.setText(myReminder.get(position).getSubject());
+        tv.setText(silentInfo.getSubject());
         tv.setTextColor((active) ? colorOn:colorOff);
 
-        int uniqueId = myReminder.get(position).getUniqueId();
-        if (uniqueId == ONETIME_ID) {
+        if (silentIdx == 0) {
             for (int i = 0; i < 7; i++) {
                 TextView tVWeek = listItem.findViewById(listViewWeek[i]);
                 tVWeek.setTextColor(colorOffBack);  // transparent
@@ -75,12 +74,12 @@ public class ListViewAdapter extends BaseAdapter {
             String txt = "-";
             tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
-            txt = utils.hourMin(myReminder.get(position).getFinishHour(),myReminder.get(position).getFinishMin());
+            txt = utils.hourMin(silentInfo.getFinishHour(), silentInfo.getFinishMin());
             tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
         }
         else{
-            boolean[] week = myReminder.get(position).getWeek();
+            boolean[] week = silentInfo.getWeek();
             for (int i = 0; i < 7; i++) {
                 TextView tV = listItem.findViewById(listViewWeek[i]);
                 tV.setTextColor(week[i] ? colorActive : colorOff);
@@ -89,10 +88,10 @@ public class ListViewAdapter extends BaseAdapter {
                 else
                     tV.setBackgroundColor(week[i] ? colorInactiveBack : colorOffBack);
             }
-            String txt = utils.hourMin (myReminder.get(position).getStartHour(),myReminder.get(position).getStartMin());
+            String txt = utils.hourMin (silentInfo.getStartHour(), silentInfo.getStartMin());
             tv = listItem.findViewById(R.id.tv_StartTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
-            txt = utils.hourMin (myReminder.get(position).getFinishHour(),myReminder.get(position).getFinishMin());
+            txt = utils.hourMin (silentInfo.getFinishHour(), silentInfo.getFinishMin());
             tv = listItem.findViewById(R.id.tv_FinishTime); tv.setText(txt);
             tv.setTextColor((active) ? colorOn:colorOff);
         }

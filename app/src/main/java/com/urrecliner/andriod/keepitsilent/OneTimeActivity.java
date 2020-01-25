@@ -13,19 +13,19 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.ONETIME_ID;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
-import static com.urrecliner.andriod.keepitsilent.Vars.databaseIO;
 import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
 import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
+import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class OneTimeActivity extends AppCompatActivity {
 
-    Reminder reminder;
-    private long id;
+    SilentInfo silentInfo;
     private String subject;
     private int startHour, startMin, finishHour, finishMin;
     private boolean vibrate;
@@ -45,18 +45,15 @@ public class OneTimeActivity extends AppCompatActivity {
         ActionBar actionBar;
         actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setTitle(getResources().getString(R.string.action_timer));
+        actionBar.setTitle(getResources().getString(R.string.silent_Once));
 
 //        Bundle data = getIntent().getExtras();
 //        assert data != null;
-//        reminder = (Reminder) data.getSerializable("reminder");
-        DatabaseIO databaseIO = new DatabaseIO();
-
-        reminder = databaseIO.getOneTime();
-
-        id = reminder.getId();
-        subject = reminder.getSubject();
-        vibrate = reminder.getVibrate();
+//        silentInfo = (SilentInfo) data.getSerializable("silentInfo");
+        silentIdx = 0;
+        silentInfo = silentInfos.get(silentIdx);
+        subject = silentInfo.getSubject();
+        vibrate = silentInfo.getVibrate();
         calendar = Calendar.getInstance();
         calendar.set(Calendar.SECOND,0);
         startHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -161,13 +158,12 @@ public class OneTimeActivity extends AppCompatActivity {
         tp.invalidate();
     }
 
-    private void onSave() {
+    private void saveOneTime() {
 
         boolean [] week = new boolean[]{true, true, true, true, true, true, true};
-        int uniqueId = ONETIME_ID;
-        Reminder reminder = new Reminder(id, uniqueId, subject, startHour, startMin, finishHour, finishMin,
-                week, true, vibrate);
-        databaseIO.update(reminder.getId(), reminder);
+        silentInfo = new SilentInfo(subject, startHour, startMin, finishHour, finishMin, week, true, vibrate);
+        silentInfos.set(0, silentInfo);
+        utils.saveSharedPrefTables();
         MannerMode.turnOn(getApplicationContext(), subject, vibrate);
         stateCode = STATE_ONETIME;
         if (mainActivity == null)
@@ -179,7 +175,7 @@ public class OneTimeActivity extends AppCompatActivity {
 //        assert alarmManager != null;
 //        Intent intentS = new Intent(this, AlarmReceiver.class);
 //        Bundle args = new Bundle();
-//        args.putSerializable("reminder", reminder);
+//        args.putSerializable("silentInfo", silentInfo);
 //        intentS.putExtra("DATA",args);
 //        intentS.putExtra("case","O");
     }
@@ -199,13 +195,13 @@ public class OneTimeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save) {
-            onSave();
+            saveOneTime();
             return true;
         }
 
         if (id == R.id.action_cancel) {
-            databaseIO.update(reminder.getId(), reminder);
-            databaseIO.close();
+            silentInfos.set(silentIdx, silentInfo);
+            utils.saveSharedPrefTables();
             finish();
             return true;
         }

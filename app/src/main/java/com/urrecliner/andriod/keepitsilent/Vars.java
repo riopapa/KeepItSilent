@@ -4,25 +4,24 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 class Vars {
     static int colorOn, colorOnBack, colorInactiveBack, colorOff, colorOffBack, colorActive;
-    static int nowPosition;
-    static int ONETIME_ID = 1111111;
-    static int NORMAL_ID = 1234567;
     static int xSize; // width for each week in AddUpdateActivity
     static int [] addViewWeek = new int[7];
     static int [] listViewWeek = new int[7];
     static String [] weekName = new String[7];
     static Utils utils = null;
 
+    static boolean addNewSilent = false;
     static MainActivity mainActivity;
     static Context mainContext;
 
     static String stateCode;
 
-    static SharedPreferences mSettings;
+    static SharedPreferences sharedPreferences;
     static SharedPreferences.Editor editor;
     static boolean beepManner = true;
 
@@ -34,8 +33,10 @@ class Vars {
     static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("MM-dd HH:mm", Locale.US);
     static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.US);
     static final SimpleDateFormat sdfLogTime = new SimpleDateFormat("MM-dd HH:mm:ss.SSS", Locale.US);
-    static Reminder reminder = new Reminder();
-    static DatabaseIO databaseIO;
+    static SilentInfo silentInfo = new SilentInfo();
+    static ArrayList<SilentInfo> silentInfos;
+    static int silentIdx;
+    static int silentUniq = 123456;
 
     static final String STATE_ALARM = "Alarm";
     static final String STATE_ONETIME = "OneTime";

@@ -10,22 +10,22 @@ import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 class NextAlarm {
-    static void request(Reminder reminder, long nextTime, String StartFinish, Context context) {
+    static void request(SilentInfo silentInfo, long nextTime, String StartFinish, Context context) {
         String logID = "NextAlarm";
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         assert alarmManager != null;
         Intent intent = new Intent(context, AlarmReceiver.class);
         Bundle args = new Bundle();
-        args.putSerializable("reminder", reminder);
-        utils.log(logID,"time:"+sdfDateTime.format(nextTime)+" "+StartFinish+" "+reminder.getSubject());
+        args.putSerializable("silentInfo", silentInfo);
+        utils.log(logID,"time:"+sdfDateTime.format(nextTime)+" "+StartFinish+" "+ silentInfo.getSubject());
 
         intent.putExtra("DATA",args);
         intent.putExtra("case",StartFinish);   // "S" : Start, "F" : Finish, "O" : One time
-        int uniqueId = reminder.getUniqueId();
+        int uniqueId = (int) System.currentTimeMillis() & 0xffff;
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (!reminder.getActive()) {
+        if (!silentInfo.getActive()) {
             alarmManager.cancel(pendingIntent);
-            utils.log(logID,StartFinish+" TASK Canceled : "+reminder.getSubject());
+            utils.log(logID,StartFinish+" TASK Canceled : "+ silentInfo.getSubject());
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, nextTime, pendingIntent);

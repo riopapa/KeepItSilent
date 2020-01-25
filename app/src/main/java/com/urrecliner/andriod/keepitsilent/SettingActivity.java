@@ -10,7 +10,7 @@ import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.andriod.keepitsilent.Vars.editor;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitsilent.Vars.mSettings;
+import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
 import static com.urrecliner.andriod.keepitsilent.Vars.utils;
 
 public class SettingActivity extends AppCompatActivity {
@@ -25,7 +25,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     public void adjustSetting(View v) {
-        editor = mSettings.edit();
+        editor = sharedPreferences.edit();
         switch (v.getId()) {
             case R.id.set_interval_short_Minus:
                 if (interval_Short > 1) {
