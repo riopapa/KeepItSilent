@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         silentInfos = utils.readSharedPrefTables();
         if (silentInfos.size() == 0) {
             silentInfos.clear();
-            silentInfo = getSilentOneTime(getApplicationContext());
+            silentInfo = getSilentOneTime();
             silentInfos.add(silentInfo);
             silentInfo = getDefaultSilent();
             silentInfos.add(silentInfo);
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 silentInfos.clear();
-                                silentInfo = getSilentOneTime(getApplicationContext());
+                                silentInfo = getSilentOneTime();
                                 silentInfos.add(silentInfo);
                                 silentInfo = getDefaultSilent();
                                 silentInfos.add(silentInfo);
@@ -294,10 +294,10 @@ public class MainActivity extends AppCompatActivity {
         return new SilentInfo("WorkingDay @Night", 22, 30, 7, 30, week, true, true);
     }
 
-    SilentInfo getSilentOneTime(Context context) {
+    SilentInfo getSilentOneTime() {
 
         boolean [] week = new boolean[]{false, false, false, false, false, false, false};
-        return new SilentInfo(context.getResources().getString(R.string.silent_Once), 1,2,3,4,
+        return new SilentInfo(getString(R.string.silent_Once), 1,2,3,4,
                 week, true, false);
     }
 
