@@ -17,7 +17,7 @@ class MannerMode {
     private static MediaPlayer mpStart, mpFinish;
 
     static void turnOn(Context context, String subject, boolean vibrate) {
-        final String text = subject + ", Go into Silent";
+//        final String text = subject + ", Go into Silent";
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         beepStart();
@@ -30,7 +30,7 @@ class MannerMode {
     }
 
     static void turnOff(Context context, String subject) {
-        final  String text = subject + ", Return to normal";
+//        final  String text = subject + ", Return to normal";
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);

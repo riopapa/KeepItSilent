@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
         display.getSize(size);
         xSize = size.x / 9;    // width / (7 week + 2)
 
+        // get permission for silent mode
         NotificationManager notificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && !notificationManager.isNotificationPolicyAccessGranted()) {
             Intent intent = new Intent(

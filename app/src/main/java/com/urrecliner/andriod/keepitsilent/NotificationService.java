@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 
 public class NotificationService extends Service {
 
-    private Context mContext;
+    private Context context;
     NotificationCompat.Builder mBuilder = null;
     NotificationChannel mNotificationChannel = null;
     NotificationManager mNotificationManager;
@@ -24,12 +24,12 @@ public class NotificationService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = this;
+        context = this;
         if (null != mRemoteViews) {
             mRemoteViews.removeAllViews(R.layout.notification_bar);
             mRemoteViews = null;
         }
-        mRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_bar);
+        mRemoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_bar);
     }
 
     @Override
@@ -40,11 +40,6 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-//        if (intent == null) {
-//            utils.logE("intent","intent is null" + startId);
-//        }
-//        else
-//            utils.log("intent","intent "+intent);
         int operation = intent.getIntExtra("operation", -1);
         boolean isUpdate = intent.getBooleanExtra("isUpdate", false);
         String dateTime = intent.getStringExtra("dateTime");
@@ -56,14 +51,9 @@ public class NotificationService extends Service {
             startForeground(100, mBuilder.build());
             return START_STICKY;
         }
-
-        switch (operation) {
-            case STOP_ONETIME:
-                intent = new Intent(mContext, OneTimeActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                break;
+        if (operation == STOP_ONETIME) {
+            intent = new Intent(context, OneTimeActivity.class);
+            startActivity(intent);
         }
         startForeground(100, mBuilder.build());
         return START_STICKY;
@@ -79,7 +69,7 @@ public class NotificationService extends Service {
 //            }
         }
         if (null == mBuilder) {
-            mBuilder = new NotificationCompat.Builder(mContext,"default")
+            mBuilder = new NotificationCompat.Builder(context,"default")
                     .setSmallIcon(R.raw.silent_bar)
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
@@ -87,16 +77,15 @@ public class NotificationService extends Service {
                     .setOngoing(true);
         }
 
-        Intent mainIntent = new Intent(mContext, MainActivity.class);
-        mRemoteViews.setOnClickPendingIntent(R.id.ll_customNotification, PendingIntent.getActivity(mContext, 0, mainIntent, 0));
+        Intent mainIntent = new Intent(context, MainActivity.class);
+        mRemoteViews.setOnClickPendingIntent(R.id.ll_customNotification, PendingIntent.getActivity(context, 0, mainIntent, 0));
 
         Intent stopOneTime = new Intent(this, NotificationService.class);
         stopOneTime.putExtra("operation", STOP_ONETIME);
         stopOneTime.putExtra("isFromNotification", true);
-        PendingIntent pi = PendingIntent.getService(mContext, 2, stopOneTime, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getService(context, 2, stopOneTime, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
         mRemoteViews.setOnClickPendingIntent(R.id.stopNow, pi);
-
     }
 
     private void updateRemoteViews(String dateTime, String subject, String startFinish) {

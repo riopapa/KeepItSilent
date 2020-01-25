@@ -59,10 +59,10 @@ public class AddUpdateActivity extends AppCompatActivity {
         actionBar.setTitle((addNewSilent) ? R.string.add_table :R.string.update_table);
         for (int i=0; i < 7; i++)
             weekView[i] = findViewById(addViewWeek[i]);
-        build_addActivity();
+        build_SilentInfo();
     }
 
-    void build_addActivity() {
+    void build_SilentInfo() {
 
         subject = silentInfo.getSubject();
         startHour = silentInfo.getStartHour();
@@ -221,7 +221,6 @@ public class AddUpdateActivity extends AppCompatActivity {
         assert inputMethodManager != null;
         EditText et = findViewById(R.id.et_subject);
         inputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
-
         super.onPause();
     }
 }
