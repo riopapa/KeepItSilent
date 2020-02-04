@@ -119,14 +119,8 @@ public class MainActivity extends AppCompatActivity {
         colorOffBack = ContextCompat.getColor(getBaseContext(), R.color.transparent);
 
         silentInfos = utils.readSharedPrefTables();
-        if (silentInfos.size() == 0) {
-            silentInfos.clear();
-            silentInfo = getSilentOneTime();
-            silentInfos.add(silentInfo);
-            silentInfo = getDefaultSilent();
-            silentInfos.add(silentInfo);
-            utils.saveSharedPrefTables();
-        }
+        if (silentInfos.size() == 0)
+            initiateSilentInfos();
 
         weekName[0] = getResources().getString(R.string.week_0);    weekName[1] = getResources().getString(R.string.week_1);    weekName[2] = getResources().getString(R.string.week_2);    weekName[3] = getResources().getString(R.string.week_3);
         weekName[4] = getResources().getString(R.string.week_4);    weekName[5] = getResources().getString(R.string.week_5);    weekName[6] = getResources().getString(R.string.week_6);
@@ -217,12 +211,7 @@ public class MainActivity extends AppCompatActivity {
                         .setIcon(R.mipmap.icon_alert)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                silentInfos.clear();
-                                silentInfo = getSilentOneTime();
-                                silentInfos.add(silentInfo);
-                                silentInfo = getDefaultSilent();
-                                silentInfos.add(silentInfo);
-                                utils.saveSharedPrefTables();
+                                initiateSilentInfos();
                                 showArrayLists();
                             }
                         })
@@ -280,25 +269,44 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        NextAlarm.request(silentInfos.get(saveIdx), nextTime, StartFinish, getApplicationContext());
-        String msg = headInfo + "\n" + silentInfos.get(saveIdx).getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
+        silentInfo = silentInfos.get(saveIdx);
+        NextAlarm.request(silentInfo, nextTime, StartFinish, getApplicationContext());
+        String msg = headInfo + "\n" + silentInfo.getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
         utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + silentInfos.get(saveIdx).getSubject());
-        updateNotificationBar (sdfTime.format(nextTime), silentInfos.get(saveIdx).getSubject(), StartFinish);
+        utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + silentInfo.getSubject());
+        updateNotificationBar (sdfTime.format(nextTime), silentInfo.getSubject(), StartFinish);
+        if (stateCode.equals("@back") && StartFinish.equals("F")) {
+            MannerMode.turnOn(getApplicationContext(), silentInfo.getSubject(), silentInfo.getVibrate());
+        }
+    }
+
+    private void initiateSilentInfos() {
+        silentInfos.clear();
+        silentInfo = getSilentOneTime();
+        silentInfos.add(silentInfo);
+        silentInfo = getDefaultSilent();
+        silentInfos.add(silentInfo);
+        boolean [] week = new boolean[]{true, false, false, false, false, false, true};
+        silentInfo = new SilentInfo("WeekEnd Night", 22, 30, 9, 30, week, true, false);
+        silentInfos.add(silentInfo);
+        week = new boolean[]{true, false, false, false, false, false, false};
+        silentInfo = new SilentInfo("@Church", 9, 30, 16, 30, week, true, true);
+        silentInfos.add(silentInfo);
+        utils.saveSharedPrefTables();
     }
 
     SilentInfo getDefaultSilent() {
 
         boolean [] week = new boolean[]{false, true, true, true, true, true, false};
-        return new SilentInfo(getString(R.string.silent_Default), 22, 30, 7, 30, week, true, true);
+        return new SilentInfo(getString(R.string.silent_Default), 23, 30, 6, 30, week, true, false);
     }
 
     SilentInfo getSilentOneTime() {
 
         boolean [] week = new boolean[]{false, false, false, false, false, false, false};
         return new SilentInfo(getString(R.string.silent_Once), 1,2,3,4,
-                week, true, false);
+                week, false, true);
     }
 
     @Override
@@ -316,11 +324,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        stateCode = "@" + stateCode;
+        stateCode = "@back";
         scheduleNextTask("Activate Silent Time ");
         super.onBackPressed();
     }
-
 
     // ↓ ↓ ↓ P E R M I S S I O N    RELATED /////// ↓ ↓ ↓ ↓
     ArrayList<String> permissions = new ArrayList<>();
@@ -339,6 +346,16 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(permissionsToRequest.toArray(new String[0]),
 //            requestPermissions(permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
                     ALL_PERMISSIONS_RESULT);
+        }
+        // get permission for silent mode
+        NotificationManager notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivity(intent);
         }
     }
 
@@ -388,6 +405,8 @@ public class MainActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
+
+
 // ↑ ↑ ↑ ↑ P E R M I S S I O N    RELATED /////// ↑ ↑ ↑
 
 }

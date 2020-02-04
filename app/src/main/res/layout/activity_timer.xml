@@ -38,35 +38,35 @@
             android:contentDescription="@string/blank" />
 
         <TextView
+            android:id="@+id/minus30Min"
+            android:gravity="center_vertical"
+            android:text="30분▼"
+            android:textSize="20sp"
+            android:layout_margin="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
             android:id="@+id/minus10Min"
             android:gravity="center_vertical"
-            android:text="10분↓"
+            android:text="10분▼"
             android:textSize="20sp"
-            android:layout_margin="8dp"
+            android:layout_margin="4dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <TextView
             android:id="@+id/plus10Min"
             android:gravity="center_vertical"
-            android:text="10분↑"
+            android:text="10분▲"
             android:textSize="20sp"
-            android:layout_margin="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-        <TextView
-            android:id="@+id/minus30Min"
-            android:gravity="center_vertical"
-            android:text="30분↓"
-            android:textSize="20sp"
-            android:layout_margin="8dp"
+            android:layout_marginLeft="16dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
         <TextView
             android:id="@+id/plus30Min"
             android:gravity="center_vertical"
-            android:text="30분↑"
+            android:text="30분▲"
             android:textSize="20sp"
-            android:layout_margin="8dp"
+            android:layout_marginLeft="4dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </LinearLayout>
