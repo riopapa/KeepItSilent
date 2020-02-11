@@ -272,9 +272,9 @@ public class MainActivity extends AppCompatActivity {
         silentInfo = silentInfos.get(saveIdx);
         NextAlarm.request(silentInfo, nextTime, StartFinish, getApplicationContext());
         String msg = headInfo + "\n" + silentInfo.getSubject() + "\n" + sdfDateTime.format(nextTime) + " " + StartFinish;
-        utils.log(logID, msg);
+//        utils.log(logID, msg);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-        utils.logE(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + silentInfo.getSubject());
+        utils.log(logID,sdfDateTime.format(nextTime) + " " + StartFinish + " " + silentInfo.getSubject());
         updateNotificationBar (sdfTime.format(nextTime), silentInfo.getSubject(), StartFinish);
         if (stateCode.equals("@back") && StartFinish.equals("F")) {
             MannerMode.turnOn(getApplicationContext(), silentInfo.getSubject(), silentInfo.getVibrate());
@@ -287,11 +287,11 @@ public class MainActivity extends AppCompatActivity {
         silentInfos.add(silentInfo);
         silentInfo = getDefaultSilent();
         silentInfos.add(silentInfo);
-        boolean [] week = new boolean[]{true, false, false, false, false, false, true};
-        silentInfo = new SilentInfo("WeekEnd Night", 22, 30, 9, 30, week, true, false);
+        boolean [] week = new boolean[]{true, false, false, false, false, false, false};
+        silentInfo = new SilentInfo(getString(R.string.Sunday_Church), 9, 30, 16, 30, week, true, true);
         silentInfos.add(silentInfo);
-        week = new boolean[]{true, false, false, false, false, false, false};
-        silentInfo = new SilentInfo("@Church", 9, 30, 16, 30, week, true, true);
+        week = new boolean[]{true, false, false, false, false, false, true};
+        silentInfo = new SilentInfo(getString(R.string.WeekEnd_Night), 22, 30, 10, 30, week, true, false);
         silentInfos.add(silentInfo);
         utils.saveSharedPrefTables();
     }
@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
     SilentInfo getDefaultSilent() {
 
         boolean [] week = new boolean[]{false, true, true, true, true, true, false};
-        return new SilentInfo(getString(R.string.silent_Default), 23, 30, 6, 30, week, true, false);
+        return new SilentInfo(getString(R.string.WeekDay_Night), 23, 30, 6, 30, week, true, false);
     }
 
     SilentInfo getSilentOneTime() {
