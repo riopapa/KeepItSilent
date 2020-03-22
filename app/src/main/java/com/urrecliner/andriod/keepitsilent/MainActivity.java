@@ -111,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
         interval_Short = sharedPreferences.getInt("interval_Short", 5);
         interval_Long = sharedPreferences.getInt("interval_Long", 30);
         default_Duration = sharedPreferences.getInt("default_Duration", 60);
-        colorOn = ContextCompat.getColor(getBaseContext(), R.color.Navy);
-        colorInactiveBack = ContextCompat.getColor(getBaseContext(), R.color.gray);
-        colorOnBack = ContextCompat.getColor(getBaseContext(), R.color.colorPrimary);
-        colorOff = ContextCompat.getColor(getBaseContext(), R.color.BlueGray);
-        colorActive = ContextCompat.getColor(getBaseContext(), R.color.EarthBlue);
-        colorOffBack = ContextCompat.getColor(getBaseContext(), R.color.transparent);
+        colorOn = ContextCompat.getColor(getBaseContext(), R.color.colorOn);
+        colorInactiveBack = ContextCompat.getColor(getBaseContext(), R.color.colorInactiveBack);
+        colorOnBack = ContextCompat.getColor(getBaseContext(), R.color.colorOnBack);
+        colorOff = ContextCompat.getColor(getBaseContext(), R.color.colorOff);
+        colorActive = ContextCompat.getColor(getBaseContext(), R.color.colorActive);
+        colorOffBack = ContextCompat.getColor(getBaseContext(), R.color.colorOffBack);
 
         silentInfos = utils.readSharedPrefTables();
         if (silentInfos.size() == 0)
