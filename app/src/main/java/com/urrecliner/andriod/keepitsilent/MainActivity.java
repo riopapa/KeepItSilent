@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -93,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 updateNotificationBar("xx:xx","not activated yet","S");
             }
         }, 100);
+
+        GLSurfaceView glView = new GLSurfaceView(getApplicationContext());
+        glView.setEGLContextClientVersion(2);
+        glView.setPreserveEGLContextOnPause(true);
     }
 
     void updateNotificationBar(String dateTime, String subject, String startFinish) {

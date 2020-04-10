@@ -21,12 +21,21 @@ class MannerMode {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         beepStart();
-        vibratePhone(context);
+        vibratePhoneByPattern(context);
 //        Toast.makeText(context,text,Toast.LENGTH_LONG).show();
         if (vibrate)
             am.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-        else
+        else {
+            if(am.getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+                am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        }
     }
 
     static void turnOff(Context context, String subject) {
@@ -34,11 +43,11 @@ class MannerMode {
         AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         assert am != null;
         am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-        vibratePhone(context);
+        vibratePhoneByPattern(context);
         beepFinish();
     }
 
-    private static void vibratePhone(Context context) {
+    private static void vibratePhoneByPattern(Context context) {
         long[] pattern = {0, 100, 1000, 300, 200, 100, 500, 200, 100};
         Vibrator v = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
         assert v != null;
