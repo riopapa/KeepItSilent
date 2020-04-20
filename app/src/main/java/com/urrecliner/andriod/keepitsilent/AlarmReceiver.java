@@ -8,6 +8,8 @@ import android.os.Bundle;
 import java.util.Objects;
 
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
+import static com.urrecliner.andriod.keepitsilent.Vars.actionHander;
+import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
 import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
 import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
 import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
@@ -32,7 +34,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        utils.log(logID,"case:"+ caseSFO + " subject: "+subject);
         utils.logE(logID,"case:"+ caseSFO + " subject: "+subject);
         assert caseSFO != null;
-        Intent i = new Intent(context, MainActivity.class);
         switch (caseSFO) {
             case "S":   // start
                 MannerMode.turnOn(context, subject, silentInfo.getVibrate());
@@ -50,9 +51,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                 utils.log(logID,"Case Error " + caseSFO);
         }
         stateCode = STATE_ALARM;
-        i.putExtra("stateCode",stateCode);
-        i.putExtra("DATA",args);
-        context.startActivity(i);
+        actionHander.sendEmptyMessage(0);
+
+//        Intent i = new Intent(context, MainActivity.class);
+//        i.putExtra("stateCode",stateCode);
+//        i.putExtra("DATA",args);
+//        context.startActivity(i);
     }
 
 //    private static void dumpIntent(Intent i){

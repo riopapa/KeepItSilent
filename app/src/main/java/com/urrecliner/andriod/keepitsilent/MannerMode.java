@@ -58,7 +58,7 @@ class MannerMode {
 
         if (beepManner) {
             if (mpStart == null) {
-                utils.log(logID, "creating beep");
+                utils.log(logID, "creating beep mpStart");
                 mpStart = MediaPlayer.create(mainContext, R.raw.manner_starting);
                 mpStart.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
@@ -76,8 +76,7 @@ class MannerMode {
 
         if (beepManner) {
             if (mpFinish == null) {
-                utils.log(logID, "creating beep");
-                mpFinish = MediaPlayer.create(mainContext, R.raw.manner_return2normal);
+                mpFinish = MediaPlayer.create(mainContext, R.raw.now_be_noisy);
                 mpFinish.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {

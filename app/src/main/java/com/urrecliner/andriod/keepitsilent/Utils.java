@@ -109,11 +109,10 @@ class Utils {
     }
 
     private String logTrace () {
-        int pid = android.os.Process.myPid();
+//        int pid = android.os.Process.myPid();
         StackTraceElement[] traces;
         traces = Thread.currentThread().getStackTrace();
-        return pid+ ": " + traceName(traces[5].getMethodName()) + traceName(traces[4].getMethodName()) + traceClassName(traces[3].getClassName())+"> "+traces[3].getMethodName() + "#" + traces[3].getLineNumber();
-
+        return traceName(traces[6].getMethodName()) + traceName(traces[5].getMethodName()) + traceClassName(traces[4].getClassName())+"> "+traces[4].getMethodName() + "#" + traces[4].getLineNumber();
     }
 
     private static String[] omits = { "performResume", "performCreate", "callActivityOnResume", "access$",

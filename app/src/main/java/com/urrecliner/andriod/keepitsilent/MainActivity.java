@@ -12,6 +12,8 @@ import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -32,6 +34,7 @@ import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
+import static com.urrecliner.andriod.keepitsilent.Vars.actionHander;
 import static com.urrecliner.andriod.keepitsilent.Vars.addNewSilent;
 import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
@@ -68,10 +71,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Vars.mainActivity = this;
-        Vars.mainContext = this.getApplicationContext();
+        mainActivity = this;
+        mainContext = this.getApplicationContext();
         if (utils == null)
             utils = new Utils();
+        utils.log(logID, "Main start ");
         askPermission();
 
         Intent intent = getIntent();
@@ -94,10 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 updateNotificationBar("xx:xx","not activated yet","S");
             }
         }, 100);
+        actionHander = new Handler() { public void handleMessage(Message msg) { actOnStateCode(); }};
 
-        GLSurfaceView glView = new GLSurfaceView(getApplicationContext());
-        glView.setEGLContextClientVersion(2);
-        glView.setPreserveEGLContextOnPause(true);
     }
 
     void updateNotificationBar(String dateTime, String subject, String startFinish) {
@@ -146,14 +148,12 @@ public class MainActivity extends AppCompatActivity {
         // get permission for silent mode
         NotificationManager notificationManager =
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
+        if (!notificationManager.isNotificationPolicyAccessGranted()) {
             Intent intent = new Intent(
                     android.provider.Settings
                             .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             startActivity(intent);
         }
-
     }
 
     void actOnStateCode() {

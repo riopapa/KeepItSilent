@@ -2,6 +2,7 @@ package com.urrecliner.andriod.keepitsilent;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,4 +43,5 @@ class Vars {
     static final String STATE_ONETIME = "OneTime";
     static final String STATE_BOOT = "Boot";
     static final String STATE_ADD_UPDATE = "AddUpdate";
+    static Handler actionHander;
 }
