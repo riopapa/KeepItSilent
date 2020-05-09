@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,15 +13,15 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
-import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.STATE_ONETIME;
+import static com.urrecliner.keepitsilent.Vars.default_Duration;
+import static com.urrecliner.keepitsilent.Vars.interval_Long;
+import static com.urrecliner.keepitsilent.Vars.interval_Short;
+import static com.urrecliner.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.stateCode;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 public class OneTimeActivity extends AppCompatActivity {
 

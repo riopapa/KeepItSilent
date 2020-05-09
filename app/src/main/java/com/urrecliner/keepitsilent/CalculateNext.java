@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import java.util.Calendar;
 

@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -30,41 +30,41 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_BOOT;
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ONETIME;
-import static com.urrecliner.andriod.keepitsilent.Vars.actionHander;
-import static com.urrecliner.andriod.keepitsilent.Vars.addNewSilent;
-import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorActive;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorInactiveBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfTime;
-import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
-import static com.urrecliner.andriod.keepitsilent.Vars.weekName;
-import static com.urrecliner.andriod.keepitsilent.Vars.xSize;
+import static com.urrecliner.keepitsilent.Vars.STATE_ADD_UPDATE;
+import static com.urrecliner.keepitsilent.Vars.STATE_ALARM;
+import static com.urrecliner.keepitsilent.Vars.STATE_BOOT;
+import static com.urrecliner.keepitsilent.Vars.STATE_ONETIME;
+import static com.urrecliner.keepitsilent.Vars.actionHander;
+import static com.urrecliner.keepitsilent.Vars.addNewSilent;
+import static com.urrecliner.keepitsilent.Vars.addViewWeek;
+import static com.urrecliner.keepitsilent.Vars.beepManner;
+import static com.urrecliner.keepitsilent.Vars.colorActive;
+import static com.urrecliner.keepitsilent.Vars.colorInactiveBack;
+import static com.urrecliner.keepitsilent.Vars.colorOff;
+import static com.urrecliner.keepitsilent.Vars.colorOffBack;
+import static com.urrecliner.keepitsilent.Vars.colorOn;
+import static com.urrecliner.keepitsilent.Vars.colorOnBack;
+import static com.urrecliner.keepitsilent.Vars.default_Duration;
+import static com.urrecliner.keepitsilent.Vars.interval_Long;
+import static com.urrecliner.keepitsilent.Vars.interval_Short;
+import static com.urrecliner.keepitsilent.Vars.listViewWeek;
+import static com.urrecliner.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.keepitsilent.Vars.mainContext;
+import static com.urrecliner.keepitsilent.Vars.sdfDateTime;
+import static com.urrecliner.keepitsilent.Vars.sdfTime;
+import static com.urrecliner.keepitsilent.Vars.sharedPreferences;
+import static com.urrecliner.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.stateCode;
+import static com.urrecliner.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.weekName;
+import static com.urrecliner.keepitsilent.Vars.xSize;
 
 public class MainActivity extends AppCompatActivity {
 
     ListView lVReminder;
-    ListViewAdapter listViewAdapter;
+    com.urrecliner.keepitsilent.ListViewAdapter listViewAdapter;
     private static String logID = "Main";
     private static String blank = "BLANK";
 

@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -20,22 +20,22 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ADD_UPDATE;
-import static com.urrecliner.andriod.keepitsilent.Vars.addNewSilent;
-import static com.urrecliner.andriod.keepitsilent.Vars.addViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainActivity;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentUniq;
-import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
-import static com.urrecliner.andriod.keepitsilent.Vars.weekName;
-import static com.urrecliner.andriod.keepitsilent.Vars.xSize;
+import static com.urrecliner.keepitsilent.Vars.STATE_ADD_UPDATE;
+import static com.urrecliner.keepitsilent.Vars.addNewSilent;
+import static com.urrecliner.keepitsilent.Vars.addViewWeek;
+import static com.urrecliner.keepitsilent.Vars.colorOff;
+import static com.urrecliner.keepitsilent.Vars.colorOffBack;
+import static com.urrecliner.keepitsilent.Vars.colorOn;
+import static com.urrecliner.keepitsilent.Vars.colorOnBack;
+import static com.urrecliner.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.silentUniq;
+import static com.urrecliner.keepitsilent.Vars.stateCode;
+import static com.urrecliner.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.weekName;
+import static com.urrecliner.keepitsilent.Vars.xSize;
 
 public class AddUpdateActivity extends AppCompatActivity {
 

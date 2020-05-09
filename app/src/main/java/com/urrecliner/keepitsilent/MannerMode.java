@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -7,9 +7,9 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 import static android.content.Context.VIBRATOR_SERVICE;
-import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.beepManner;
+import static com.urrecliner.keepitsilent.Vars.mainContext;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 class MannerMode {
 

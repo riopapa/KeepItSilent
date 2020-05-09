@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,13 +7,12 @@ import android.os.Bundle;
 
 import java.util.Objects;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.STATE_ALARM;
-import static com.urrecliner.andriod.keepitsilent.Vars.actionHander;
-import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.stateCode;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.STATE_ALARM;
+import static com.urrecliner.keepitsilent.Vars.actionHander;
+import static com.urrecliner.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.stateCode;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

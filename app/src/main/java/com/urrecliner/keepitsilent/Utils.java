@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.mainContext;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfDate;
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfLogTime;
-import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
+import static com.urrecliner.keepitsilent.Vars.mainContext;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.sdfDate;
+import static com.urrecliner.keepitsilent.Vars.sdfLogTime;
+import static com.urrecliner.keepitsilent.Vars.sharedPreferences;
 
 class Utils {
 

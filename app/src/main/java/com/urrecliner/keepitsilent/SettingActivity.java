@@ -1,17 +1,17 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.beepManner;
-import static com.urrecliner.andriod.keepitsilent.Vars.default_Duration;
-import static com.urrecliner.andriod.keepitsilent.Vars.editor;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Long;
-import static com.urrecliner.andriod.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.andriod.keepitsilent.Vars.sharedPreferences;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.beepManner;
+import static com.urrecliner.keepitsilent.Vars.default_Duration;
+import static com.urrecliner.keepitsilent.Vars.editor;
+import static com.urrecliner.keepitsilent.Vars.interval_Long;
+import static com.urrecliner.keepitsilent.Vars.interval_Short;
+import static com.urrecliner.keepitsilent.Vars.sharedPreferences;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 public class SettingActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.sdfDateTime;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.sdfDateTime;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 class NextAlarm {
     static void request(SilentInfo silentInfo, long nextTime, String StartFinish, Context context) {

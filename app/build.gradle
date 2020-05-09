@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.urrecliner.andriod.keepitsilent"
+        applicationId "com.urrecliner.keepitsilent"
         minSdkVersion 27
         targetSdkVersion 27
         versionCode 1

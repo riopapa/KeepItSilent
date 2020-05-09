@@ -1,4 +1,4 @@
-package com.urrecliner.andriod.keepitsilent;
+package com.urrecliner.keepitsilent;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,17 +8,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static com.urrecliner.andriod.keepitsilent.Vars.colorActive;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorInactiveBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOff;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOffBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOn;
-import static com.urrecliner.andriod.keepitsilent.Vars.colorOnBack;
-import static com.urrecliner.andriod.keepitsilent.Vars.listViewWeek;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentIdx;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfo;
-import static com.urrecliner.andriod.keepitsilent.Vars.silentInfos;
-import static com.urrecliner.andriod.keepitsilent.Vars.utils;
+import static com.urrecliner.keepitsilent.Vars.colorActive;
+import static com.urrecliner.keepitsilent.Vars.colorInactiveBack;
+import static com.urrecliner.keepitsilent.Vars.colorOff;
+import static com.urrecliner.keepitsilent.Vars.colorOffBack;
+import static com.urrecliner.keepitsilent.Vars.colorOn;
+import static com.urrecliner.keepitsilent.Vars.colorOnBack;
+import static com.urrecliner.keepitsilent.Vars.listViewWeek;
+import static com.urrecliner.keepitsilent.Vars.silentIdx;
+import static com.urrecliner.keepitsilent.Vars.silentInfo;
+import static com.urrecliner.keepitsilent.Vars.silentInfos;
+import static com.urrecliner.keepitsilent.Vars.utils;
 
 public class ListViewAdapter extends BaseAdapter {
 
