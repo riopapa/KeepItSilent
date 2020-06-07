@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             case STATE_BOOT:  // it means from receiver
                 stateCode = "@" + stateCode;
                 scheduleNextTask("Boot triggered new Alarm ");
-                finish();
+//                finish();
                 break;
 
             case STATE_ADD_UPDATE:
@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             default:
+                utils.log(logID,"Invalid statCode>"+stateCode);
                 break;
         }
         setContentView(R.layout.activity_main);

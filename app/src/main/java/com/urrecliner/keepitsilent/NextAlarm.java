@@ -21,7 +21,7 @@ class NextAlarm {
 
         intent.putExtra("DATA",args);
         intent.putExtra("case",StartFinish);   // "S" : Start, "F" : Finish, "O" : One time
-        int uniqueId = (int) System.currentTimeMillis() & 0xffff;
+        int uniqueId = 123456; // (int) System.currentTimeMillis() & 0xffff;
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, uniqueId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (!silentInfo.getActive()) {
             alarmManager.cancel(pendingIntent);
