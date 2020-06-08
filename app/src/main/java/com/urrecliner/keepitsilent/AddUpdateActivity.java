@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,19 +15,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.urrecliner.keepitsilent.databinding.ActivityAddBinding;
+
 import static com.urrecliner.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.keepitsilent.Vars.addNewSilent;
-import static com.urrecliner.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.keepitsilent.Vars.colorOff;
 import static com.urrecliner.keepitsilent.Vars.colorOffBack;
 import static com.urrecliner.keepitsilent.Vars.colorOn;
 import static com.urrecliner.keepitsilent.Vars.colorOnBack;
 import static com.urrecliner.keepitsilent.Vars.mainActivity;
+import static com.urrecliner.keepitsilent.Vars.recycleViewAdapter;
 import static com.urrecliner.keepitsilent.Vars.silentIdx;
 import static com.urrecliner.keepitsilent.Vars.silentInfo;
 import static com.urrecliner.keepitsilent.Vars.silentInfos;
@@ -46,19 +47,22 @@ public class AddUpdateActivity extends AppCompatActivity {
     private TextView [] weekView = new TextView[7];
     private boolean vibrate;
     private String logID = "Add,Update";
+    private ActivityAddBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
+        binding = ActivityAddBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         if (addNewSilent)
             silentInfo = mainActivity.getDefaultSilent();
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle((addNewSilent) ? R.string.add_table :R.string.update_table);
-        for (int i=0; i < 7; i++)
-            weekView[i] = findViewById(addViewWeek[i]);
+
+        weekView[0] = binding.avWeek0; weekView[1] = binding.avWeek1; weekView[2] = binding.avWeek2; weekView[3] = binding.avWeek3;
+        weekView[4] = binding.avWeek4; weekView[5] = binding.avWeek5; weekView[6] = binding.avWeek6;
         build_SilentInfo();
     }
 
@@ -72,17 +76,14 @@ public class AddUpdateActivity extends AppCompatActivity {
         active = silentInfo.getActive();
         week = silentInfo.getWeek();
         vibrate = silentInfo.getVibrate();
-        TimePicker tp = findViewById(R.id.timePickerStart);
-        tp.setIs24HourView(true);
-        tp.setHour(startHour); tp.setMinute(startMin);
-        tp = findViewById(R.id.timePickerFinish);
-        tp.setIs24HourView(true);
-        tp.setHour(finishHour); tp.setMinute(finishMin);
+        binding.timePickerStart.setIs24HourView(true);
+        binding.timePickerStart.setHour(startHour); binding.timePickerStart.setMinute(startMin);
+        binding.timePickerFinish.setIs24HourView(true);
+        binding.timePickerFinish.setHour(finishHour); binding.timePickerFinish.setMinute(finishMin);
 
-        EditText et = findViewById(R.id.et_subject);
         if (subject == null)
             subject = getString(R.string.no_subject);
-        et.setText(subject);
+        binding.etSubject.setText(subject);
         for (int i=0; i < 7; i++) {
             weekView[i].setId(i);
             weekView[i].setWidth(xSize);
@@ -93,24 +94,22 @@ public class AddUpdateActivity extends AppCompatActivity {
             weekView[i].setText(weekName[i]);
         }
 
-        final ImageView ib = findViewById(R.id.av_vibrate);
-        ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
-        ib.setOnClickListener(new View.OnClickListener() {
+        binding.avVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+        binding.avVibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vibrate ^= true;
-                ib.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+                binding.avVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
                 v.invalidate();
             }
         });
 
-        final CheckBox cb = findViewById(R.id.cb_active);
-        cb.setChecked(active);
-        cb.setOnClickListener(new View.OnClickListener() {
+        binding.cbActive.setChecked(active);
+        binding.cbActive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 active ^= true;
-                cb.setChecked(active);
+                binding.cbActive.setChecked(active);
                 v.invalidate();
             }
         });
@@ -133,14 +132,12 @@ public class AddUpdateActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), R.string.at_least_one_day_selected,Toast.LENGTH_LONG).show();
             return;
         }
-        EditText et = findViewById(R.id.et_subject);
-        subject = et.getText().toString();
+
+        subject = binding.etSubject.getText().toString();
         if (subject.length() == 0)
             subject = "No Subject";
-        TimePicker tp = findViewById(R.id.timePickerStart);
-        startHour = tp.getHour(); startMin = tp.getMinute();
-        tp = findViewById(R.id.timePickerFinish);
-        finishHour = tp.getHour(); finishMin = tp.getMinute();
+        startHour = binding.timePickerStart.getHour(); startMin = binding.timePickerStart.getMinute();
+        finishHour = binding.timePickerFinish.getHour(); finishMin = binding.timePickerFinish.getMinute();
         silentInfo = new SilentInfo(subject, startHour, startMin, finishHour, finishMin,
             week, active, vibrate);
         if (addNewSilent)
@@ -158,6 +155,8 @@ public class AddUpdateActivity extends AppCompatActivity {
 //        getApplicationContext().startActivity(i);
 //        utils.log("AddUpdateActivity","start MainActivity");
         finish();
+        recycleViewAdapter.notifyItemChanged(silentIdx, silentInfo);
+
     }
 
     @Override
@@ -219,8 +218,7 @@ public class AddUpdateActivity extends AppCompatActivity {
     protected void onPause() {
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
-        EditText et = findViewById(R.id.et_subject);
-        inputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(binding.etSubject.getWindowToken(), 0);
         super.onPause();
     }
 }

@@ -9,22 +9,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
+
+import com.urrecliner.keepitsilent.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -32,11 +35,11 @@ import java.util.TimerTask;
 
 import static com.urrecliner.keepitsilent.Vars.STATE_ADD_UPDATE;
 import static com.urrecliner.keepitsilent.Vars.STATE_ALARM;
+import static com.urrecliner.keepitsilent.Vars.STATE_BLANK;
 import static com.urrecliner.keepitsilent.Vars.STATE_BOOT;
 import static com.urrecliner.keepitsilent.Vars.STATE_ONETIME;
 import static com.urrecliner.keepitsilent.Vars.actionHander;
 import static com.urrecliner.keepitsilent.Vars.addNewSilent;
-import static com.urrecliner.keepitsilent.Vars.addViewWeek;
 import static com.urrecliner.keepitsilent.Vars.beepManner;
 import static com.urrecliner.keepitsilent.Vars.colorActive;
 import static com.urrecliner.keepitsilent.Vars.colorInactiveBack;
@@ -47,9 +50,9 @@ import static com.urrecliner.keepitsilent.Vars.colorOnBack;
 import static com.urrecliner.keepitsilent.Vars.default_Duration;
 import static com.urrecliner.keepitsilent.Vars.interval_Long;
 import static com.urrecliner.keepitsilent.Vars.interval_Short;
-import static com.urrecliner.keepitsilent.Vars.listViewWeek;
 import static com.urrecliner.keepitsilent.Vars.mainActivity;
 import static com.urrecliner.keepitsilent.Vars.mainContext;
+import static com.urrecliner.keepitsilent.Vars.recycleViewAdapter;
 import static com.urrecliner.keepitsilent.Vars.sdfDateTime;
 import static com.urrecliner.keepitsilent.Vars.sdfTime;
 import static com.urrecliner.keepitsilent.Vars.sharedPreferences;
@@ -63,10 +66,8 @@ import static com.urrecliner.keepitsilent.Vars.xSize;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView lVReminder;
-    com.urrecliner.keepitsilent.ListViewAdapter listViewAdapter;
     private static String logID = "Main";
-    private static String blank = "BLANK";
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
             utils = new Utils();
         utils.log(logID, "Main start ");
         askPermission();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -84,13 +87,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             stateCode = intent.getStringExtra("stateCode");
             if (stateCode == null)
-                stateCode = blank;
+                stateCode = STATE_BLANK;
         }
         utils.log(logID, stateCode);
         utils.deleteOldLogFiles();
-        if (!stateCode.equals(blank))
+        if (!stateCode.equals(STATE_BLANK))
             return;
-        setContentView(R.layout.activity_main);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.lvReminder.setLayoutManager(layoutManager);
         setVariables();
         actOnStateCode();
         new Timer().schedule(new TimerTask() {
@@ -99,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 100);
         actionHander = new Handler() { public void handleMessage(Message msg) { actOnStateCode(); }};
-
     }
 
     void updateNotificationBar(String dateTime, String subject, String startFinish) {
@@ -132,14 +135,6 @@ public class MainActivity extends AppCompatActivity {
         weekName[0] = getResources().getString(R.string.week_0);    weekName[1] = getResources().getString(R.string.week_1);    weekName[2] = getResources().getString(R.string.week_2);    weekName[3] = getResources().getString(R.string.week_3);
         weekName[4] = getResources().getString(R.string.week_4);    weekName[5] = getResources().getString(R.string.week_5);    weekName[6] = getResources().getString(R.string.week_6);
 
-        listViewWeek[0] = R.id.lt_week0;    listViewWeek[1] = R.id.lt_week1;    listViewWeek[2] = R.id.lt_week2;
-        listViewWeek[3] = R.id.lt_week3;    listViewWeek[4] = R.id.lt_week4;    listViewWeek[5] = R.id.lt_week5;
-        listViewWeek[6] = R.id.lt_week6;
-
-        addViewWeek[0] = R.id.av_week0; addViewWeek[1] = R.id.av_week1; addViewWeek[2] = R.id.av_week2;
-        addViewWeek[3] = R.id.av_week3; addViewWeek[4] = R.id.av_week4; addViewWeek[5] = R.id.av_week5;
-        addViewWeek[6] = R.id.av_week6;
-
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -158,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     void actOnStateCode() {
 
-        if (!stateCode.equals(blank))
+        if (!stateCode.equals(STATE_BLANK))
             utils.log(logID, "State=" + stateCode);
         switch (stateCode) {
             case STATE_ONETIME:
@@ -181,12 +176,12 @@ public class MainActivity extends AppCompatActivity {
             case STATE_ADD_UPDATE:
                 stateCode = "@" + stateCode;
                 break;
-
+            case STATE_BLANK:
+                break;
             default:
                 utils.log(logID,"Invalid statCode>"+stateCode);
                 break;
         }
-        setContentView(R.layout.activity_main);
         showArrayLists();
     }
 
@@ -230,14 +225,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void showArrayLists() {
 
-        lVReminder = findViewById(R.id.lv_reminder);
-        listViewAdapter = new ListViewAdapter(this);
-        lVReminder.setAdapter(listViewAdapter);
-        lVReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recycleViewAdapter = new RecycleViewAdapter();
+        binding.lvReminder.setAdapter(recycleViewAdapter);
+        binding.lvReminder.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                silentIdx = position;
-                silentInfo = silentInfos.get(position);
+            public void onClick(View v) {
+                silentIdx = v.getId();
+                silentInfo = silentInfos.get(silentIdx);
                 Intent intent;
                 if (silentIdx != 0) {
                     addNewSilent = false;
@@ -247,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, OneTimeActivity.class);
                     startActivity(intent);
                 }
+
             }
         });
     }
@@ -315,13 +310,13 @@ public class MainActivity extends AppCompatActivity {
                 week, false, true);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        utils.log(logID, "RESUME " + stateCode);
-        setVariables();
-        actOnStateCode();
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        utils.log(logID, "RESUME " + stateCode);
+//        setVariables();
+//        actOnStateCode();
+//    }
 
     @Override
     protected void onPause() {

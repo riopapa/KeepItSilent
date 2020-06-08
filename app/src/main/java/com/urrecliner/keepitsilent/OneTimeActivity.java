@@ -2,14 +2,14 @@ package com.urrecliner.keepitsilent;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.urrecliner.keepitsilent.databinding.ActivityOneTimeBinding;
 
 import java.util.Calendar;
 
@@ -31,9 +31,8 @@ public class OneTimeActivity extends AppCompatActivity {
     private boolean vibrate;
     private int durationMin = 0;       // in minutes
     Calendar calendar;
-    private TextView tVDuration;
-    TimePicker tp;
     boolean timePicker_UpDown = false;
+    ActivityOneTimeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +40,8 @@ public class OneTimeActivity extends AppCompatActivity {
         Intent closeIntent = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         getApplicationContext().sendBroadcast(closeIntent);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timer);
+        binding = ActivityOneTimeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ActionBar actionBar;
         actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -61,10 +61,8 @@ public class OneTimeActivity extends AppCompatActivity {
         finishHour = startHour + 1;     // default is 60 min.
         finishMin = startMin;
         durationMin = default_Duration;
-        tVDuration = findViewById(R.id.tm_duration);
-        tp = findViewById(R.id.timePickerTimer);
-        tp.setIs24HourView(true);
-        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+        binding.oneTimePicker.setIs24HourView(true);
+        binding.oneTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hour, int min) {
                 if (timePicker_UpDown)
@@ -76,7 +74,7 @@ public class OneTimeActivity extends AppCompatActivity {
                     text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1)+  " 후";
                 else
                     text = getString(R.string.already_passed_time);
-                tVDuration.setText(text);
+                binding.oneDuration.setText(text);
             }
         });
         buildScreen();
@@ -86,25 +84,22 @@ public class OneTimeActivity extends AppCompatActivity {
 
     void buildScreen() {
         String text;
-        TextView tv;
-        tv = findViewById(R.id.minus10Min); text = interval_Short+"분↓"; tv.setText(text);
-        tv = findViewById(R.id.plus10Min); text = interval_Short+"분↑"; tv.setText(text);
-        tv = findViewById(R.id.minus30Min); text = interval_Long+"분↓"; tv.setText(text);
-        tv = findViewById(R.id.plus30Min); text = interval_Long+"분↑"; tv.setText(text);
+        text = interval_Short+"분↓"; binding.minus10Min.setText(text);
+        text = interval_Short+"분↑"; binding.plus10Min.setText(text);
+        text = interval_Long+"분↓"; binding.minus30Min.setText(text);
+        text = interval_Long+"분↑"; binding.plus30Min.setText(text);
     }
     void buttonSetting() {
-        final ImageView iVVibrate = findViewById(R.id.tm_vibrate);
-        iVVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
-        iVVibrate.setOnClickListener(new View.OnClickListener() {
+        binding.oneVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+        binding.oneVibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vibrate ^= true;
-                iVVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
+                binding.oneVibrate.setImageResource((vibrate)? R.mipmap.ic_phone_vibrate:R.mipmap.ic_phone_silent);
                 v.invalidate();
             }
         });
-        final TextView time10minus = findViewById(R.id.minus10Min);
-        time10minus.setOnClickListener(new View.OnClickListener() {
+        binding.minus10Min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (durationMin > interval_Short) {
@@ -114,8 +109,7 @@ public class OneTimeActivity extends AppCompatActivity {
             }
         });
 
-        final TextView time10plus = findViewById(R.id.plus10Min);
-        time10plus.setOnClickListener(new View.OnClickListener() {
+        binding.plus10Min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 durationMin += interval_Short;
@@ -123,8 +117,7 @@ public class OneTimeActivity extends AppCompatActivity {
             }
         });
 
-        final TextView time30minus = findViewById(R.id.minus30Min);
-        time30minus.setOnClickListener(new View.OnClickListener() {
+        binding.minus30Min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (durationMin > interval_Long) {
@@ -134,8 +127,7 @@ public class OneTimeActivity extends AppCompatActivity {
             }
         });
 
-        final TextView time30plus = findViewById(R.id.plus30Min);
-        time30plus.setOnClickListener(new View.OnClickListener() {
+        binding.plus30Min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 durationMin += interval_Long;
@@ -150,12 +142,12 @@ public class OneTimeActivity extends AppCompatActivity {
         if (finishHour >= 24)
             finishHour -= 24;
         timePicker_UpDown = true;  // to prevent double TimeChanged action
-        tp.setHour(finishHour);
-        tp.setMinute(finishMin);
+        binding.oneTimePicker.setHour(finishHour);
+        binding.oneTimePicker.setMinute(finishMin);
         String text = (""+(100 + durationMin / 60)).substring(1) + " : " + (""+(100 + durationMin % 60)).substring(1) + " 후";
-        tVDuration.setText(text);
+        binding.oneDuration.setText(text);
         timePicker_UpDown = false;
-        tp.invalidate();
+        binding.oneTimePicker.invalidate();
     }
 
     private void saveOneTime() {

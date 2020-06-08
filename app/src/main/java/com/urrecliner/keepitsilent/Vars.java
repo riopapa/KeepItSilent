@@ -11,7 +11,6 @@ import java.util.Locale;
 class Vars {
     static int colorOn, colorOnBack, colorInactiveBack, colorOff, colorOffBack, colorActive;
     static int xSize; // width for each week in AddUpdateActivity
-    static int [] addViewWeek = new int[7];
     static int [] listViewWeek = new int[7];
     static String [] weekName = new String[7];
     static Utils utils = null;
@@ -19,6 +18,7 @@ class Vars {
     static boolean addNewSilent = false;
     static MainActivity mainActivity;
     static Context mainContext;
+    static RecycleViewAdapter recycleViewAdapter;
 
     static String stateCode;
 
@@ -39,6 +39,7 @@ class Vars {
     static int silentIdx;
     static int silentUniq = 123456;
 
+    static final String STATE_BLANK = "BLANK";
     static final String STATE_ALARM = "Alarm";
     static final String STATE_ONETIME = "OneTime";
     static final String STATE_BOOT = "Boot";

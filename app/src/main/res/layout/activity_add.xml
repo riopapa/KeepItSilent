@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="76dp">
         <ImageView
-            android:id="@+id/av_vibrate"
+            android:id="@+id/avVibrate"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:scaleX="0.6"
@@ -74,7 +74,7 @@
             android:contentDescription="@string/blank" />
 
         <EditText
-            android:id="@+id/et_subject"
+            android:id="@+id/etSubject"
             android:layout_width="0dp"
             android:layout_weight="12"
             android:layout_height="match_parent"
@@ -85,7 +85,7 @@
             android:padding="8dp"
             android:importantForAutofill="no" />
         <CheckBox
-            android:id="@+id/cb_active"
+            android:id="@+id/cbActive"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:gravity="center"

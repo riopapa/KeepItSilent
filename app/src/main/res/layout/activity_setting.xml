@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/set_sound_text"
+            android:id="@+id/setSoundText"
             android:layout_width="0dp"
             android:layout_weight="5"
             android:gravity="end|center_vertical"
@@ -21,7 +21,7 @@
             android:padding="4dp"
             android:textSize="20sp" />
         <TextView
-            android:id="@+id/set_sound"
+            android:id="@+id/setSound"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:gravity="center"
@@ -75,7 +75,7 @@
                     android:layout_margin="0dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_short_Minus"
+                    android:id="@+id/setIntervalShortMinus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -87,7 +87,7 @@
                     android:layout_margin="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_short"
+                    android:id="@+id/setIntervalShort"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -98,7 +98,7 @@
                     android:layout_margin="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_short_Plus"
+                    android:id="@+id/setIntervalShortPlus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -126,7 +126,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_long_Minus"
+                    android:id="@+id/setIntervalLongMinus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -140,7 +140,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_long"
+                    android:id="@+id/setIntervalLong"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -151,7 +151,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_interval_long_Plus"
+                    android:id="@+id/setIntervalLongPlus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -180,7 +180,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_default_Duration_Minus"
+                    android:id="@+id/setDefaultDurationMinus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -194,7 +194,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_default_Duration"
+                    android:id="@+id/setDefaultDuration"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -205,7 +205,7 @@
                     android:padding="4dp"
                     android:textSize="20sp" />
                 <TextView
-                    android:id="@+id/set_default_Duration_Plus"
+                    android:id="@+id/setDefaultDurationPlus"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="center"

@@ -26,6 +26,7 @@ public class BootReceiver extends BroadcastReceiver {
 //        utils.log(logID, "Activated  ------------- " + intent.getAction());
 //        Log.e(logID,"ACTIVATED");
         stateCode = STATE_BOOT;
+        Log.w("Booted",stateCode);
         Intent i = new Intent(context, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.putExtra("stateCode", stateCode);

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TimePicker
-            android:id="@+id/timePickerTimer"
+            android:id="@+id/oneTimePicker"
             android:layout_width="0dp"
             android:layout_weight="7"
             android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:layout_gravity="center" />
     </LinearLayout>
     <TextView
-        android:id="@+id/tm_duration"
+        android:id="@+id/oneDuration"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/tm_vibrate"
+            android:id="@+id/oneVibrate"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_width="48dp"
