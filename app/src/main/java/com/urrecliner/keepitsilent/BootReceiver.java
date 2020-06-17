@@ -1,6 +1,8 @@
 package com.urrecliner.keepitsilent;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +26,20 @@ public class BootReceiver extends BroadcastReceiver {
 //        }
         String logID = STATE_BOOT;
 //        utils.log(logID, "Activated  ------------- " + intent.getAction());
-//        Log.e(logID,"ACTIVATED");
         stateCode = STATE_BOOT;
-        Log.w("Booted",stateCode);
-        Intent i = new Intent(context, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra("stateCode", stateCode);
-        context.startActivity(i);
+//        Log.w("Booted",stateCode);
+//        Intent i = new Intent(context, MainActivity.class);
+//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        context.startActivity(i);
+
+        AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent mainIntent = context.getPackageManager() .getLaunchIntentForPackage(context.getPackageName());
+        mainIntent.addFlags(mainIntent.FLAG_ACTIVITY_NEW_TASK);
+        mainIntent.putExtra("stateCode", stateCode);
+        PendingIntent alarmIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//        Log.e(logID,"ACTIVATED");
+        alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, alarmIntent);
+        Runtime.getRuntime().exit(0);
+
     }
 }

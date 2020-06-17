@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             case STATE_BOOT:  // it means from receiver
                 stateCode = "@" + stateCode;
                 scheduleNextTask("Boot triggered new Alarm ");
-//                finish();
+                finish();
                 break;
 
             case STATE_ADD_UPDATE:
