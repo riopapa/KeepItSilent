@@ -8,6 +8,7 @@
     <color name="white">#ffffff</color>
     <color name="back">#E6E6E6</color>
     <color name="transparent">#00000000</color>
+    <color name="notification_back">#A6ECE5</color>
 
     <color name="colorInactiveBack">#808080</color>
     <color name="colorOn">#000080</color>

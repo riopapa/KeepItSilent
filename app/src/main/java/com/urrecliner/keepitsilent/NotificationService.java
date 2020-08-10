@@ -70,7 +70,7 @@ public class NotificationService extends Service {
         }
         if (null == mBuilder) {
             mBuilder = new NotificationCompat.Builder(context,"default")
-                    .setSmallIcon(R.raw.silent_bar)
+                    .setSmallIcon(R.mipmap.silent_bar)
                     .setContent(mRemoteViews)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(false)
@@ -89,7 +89,7 @@ public class NotificationService extends Service {
     }
 
     private void updateRemoteViews(String dateTime, String subject, String startFinish) {
-        mRemoteViews.setImageViewResource(R.id.stopNow, R.raw.silent_now);
+        mRemoteViews.setImageViewResource(R.id.stopNow, R.mipmap.silent_now);
         mRemoteViews.setTextViewText(R.id.dateTime, dateTime);
         mRemoteViews.setTextViewText(R.id.subject, subject);
         mRemoteViews.setTextViewText(R.id.startFinish, startFinish.equals("S")? "시작":"끝남");

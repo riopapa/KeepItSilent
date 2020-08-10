@@ -27,19 +27,20 @@ public class BootReceiver extends BroadcastReceiver {
         String logID = STATE_BOOT;
 //        utils.log(logID, "Activated  ------------- " + intent.getAction());
         stateCode = STATE_BOOT;
-//        Log.w("Booted",stateCode);
-//        Intent i = new Intent(context, MainActivity.class);
-//        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//        context.startActivity(i);
+        Log.e("Booted",stateCode);
+        Intent i = new Intent(context, MainActivity.class);
+        i.putExtra("stateCode", stateCode);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); i.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        context.startActivity(i);
 
         AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent mainIntent = context.getPackageManager() .getLaunchIntentForPackage(context.getPackageName());
+        Intent mainIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         mainIntent.addFlags(mainIntent.FLAG_ACTIVITY_NEW_TASK);
-        mainIntent.putExtra("stateCode", stateCode);
+//        mainIntent.putExtra("stateCode", stateCode);
         PendingIntent alarmIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-//        Log.e(logID,"ACTIVATED");
-        alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, alarmIntent);
-        Runtime.getRuntime().exit(0);
+        Log.e(logID,"ACTIVATED");
+        alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 2000, alarmIntent);
+//        Runtime.getRuntime().exit(0);
 
     }
 }
