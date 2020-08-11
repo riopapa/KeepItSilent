@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.urrecliner.keepitsilent.databinding.ReminderInfoBinding;
@@ -40,6 +41,7 @@ public class RecycleViewAdapter  extends RecyclerView.Adapter<RecycleViewAdapter
 
     class MyViewHolder extends RecyclerView.ViewHolder{
         ReminderInfoBinding binding;
+        View view = itemView.findViewById(R.id.one_reminder);
         public MyViewHolder(ReminderInfoBinding b){
             super(b.getRoot());
             binding = b;
@@ -114,6 +116,8 @@ public class RecycleViewAdapter  extends RecyclerView.Adapter<RecycleViewAdapter
                 mainContext.startActivity(intent);
             }
         });
+        int diff = position * 16;
+        holder.view.setBackgroundColor(ContextCompat.getColor(mainContext, R.color.line_item_back) + diff + diff*256 + diff*256*256);
     }
 
     @Override
