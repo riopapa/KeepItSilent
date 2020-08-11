@@ -93,10 +93,10 @@ public class NotificationService extends Service {
         mRemoteViews.setTextViewText(R.id.dateTime, dateTime);
         mRemoteViews.setTextViewText(R.id.subject, subject);
         mRemoteViews.setTextViewText(R.id.startFinish, startFinish.equals("S")? "시작":"끝남");
-        int color = startFinish.equals("S") ? Color.GREEN : Color.BLUE;
-        mRemoteViews.setTextColor(R.id.dateTime, color);
-        mRemoteViews.setTextColor(R.id.subject, color);
-        mRemoteViews.setTextColor(R.id.startFinish, color);
+//        int color = startFinish.equals("S") ? Color.GREEN : Color.BLUE;
+//        mRemoteViews.setTextColor(R.id.dateTime, color);
+//        mRemoteViews.setTextColor(R.id.subject, color);
+//        mRemoteViews.setTextColor(R.id.startFinish, color);
     }
 
     @Override
