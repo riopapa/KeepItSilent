@@ -116,8 +116,8 @@ public class RecycleViewAdapter  extends RecyclerView.Adapter<RecycleViewAdapter
                 mainContext.startActivity(intent);
             }
         });
-        int diff = position * 16;
-        holder.view.setBackgroundColor(ContextCompat.getColor(mainContext, R.color.line_item_back) + diff + diff*256 + diff*256*256);
+//        int diff = position * 16;
+//        holder.view.setBackgroundColor(ContextCompat.getColor(mainContext, R.color.line_item_back) + diff + diff*256 + diff*256*256);
     }
 
     @Override
